@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="AppUser" representedClassName=".AppUser" syncable="YES">
+        <attribute name="avatar" attributeType="String"/>
+        <attribute name="code" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="ismale" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="phone" attributeType="String"/>
+        <relationship name="events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Event" inverseName="users" inverseEntity="Event"/>
+        <relationship name="ownEvents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Event" inverseName="author" inverseEntity="Event"/>
+        <relationship name="ownPayments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Spend" inverseName="payeer" inverseEntity="Spend"/>
+    </entity>
+    <entity name="Event" representedClassName="Event" syncable="YES">
+        <attribute name="avatar" attributeType="String"/>
+        <attribute name="isOneTime" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="author" maxCount="1" deletionRule="No Action" destinationEntity="AppUser" inverseName="ownEvents" inverseEntity="AppUser"/>
+        <relationship name="spends" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Spend" inverseName="event" inverseEntity="Spend"/>
+        <relationship name="users" toMany="YES" deletionRule="Nullify" destinationEntity="AppUser" inverseName="events" inverseEntity="AppUser"/>
+    </entity>
+    <entity name="Spend" representedClassName="Spend" syncable="YES">
+        <attribute name="difference" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="total" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="event" maxCount="1" deletionRule="Nullify" destinationEntity="Event" inverseName="spends" inverseEntity="Event"/>
+        <relationship name="payeer" maxCount="1" deletionRule="Nullify" destinationEntity="AppUser" inverseName="ownPayments" inverseEntity="AppUser"/>
+    </entity>
+    <elements>
+        <element name="AppUser" positionX="-45" positionY="0" width="128" height="149"/>
+        <element name="Event" positionX="0" positionY="81" width="128" height="119"/>
+        <element name="Spend" positionX="-9" positionY="90" width="128" height="104"/>
+    </elements>
+</model>
