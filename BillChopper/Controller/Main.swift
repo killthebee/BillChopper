@@ -24,22 +24,36 @@ class Main: UIViewController {
         let screenRect = UIScreen.main.bounds
         let tenthOfWindowHeight = screenRect.size.height / 10
         let frameY = 2 * tenthOfWindowHeight
+        let frameX = screenRect.size.width * 0.05
+        let frameWidth = screenRect.size.width - screenRect.size.width * 0.1
         let frameHeight = screenRect.size.height - 3 * tenthOfWindowHeight
         
         let frame = CGRect(
-            x: 0,
+            x: frameX,
             y: frameY,
-            width: screenRect.size.width,
+            width: frameWidth,
             height: frameHeight
         )
         let tableView = UITableView(frame: frame)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "testCells")
+        
+        tableView.register(SpendTableViewCell.self, forCellReuseIdentifier: SpendTableViewCell.identifier)
         
         tableView.dataSource = self
         tableView.delegate = self
         
         return tableView
     }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return SpendTableViewCell.cellSpacingHeight
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+            let headerView = UIView()
+            headerView.backgroundColor = UIColor.clear
+            return headerView
+        }
+    
     
     @objc func fetchStuff(_ sender: UIButton) {
         let request = AppUser.createFetchRequest()
@@ -55,12 +69,18 @@ class Main: UIViewController {
 
 
 extension Main: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.testData.count
+        return 1
+    }
+    
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+            return self.testData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "testCells")! as UITableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: SpendTableViewCell.identifier)! as UITableViewCell
         cell.textLabel?.text = self.testData[indexPath.row]
         return cell
     }
