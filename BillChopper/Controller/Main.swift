@@ -80,8 +80,8 @@ extension Main: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: SpendTableViewCell.identifier)! as UITableViewCell
-        cell.textLabel?.text = self.testData[indexPath.row]
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SpendTableViewCell.identifier) as? SpendTableViewCell else { return UITableViewCell() }
+        //cell.textLabel?.text = self.testData[indexPath.row]
         return cell
     }
 }
