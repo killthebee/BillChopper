@@ -37,6 +37,7 @@ class Main: UIViewController {
         let tableView = UITableView(frame: frame)
         
         tableView.register(SpendTableViewCell.self, forCellReuseIdentifier: SpendTableViewCell.identifier)
+        tableView.register(LentCell.self, forCellReuseIdentifier: LentCell.newIdentifier)
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -81,7 +82,12 @@ extension Main: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SpendTableViewCell.identifier) as? SpendTableViewCell else { return UITableViewCell() }
-        //cell.textLabel?.text = self.testData[indexPath.row]
+        if indexPath.section == 3 {
+            guard let huecell = tableView.dequeueReusableCell(withIdentifier: LentCell.newIdentifier) as? LentCell else { return UITableViewCell() }
+            print("here here")
+            return huecell
+        }
+        
         return cell
     }
 }
