@@ -84,15 +84,15 @@ class SpendTableViewCell: UITableViewCell {
         
         let balanceDiffFrame = CGRect(
             x: frameWidth * 0.7,
-            y: frameHeight * 1.2 * 0.3,
-            width: frameWidth * 0.3,
+            y: frameHeight * 1.2 * 0.4,
+            width: frameWidth * 0.27,
             height: (frameHeight + frameHeight * 0.2) * 0.5
         )
         
         let userActionFrame = CGRect(
             x: frameWidth * 0.7,
             y: 0,
-            width: frameWidth * 0.7,
+            width: frameWidth * 0.27,
             height: (frameHeight + frameHeight * 0.2) * 0.5
         )
         
@@ -131,19 +131,21 @@ class SpendTableViewCell: UITableViewCell {
     
     private func setupSpendName() {
         self.spendName.text = "dummy (spend)"
-        self.spendName.font = self.spendName.font.withSize(19)
-        //TODO: make bold
+        self.spendName.font = UIFont.boldSystemFont(ofSize: 19)
     }
     
     private func setupUserAction() {
         self.userAction.text = "you borrowed"
         self.userAction.font = self.userAction.font.withSize(11)
-        //TODO: change color / alligment to rigth
+        self.userAction.textAlignment = .right
+        self.userAction.textColor = .red
     }
     
     private func setupBalanceDiff() {
-        self.userBalanceDiff.text = "$1670"
+        self.userBalanceDiff.text = "1670 usd"
         self.userBalanceDiff.font = self.userBalanceDiff.font.withSize(23)
+        self.userBalanceDiff.textAlignment = .right
+        self.userBalanceDiff.textColor = .red
     }
     
     private func setupSpendPayeer() {
@@ -158,6 +160,7 @@ class LentCell: SpendTableViewCell {
     static let newIdentifier = "LentCell"
     private let actionIcon: UIImageView = {
         let imageView = UIImageView()
+        print("hmmmmm")
         imageView.image = UIImage(named: "LentActionIcon")
         imageView.contentMode = .scaleAspectFit
         return imageView
