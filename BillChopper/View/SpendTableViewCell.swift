@@ -7,16 +7,11 @@ class SpendTableViewCell: UITableViewCell {
     
     private let date: UILabel = basicLable()
     private let month: UILabel = basicLable()
-    private let actionIcon: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "BorrowActionIcon")
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
+    private var actionIcon: UIImageView!
     private let spendName: UILabel = basicLable()
     private let spendPayeer: UILabel = basicLable()
-    private let userAction: UILabel = basicLable()
-    private let userBalanceDiff: UILabel = basicLable()
+    let userAction: UILabel = basicLable()
+    let userBalanceDiff: UILabel = basicLable()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -27,6 +22,7 @@ class SpendTableViewCell: UITableViewCell {
         contentView.layer.cornerRadius = 20
         contentView.clipsToBounds = true
         
+        self.actionIcon = setupImage()
         
         setupDate()
         setupMonth()
@@ -46,6 +42,13 @@ class SpendTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setupImage() -> UIImageView {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "BorrowActionIcon")
+        imageView.contentMode = .scaleAspectFit
+        return imageView
     }
     
     override func layoutSubviews() {
@@ -158,11 +161,40 @@ class SpendTableViewCell: UITableViewCell {
 
 class LentCell: SpendTableViewCell {
     static let newIdentifier = "LentCell"
-    private let actionIcon: UIImageView = {
+    private var actionIcon: UIImageView!
+    
+    private let customGreen: UIColor = UIColor(red: 0.2627, green: 0.5216, blue: 0.3451, alpha: 1.0)
+    
+    override func setupImage() -> UIImageView {
         let imageView = UIImageView()
-        print("hmmmmm")
         imageView.image = UIImage(named: "LentActionIcon")
         imageView.contentMode = .scaleAspectFit
         return imageView
-    }()
+    }
+    
+    private func setupUserAction() {
+        // TODO: make green darker
+        self.userAction.text = "you owed"
+        self.userAction.font = self.userAction.font.withSize(11)
+        self.userAction.textAlignment = .right
+        self.userAction.textColor = customGreen
+    }
+    
+    private func setupBalanceDiff() {
+        self.userBalanceDiff.text = "1670 usd"
+        self.userBalanceDiff.font = self.userBalanceDiff.font.withSize(23)
+        self.userBalanceDiff.textAlignment = .right
+        self.userBalanceDiff.textColor = customGreen
+    }
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.actionIcon = setupImage()
+        setupBalanceDiff()
+        setupUserAction()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
