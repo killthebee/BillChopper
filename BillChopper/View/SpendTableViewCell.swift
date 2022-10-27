@@ -173,7 +173,6 @@ class LentCell: SpendTableViewCell {
     }
     
     private func setupUserAction() {
-        // TODO: make green darker
         self.userAction.text = "you owed"
         self.userAction.font = self.userAction.font.withSize(11)
         self.userAction.textAlignment = .right

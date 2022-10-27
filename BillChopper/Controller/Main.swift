@@ -17,8 +17,9 @@ class Main: UIViewController {
         let tableView = setUpTableView()
         let eventButton = setUpEventButton()
         let balanceButton = setUpBalanceButton()
+        let profileIcon = setUpProfileIcon()
         
-        
+        view.addSubview(profileIcon)
         view.addSubview(tableView)
         view.addSubview(eventButton)
         view.addSubview(balanceButton)
@@ -86,6 +87,49 @@ class Main: UIViewController {
         return tableView
     }
     
+    private func setUpProfileIcon() -> UIView {
+        let profileIcon = ProfileIcon()
+        profileIcon.image = UIImage(named: "HombreDefault1")
+        
+        let frame = CGRect(
+            x: tenthOfWindowHeight * 4.0,
+            y: screenRect.size.width * 0.3,
+            width: tenthOfWindowHeight * 0.4,
+            height: tenthOfWindowHeight * 0.4
+        )
+        
+        profileIcon.frame = frame
+        return profileIcon
+    }
+    
+    private func setUpProfileLable() -> UILabel {
+        //let profileLableCover = UIView()
+        let profileLable = UILabel()
+        
+        //profileLable.center = self.view.center
+        profileLable.text = "me"
+        profileLable.textAlignment = .center
+        profileLable.textColor = .black
+        
+        
+//        profileLableCover.backgroundColor = .lightGray
+//        profileLableCover.frame = CGRect(
+//            x: tenthOfWindowHeight * 3.95,
+//            y: screenRect.size.width * 0.37,
+//            width: tenthOfWindowHeight * 0.5,
+//            height: tenthOfWindowHeight * 0.20
+//        )
+        profileLable.frame = CGRect(
+            x: tenthOfWindowHeight * 3.95,
+            y: screenRect.size.width * 0.37,
+            width: tenthOfWindowHeight * 0.5,
+            height: tenthOfWindowHeight * 0.20
+        )
+        
+        //profileLableCover.addSubview(profileLable)
+        return profileLable
+    }
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return SpendTableViewCell.cellSpacingHeight
     }
@@ -141,3 +185,14 @@ extension Main: UITableViewDelegate {
         print(testData[indexPath.row])
     }
 }
+
+
+//extension UILabel {
+//    func centerVertically() {
+//        let fittingSize = CGSize(width: bounds.width, height: CGFloat.greatestFiniteMagnitude)
+//        let size = sizeThatFits(fittingSize)
+//        let topOffset = (bounds.size.height - size.height * zoomScale) / 2
+//        let positiveTopOffset = max(1, topOffset)
+//        contentOffset.y = -positiveTopOffset
+//    }
+//}
