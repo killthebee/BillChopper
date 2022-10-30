@@ -41,10 +41,9 @@ class Main: UIViewController {
         eventButton.backgroundColor = UIColor.systemGray
         eventButton.layer.cornerRadius = 15
         eventButton.clipsToBounds = true
-        eventButton.setTitle("event: All", for: .normal )
+        eventButton.setTitle("event:", for: .normal )
         
-        let menu = getEventMenu()
-        eventButton.menu = menu
+        eventButton.menu = getEventMenu()
         eventButton.showsMenuAsPrimaryAction = true
         
         return eventButton
@@ -82,9 +81,31 @@ class Main: UIViewController {
         balanceButton.backgroundColor = UIColor.systemGreen
         balanceButton.layer.cornerRadius = 15
         balanceButton.clipsToBounds = true
-        balanceButton.titleLabel?.text = "tak bleat"
+        balanceButton.setTitle("balance with:", for: .normal)
+        
+        balanceButton.menu = getBalanceMenu()
+        balanceButton.showsMenuAsPrimaryAction = true
         
         return balanceButton
+    }
+    
+    private func getBalanceMenu() -> UIMenu {
+        let dummyBalance1 = UIAction(title: "balance1", image: UIImage(named: "HombreDefault1.1")) {
+            (action) in
+            print("dummy balance1")
+        }
+        let dummyBalance2 = UIAction(title: "balance2", image: UIImage(named: "HombreDefault1.1")) {
+            (action) in
+            print("dummy balance2")
+        }
+        
+        let menu = UIMenu(
+            title: "Users",
+            options: .displayInline,
+            children: [dummyBalance1, dummyBalance2]
+        )
+        
+        return menu
     }
     
     private func setUpTableView() -> UITableView {
