@@ -41,9 +41,32 @@ class Main: UIViewController {
         eventButton.backgroundColor = UIColor.systemGray
         eventButton.layer.cornerRadius = 15
         eventButton.clipsToBounds = true
-        eventButton.titleLabel?.text = "tak bleat"
+        eventButton.setTitle("event: All", for: .normal )
+        
+        let menu = getEventMenu()
+        eventButton.menu = menu
+        eventButton.showsMenuAsPrimaryAction = true
         
         return eventButton
+    }
+    
+    private func getEventMenu() -> UIMenu {
+        let dummyEvent1 = UIAction(title: "event1", image: UIImage(named: "LentActionIcon")) {
+            (action) in
+            print("dummy event1")
+        }
+        let dummyEvent2 = UIAction(title: "event2", image: UIImage(named: "BorrowActionIcon")) {
+            (action) in
+            print("dummy event2")
+        }
+        
+        let menu = UIMenu(
+            title: "events",
+            options: .displayInline,
+            children: [dummyEvent1, dummyEvent2]
+        )
+        
+        return menu
     }
     
     private func setUpBalanceButton() -> UIButton{
