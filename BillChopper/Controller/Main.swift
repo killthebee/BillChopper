@@ -23,6 +23,8 @@ class Main: UIViewController {
         view.addSubview(tableView)
         view.addSubview(eventButton)
         view.addSubview(balanceButton)
+        
+        view.addSubview(FooterView())
     }
     
     override func loadView() {
@@ -100,7 +102,7 @@ class Main: UIViewController {
         }
         
         let menu = UIMenu(
-            title: "Users",
+            title: "users",
             options: .displayInline,
             children: [dummyBalance1, dummyBalance2]
         )
