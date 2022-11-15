@@ -2,14 +2,15 @@ import UIKit
 import CoreData
 
 
+// TODO: Make table a bit higher
+// TODO: put a logo above buttons
+
+
 class Main: UIViewController {
     
     var viewController = PersistanceController.shared
     var viewContext: NSManagedObjectContext!
     let testData: [String] = ["1", "2", "3", "4" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8"]
-    
-    let screenRect = UIScreen.main.bounds
-    let tenthOfWindowHeight = UIScreen.main.bounds.size.height / 10
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +26,7 @@ class Main: UIViewController {
         view.addSubview(balanceButton)
         
         view.addSubview(FooterView())
+        //view.addSubview(EditUSerView())
     }
     
     override func loadView() {
@@ -33,10 +35,10 @@ class Main: UIViewController {
     
     private func setUpEventButton() -> UIButton {
         let frame = CGRect(
-            x: tenthOfWindowHeight * 0.3,
-            y: screenRect.size.width * 0.3,
-            width: screenRect.size.width * 0.35,
-            height: tenthOfWindowHeight * 0.4
+            x: view.frame.size.height * 0.03,
+            y: view.frame.size.width * 0.3,
+            width: view.frame.size.width * 0.35,
+            height: view.frame.size.height * 0.04
         )
         let eventButton = UIButton(frame: frame)
         
@@ -72,10 +74,10 @@ class Main: UIViewController {
     
     private func setUpBalanceButton() -> UIButton{
         let frame = CGRect(
-            x: tenthOfWindowHeight * 2.1,
-            y: screenRect.size.width * 0.3,
-            width: screenRect.size.width * 0.35,
-            height: tenthOfWindowHeight * 0.4
+            x: view.frame.size.height * 0.21,
+            y: view.frame.size.width * 0.3,
+            width: view.frame.size.width * 0.35,
+            height: view.frame.size.height * 0.04
         )
         
         let balanceButton = UIButton(frame: frame)
@@ -111,16 +113,11 @@ class Main: UIViewController {
     }
     
     private func setUpTableView() -> UITableView {
-        let frameY = 2 * tenthOfWindowHeight
-        let frameX = screenRect.size.width * 0.05
-        let frameWidth = screenRect.size.width - screenRect.size.width * 0.1
-        let frameHeight = screenRect.size.height - 3 * tenthOfWindowHeight
-        
         let frame = CGRect(
-            x: frameX,
-            y: frameY,
-            width: frameWidth,
-            height: frameHeight
+            x: view.frame.size.width * 0.05,
+            y: view.frame.size.height * 0.2,
+            width: view.frame.size.width * 0.9,
+            height: view.frame.size.height * 0.7
         )
         let tableView = UITableView(frame: frame)
         
@@ -138,10 +135,10 @@ class Main: UIViewController {
         profileIcon.image = UIImage(named: "HombreDefault1")
         
         let frame = CGRect(
-            x: tenthOfWindowHeight * 4.0,
-            y: screenRect.size.width * 0.3,
-            width: tenthOfWindowHeight * 0.4,
-            height: tenthOfWindowHeight * 0.4
+            x: view.frame.size.height * 0.4,
+            y: view.frame.size.width * 0.3,
+            width: view.frame.size.height * 0.04,
+            height: view.frame.size.height * 0.04
         )
         
         profileIcon.frame = frame
@@ -157,19 +154,11 @@ class Main: UIViewController {
         profileLable.textAlignment = .center
         profileLable.textColor = .black
         
-        
-//        profileLableCover.backgroundColor = .lightGray
-//        profileLableCover.frame = CGRect(
-//            x: tenthOfWindowHeight * 3.95,
-//            y: screenRect.size.width * 0.37,
-//            width: tenthOfWindowHeight * 0.5,
-//            height: tenthOfWindowHeight * 0.20
-//        )
         profileLable.frame = CGRect(
-            x: tenthOfWindowHeight * 3.95,
-            y: screenRect.size.width * 0.37,
-            width: tenthOfWindowHeight * 0.5,
-            height: tenthOfWindowHeight * 0.20
+            x: view.frame.size.height * 0.395,
+            y: view.frame.size.width * 0.37,
+            width: view.frame.size.height * 0.05,
+            height: view.frame.size.height * 0.02
         )
         
         //profileLableCover.addSubview(profileLable)
