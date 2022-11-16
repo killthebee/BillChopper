@@ -9,11 +9,6 @@ enum balanceType: String {
 
 final class FooterView: UIView {
     
-    // TODO: Hide it somewhere else
-    let screenRect = UIScreen.main.bounds
-    let tenthOfWidnowWidth = UIScreen.main.bounds.width / 10
-    let tenthOfWindowHeight = UIScreen.main.bounds.size.height / 10
-    
     let plusIcon = UIImage(named:"plusIcon")
     
     override init(frame: CGRect) {
@@ -45,19 +40,19 @@ final class FooterView: UIView {
     
     private func getPath() -> UIBezierPath {
         let path = UIBezierPath()
-        path.move(to: CGPoint(x: 0, y: tenthOfWindowHeight * 8.5))
-        path.addLine(to: CGPoint(x: tenthOfWidnowWidth * 4, y: tenthOfWindowHeight * 8.5))
+        path.move(to: CGPoint(x: 0, y: 0))
+        path.addLine(to: CGPoint(x: self.bounds.size.width * 0.4, y: 0))
         path.addArc(
-            withCenter: CGPoint(x: tenthOfWidnowWidth * 5, y: tenthOfWindowHeight * 8.5),
-            radius: tenthOfWidnowWidth * 1,
+            withCenter: CGPoint(x: self.bounds.size.width * 0.5, y: 0),
+            radius: self.bounds.size.width * 0.1,
             startAngle: .pi,
             endAngle: 0,
             clockwise: true
         )
-        path.addLine(to: CGPoint(x: tenthOfWidnowWidth * 10, y: tenthOfWindowHeight * 8.5))
-        path.addLine(to: CGPoint(x: tenthOfWidnowWidth * 10, y: tenthOfWindowHeight * 10))
-        path.addLine(to: CGPoint(x: 0, y: tenthOfWindowHeight * 10))
-        path.addLine(to: CGPoint(x: 0, y: tenthOfWindowHeight * 8.5))
+        path.addLine(to: CGPoint(x: self.bounds.size.width, y: 0))
+        path.addLine(to: CGPoint(x: self.bounds.size.width, y: self.bounds.size.height))
+        path.addLine(to: CGPoint(x: 0, y: self.bounds.size.height))
+        path.addLine(to: CGPoint(x: 0, y: 0))
         path.close()
         return path
     }
@@ -66,10 +61,10 @@ final class FooterView: UIView {
         let iconView = UIImageView()
         iconView.image = plusIcon
         iconView.frame = CGRect(
-            x: tenthOfWidnowWidth * 4,
-            y: tenthOfWindowHeight * 8,
-            width: tenthOfWidnowWidth * 2,
-            height: tenthOfWidnowWidth * 2
+            x: self.bounds.size.width * 0.4,
+            y: self.bounds.size.height * -0.33,
+            width: self.bounds.size.width * 0.2,
+            height: self.bounds.size.width * 0.2
         )
         iconView.contentMode = .scaleAspectFit
         
@@ -86,7 +81,7 @@ final class FooterView: UIView {
         balanceView.addSubview(balanceWithLabal)
         balanceView.addSubview(balanceTypeLabel)
         balanceView.addSubview(balance)
-        // TODO: make the aplication of color to labels as external func
+        // TODO: make aplication of color to labels as an external func
         
 //        balanceView.layer.borderColor = UIColor.black.cgColor
 //        balanceView.layer.borderWidth = 1
@@ -107,31 +102,30 @@ final class FooterView: UIView {
         balance.textAlignment = .right
         
         balanceView.frame = CGRect(
-            x: tenthOfWidnowWidth * 6,
-            y: tenthOfWindowHeight * 8.7,
-            width: tenthOfWidnowWidth * 3.3,
-            height: tenthOfWidnowWidth * 2
+            x: self.frame.size.width * 0.6,
+            y: self.frame.size.height * 0.13,
+            width: self.frame.size.width * 0.3,
+            height: self.frame.size.width * 0.2
         )
-        
         balanceWithLabal.frame = CGRect(
             x: 0,
-            y: tenthOfWidnowWidth * 0.2,
-            width: tenthOfWidnowWidth * 3,
-            height: tenthOfWidnowWidth * 0.5
+            y: self.frame.size.height * 0.06,
+            width: self.frame.size.width * 0.3,
+            height: self.frame.size.width * 0.05
         )
         
         balanceTypeLabel.frame = CGRect(
             x: 0,
-            y: tenthOfWidnowWidth * 0.7,
-            width: tenthOfWidnowWidth * 3,
-            height: tenthOfWidnowWidth * 0.5
+            y: self.frame.size.height * 0.22,
+            width: self.frame.size.width * 0.3,
+            height: self.frame.size.width * 0.05
         )
         
         balance.frame = CGRect(
             x: 0,
-            y: tenthOfWidnowWidth * 1.2,
-            width: tenthOfWidnowWidth * 3,
-            height: tenthOfWidnowWidth * 0.5
+            y: self.frame.size.height * 0.35,
+            width: self.frame.size.width * 0.3,
+            height: self.frame.size.width * 0.05
         )
         
         //balanceWithLabal.superview?.bringSubviewToFront(balanceWithLabal)
@@ -158,24 +152,24 @@ final class FooterView: UIView {
         eventLable.textAlignment = .center
         
         eventsView.frame = CGRect(
-            x: tenthOfWidnowWidth * 0.6,
-            y: tenthOfWindowHeight * 8.7,
-            width: tenthOfWidnowWidth * 3.3,
-            height: tenthOfWidnowWidth * 2
+            x: self.frame.size.width * 0.06,
+            y: self.frame.size.height * 0.13,
+            width: self.frame.size.width * 0.3,
+            height: self.frame.size.width * 0.2
         )
         
         eventName.frame = CGRect(
             x: 0,
-            y: tenthOfWidnowWidth * 0.5,
-            width: tenthOfWidnowWidth * 3.3,
-            height: tenthOfWidnowWidth * 0.5
+            y: self.frame.size.width * 0.05,
+            width: self.frame.size.width * 0.32,
+            height: self.frame.size.width * 0.08
         )
         
         eventLable.frame = CGRect(
             x: 0,
-            y: tenthOfWidnowWidth * 1.2,
-            width: tenthOfWidnowWidth * 3.3,
-            height: tenthOfWidnowWidth * 0.3
+            y: self.frame.size.width * 0.12,
+            width: self.frame.size.width * 0.33,
+            height: self.frame.size.width * 0.04
         )
         
         return eventsView

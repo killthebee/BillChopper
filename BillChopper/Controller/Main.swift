@@ -19,13 +19,14 @@ class Main: UIViewController {
         let eventButton = setUpEventButton()
         let balanceButton = setUpBalanceButton()
         let profileIcon = setUpProfileIcon()
+        let footer = setUpFooterView()
         
         view.addSubview(profileIcon)
         view.addSubview(tableView)
         view.addSubview(eventButton)
         view.addSubview(balanceButton)
         
-        view.addSubview(FooterView())
+        view.addSubview(footer)
         //view.addSubview(EditUSerView())
     }
     
@@ -163,6 +164,20 @@ class Main: UIViewController {
         
         //profileLableCover.addSubview(profileLable)
         return profileLable
+    }
+    
+    private func setUpFooterView() -> FooterView {
+        let frame1 = CGRect(
+            x: 0,
+            y: view.frame.size.height * 0.85,
+            width: view.frame.size.width,
+            height: view.frame.size.height * 0.15
+        )
+        
+        let footer = FooterView(frame: frame1)
+//        footer.layer.borderColor = UIColor.red.cgColor
+//        footer.layer.borderWidth = 5
+        return footer
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
