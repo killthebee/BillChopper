@@ -12,6 +12,7 @@ class Main: UIViewController {
     var viewContext: NSManagedObjectContext!
     let testData: [String] = ["1", "2", "3", "4" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8"]
     
+    lazy var profileViewController = ProfileViewController()
     override func viewDidLoad() {
         super.viewDidLoad()
         viewContext = viewController.container.viewContext
@@ -20,6 +21,11 @@ class Main: UIViewController {
         let balanceButton = setUpBalanceButton()
         let profileIcon = setUpProfileIcon()
         let footer = setUpFooterView()
+        
+        let tapGesutre = UITapGestureRecognizer(
+            target: self, action: #selector(handleTap(sender:))
+        )
+        profileIcon.addGestureRecognizer(tapGesutre)
         
         view.addSubview(profileIcon)
         view.addSubview(tableView)
@@ -190,7 +196,6 @@ class Main: UIViewController {
             return headerView
         }
     
-    
     @objc func fetchStuff(_ sender: UIButton) {
         let request = AppUser.createFetchRequest()
         do {
@@ -200,6 +205,13 @@ class Main: UIViewController {
         } catch {
             print("fetch failed")
         }
+    }
+    
+    @objc func handleTap(sender: UITapGestureRecognizer) {
+        // NOTE: https://developer.apple.com/documentation/uikit/uiviewcontroller/1621505-dismiss
+        profileViewController.modalPresentationStyle = .formSheet
+        profileViewController.modalTransitionStyle = .crossDissolve
+        present(profileViewController, animated: true)
     }
 }
 
