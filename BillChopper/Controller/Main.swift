@@ -139,6 +139,8 @@ class Main: UIViewController {
     
     private func setUpProfileIcon() -> UIView {
         let profileIcon = ProfileIcon()
+        // it's a placeholder!
+        // Sorta dislike to include types into var names ( Is it ok? )
         profileIcon.image = UIImage(named: "HombreDefault1")
         
         let frame = CGRect(
@@ -209,8 +211,8 @@ class Main: UIViewController {
     
     @objc func handleTap(sender: UITapGestureRecognizer) {
         // NOTE: https://developer.apple.com/documentation/uikit/uiviewcontroller/1621505-dismiss
-        profileViewController.modalPresentationStyle = .formSheet
-        profileViewController.modalTransitionStyle = .crossDissolve
+        profileViewController.modalPresentationStyle = .pageSheet
+        profileViewController.modalTransitionStyle = .coverVertical
         present(profileViewController, animated: true)
     }
 }
