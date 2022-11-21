@@ -15,6 +15,8 @@ class Main: UIViewController {
     lazy var profileViewController = ProfileViewController()
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        
         viewContext = viewController.container.viewContext
         let tableView = setUpTableView()
         let eventButton = setUpEventButton()
