@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		301159C8292CE49A001E254D /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301159C7292CE49A001E254D /* ImagePicker.swift */; };
 		3078498A28EB349D00AEFECA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3078498928EB349D00AEFECA /* AppDelegate.swift */; };
 		3078498C28EB349D00AEFECA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3078498B28EB349D00AEFECA /* SceneDelegate.swift */; };
 		3078499328EB349E00AEFECA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3078499228EB349E00AEFECA /* Assets.xcassets */; };
@@ -31,6 +32,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		301159C7292CE49A001E254D /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		3078498628EB349D00AEFECA /* BillChopper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BillChopper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3078498928EB349D00AEFECA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3078498B28EB349D00AEFECA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				3078499728EB349E00AEFECA /* Info.plist */,
 				3078499E28EB5A6600AEFECA /* DataModel.xcdatamodeld */,
 				307849E328F59E0600AEFECA /* Utilities.swift */,
+				301159C7292CE49A001E254D /* ImagePicker.swift */,
 			);
 			path = BillChopper;
 			sourceTree = "<group>";
@@ -222,6 +225,7 @@
 				307849E128F59AF700AEFECA /* Spend+CoreDataClass.swift in Sources */,
 				307849B828F573ED00AEFECA /* backwardsStuff.swift in Sources */,
 				30DA407D2926793600E2DC17 /* ProfileViewController.swift in Sources */,
+				301159C8292CE49A001E254D /* ImagePicker.swift in Sources */,
 				309179EA290FE56B007783A2 /* FooterView.swift in Sources */,
 				307849DD28F59AF700AEFECA /* Event+CoreDataClass.swift in Sources */,
 				3078498A28EB349D00AEFECA /* AppDelegate.swift in Sources */,

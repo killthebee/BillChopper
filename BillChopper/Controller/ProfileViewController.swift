@@ -5,27 +5,28 @@ final class ProfileViewController: UIViewController {
     //""" Yeah it's "heavely inspired" by tg profile screen
     //"""
     lazy var iconView = setUpIconView()
-    lazy var coverView = makeCoverView()
+    lazy var coverView: UIView = makeCoverView()
+    lazy var uploadButton: UIButton = setUpUploadButton()
     
     var isIconZoomed = false
+    var imagePicker: ImagePicker!
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        self.imagePicker = ImagePicker(presentationController: self, delegate: self)
         
         //naming?
-        setupLayout()
         addSubviews()
         addGestures()
     }
     
     private func addSubviews() {
-        view.addSubview(iconView)
+        view.addSubview(uploadButton)
         
-    }
-    
-    private func setupLayout() {
-        view.backgroundColor = .white
+        // over all other stuff
+        view.addSubview(iconView)
     }
     
     private func addGestures() {
@@ -35,16 +36,18 @@ final class ProfileViewController: UIViewController {
         let tapOnZoomedIconGestureRecognizer = UITapGestureRecognizer(
             target: self, action: #selector(handleTapOnZoomedIcon)
         )
+        // TODO: add swipe up gesture recognizer to coverView
         iconView.isUserInteractionEnabled = true
         iconView.addGestureRecognizer(tapOnIconGestureRecognizer)
         coverView.isUserInteractionEnabled = true
         coverView.addGestureRecognizer(tapOnZoomedIconGestureRecognizer)
     }
     
-    private func setUpIconView() -> UIView {
+    private func setUpIconView() -> ProfileIcon {
         let profileIcon = ProfileIcon()
         // it's a placeholder!
         profileIcon.image = UIImage(named: "HombreDefault1")
+        // for the fuck sake stop using width to messure height...
         profileIcon.frame = CGRect(
             x: view.frame.size.width * 0.35,
             y: view.frame.size.height * 0.05,
@@ -53,6 +56,20 @@ final class ProfileViewController: UIViewController {
         )
         
         return profileIcon
+    }
+    
+    private func setUpUploadButton() -> UIButton {
+        let uploadButton = UIButton(frame: CGRect(
+            x: view.frame.size.width * 0.3,
+            y: view.frame.size.height * 0.2,
+            width: view.frame.size.width * 0.4,
+            height: view.frame.size.width * 0.1
+        ))
+        uploadButton.setTitle("set up profile icon", for: .normal)
+        uploadButton.setTitleColor(.systemBlue, for: .normal)
+        
+        uploadButton.addTarget(self, action: #selector(handleUploadButtonClicked), for: .touchDown)
+        return uploadButton
     }
     
     private func makeCoverView() -> UIView {
@@ -65,6 +82,8 @@ final class ProfileViewController: UIViewController {
         )
         return coverView
     }
+    
+    // TODO: image colletor
     
     @objc func handleTapOnIcon() {
         // why do I need selfs here?
@@ -121,5 +140,18 @@ final class ProfileViewController: UIViewController {
                 height: view.frame.size.width * 0.3
             )
         }
+    }
+    
+    @objc func handleUploadButtonClicked(_ sender: UIButton) {
+        self.imagePicker.present(from: sender)
+    }
+}
+
+
+extension ProfileViewController: ImagePickerDelegate {
+    
+    func didSelect(image: UIImage?) {
+        print("tap")
+        self.iconView.image = image
     }
 }
