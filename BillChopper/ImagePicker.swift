@@ -19,8 +19,9 @@ class ImagePicker: NSObject {
         self.presentationController = presentationController
         self.delegate = delegate
         
-        // delegate???
-        self.pickerController.delegate = self as? (UIImagePickerControllerDelegate & UINavigationControllerDelegate)
+        self.pickerController.delegate = self as (
+            UIImagePickerControllerDelegate & UINavigationControllerDelegate
+        )
         self.pickerController.allowsEditing = false
         self.pickerController.mediaTypes = ["public.image"]
     }
