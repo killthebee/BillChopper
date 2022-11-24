@@ -20,7 +20,6 @@ final class ProfileViewController: UIViewController {
         
         //naming?
         addSubviews()
-        addGestures()
     }
     
     private func addSubviews() {
@@ -28,28 +27,11 @@ final class ProfileViewController: UIViewController {
         view.addSubview(UsernameTextField)
         
         // over all other stuff
-        print("----- INITIAL ICON")
-        print(iconView.image)
         view.addSubview(iconView)
-    }
-    
-    private func addGestures() {
-        let tapOnIconGestureRecognizer = UITapGestureRecognizer(
-            target: self, action: #selector(handleTapOnIcon)
-        )
-        let tapOnZoomedIconGestureRecognizer = UITapGestureRecognizer(
-            target: self, action: #selector(handleTapOnZoomedIcon)
-        )
-        // TODO: add swipe up gesture recognizer to coverView
-        iconView.isUserInteractionEnabled = true
-        iconView.addGestureRecognizer(tapOnIconGestureRecognizer)
-        coverView.isUserInteractionEnabled = true
-        coverView.addGestureRecognizer(tapOnZoomedIconGestureRecognizer)
     }
     
     private func setUpIconView(_ image: UIImage = UIImage(named: "HombreDefault1")!) -> ProfileIcon {
         let profileIcon = ProfileIcon()
-        // it's a placeholder!
         profileIcon.image = image
         // for the fuck sake stop using width to messure height...
         profileIcon.frame = CGRect(
@@ -58,6 +40,12 @@ final class ProfileViewController: UIViewController {
             width: view.frame.size.width * 0.3,
             height: view.frame.size.width * 0.3
         )
+        
+        let tapOnIconGestureRecognizer = UITapGestureRecognizer(
+            target: self, action: #selector(handleTapOnIcon)
+        )
+        profileIcon.isUserInteractionEnabled = true
+        profileIcon.addGestureRecognizer(tapOnIconGestureRecognizer)
         
         return profileIcon
     }
@@ -109,10 +97,14 @@ final class ProfileViewController: UIViewController {
             )
         )
         
+        let tapOnZoomedIconGestureRecognizer = UITapGestureRecognizer(
+            target: self, action: #selector(handleTapOnZoomedIcon)
+        )
+        coverView.isUserInteractionEnabled = true
+        coverView.addGestureRecognizer(tapOnZoomedIconGestureRecognizer)
+        
         return coverView
     }
-    
-    // TODO: image colletor
     
     @objc func handleTapOnIcon() {
         // why do I need selfs here?
