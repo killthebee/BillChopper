@@ -5,9 +5,12 @@ final class ProfileViewController: UIViewController {
     //""" Yeah it's "heavely inspired" by tg profile screen
     //"""
     lazy var iconView: ProfileIcon = setUpIconView()
+    // TODO: rename func bellow
     lazy var coverView: UIView = makeCoverView()
     lazy var uploadButton: UIButton = setUpUploadButton()
+    // TODO: to lower case, mb change type to custom
     lazy var UsernameTextField: UITextField = setUpUsernameTextField()
+    lazy var usernameHelpText: UILabel = setUpUsernameHelpText()
     
     var isIconZoomed = false
     var imagePicker: ImagePicker!
@@ -25,6 +28,7 @@ final class ProfileViewController: UIViewController {
     private func addSubviews() {
         view.addSubview(uploadButton)
         view.addSubview(UsernameTextField)
+        view.addSubview(usernameHelpText)
         
         // over all other stuff
         view.addSubview(iconView)
@@ -72,6 +76,7 @@ final class ProfileViewController: UIViewController {
             height: view.frame.size.height * 0.05
         ))
         usernameTextField.text = "John Dhoe"
+        usernameTextField.font = UIFont.boldSystemFont(ofSize: 21)
         //usernameTextField.borderStyle = UITextField.BorderStyle.roundedRect
         usernameTextField.autocorrectionType = UITextAutocorrectionType.no
         usernameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
@@ -83,9 +88,28 @@ final class ProfileViewController: UIViewController {
         usernameTextField.sidePadding = usernameTextField.frame.width * 0.05
         usernameTextField.topPadding = usernameTextField.frame.height * 0.1
         usernameTextField.layer.borderColor = UIColor.black.cgColor
-        usernameTextField.layer.borderWidth = 4
+        usernameTextField.layer.borderWidth = 1
+        usernameTextField.layer.cornerRadius = 15
+        usernameTextField.backgroundColor = UIColor(
+            hue: 0/360, saturation: 0/100, brightness: 98/100, alpha: 1.0
+        )
         
         return usernameTextField
+    }
+    
+    private func setUpUsernameHelpText() -> UILabel {
+        let usernameHelpTextLable = UILabel(frame: CGRect(
+            x: view.frame.size.width * 0.12,
+            y: view.frame.size.height * 0.33,
+            width: view.frame.size.width * 0.78,
+            height: view.frame.size.height * 0.1
+        ))
+        usernameHelpTextLable.text = "Enter the name other people to see, also an optional profile photo"
+        usernameHelpTextLable.font = usernameHelpTextLable.font.withSize(15)
+        usernameHelpTextLable.lineBreakMode = .byWordWrapping
+        usernameHelpTextLable.numberOfLines = 0
+        
+        return usernameHelpTextLable
     }
     
     private func makeCoverView() -> UIView {
@@ -184,8 +208,14 @@ extension ProfileViewController: ImagePickerDelegate {
 
 
 extension ProfileViewController: UITextFieldDelegate {
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-            print("TextField did end editing method called")
-        }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        // called when 'return' key pressed. return NO to ignore.
+        print("TextField should return method called")
+        // may be useful: textField.resignFirstResponder() textField.text!
+        //
+        // TODO: validators on the back *ptsd kicks in* but after click on save
+        // TODO: save input into model object
+        return true
+    }
 }
