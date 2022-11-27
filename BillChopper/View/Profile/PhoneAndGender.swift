@@ -9,6 +9,8 @@ class PhoneAndGender: UIView {
     let phoneInput = UITextField()
     let codeInput = UITextField()
     
+    let genderButton = UIButton()
+    
     var numberFormated = ""
     var rawNumber = ""
     
@@ -29,6 +31,8 @@ class PhoneAndGender: UIView {
         setUpCodeInput()
         self.addSubview(codeInput)
         self.addSubview(genderTextLable)
+        setUpGenderButton()
+        self.addSubview(genderButton)
     }
     
     required init?(coder: NSCoder) {
@@ -66,6 +70,12 @@ class PhoneAndGender: UIView {
             width: self.bounds.size.width * 0.3,
             height: self.bounds.size.height * 0.5
         )
+        genderButton.frame = CGRect(
+            x: self.bounds.size.width * 0.3,
+            y: self.bounds.size.height * 0.5,
+            width: self.bounds.size.width * 0.7,
+            height: self.bounds.size.height * 0.5
+        )
     }
     
     private func setUpPhoneInput() {
@@ -93,7 +103,36 @@ class PhoneAndGender: UIView {
         codeInput.tag = 0
     }
     
+    private func setUpGenderButton() {
+        genderButton.setTitle("gender", for: .normal )
+        genderButton.setTitleColor(.lightGray, for: .normal)
+        genderButton.menu = getGenderMenu()
+        genderButton.showsMenuAsPrimaryAction = true
+    }
+    
+    private func getGenderMenu() -> UIMenu{
+        let gender1 = UIAction(title: "male") {
+            (action) in
+            self.genderButton.setTitle("male", for: .normal )
+            self.genderButton.setTitleColor(.black, for: .normal)
+        }
+        let gender2 = UIAction(title: "female") {
+            (action) in
+            self.genderButton.setTitle("female", for: .normal )
+            self.genderButton.setTitleColor(.black, for: .normal)
+        }
+        
+        let menu = UIMenu(
+            title: "gender",
+            options: .displayInline,
+            children: [gender1, gender2]
+        )
+        
+        return menu
+    }
+    
     private func addLayer() {
+        // TODO: Add couple vertical lines ji est'
         let middleLineLayer = CAShapeLayer()
         let betweenPhoneNumberLineLayer = CAShapeLayer()
         self.layer.addSublayer(middleLineLayer)
