@@ -22,11 +22,13 @@ class PhoneAndGender: UIView {
         
         
         phoneTextLable.text = "phone:"
+        genderTextLable.text = "gender:"
         self.addSubview(phoneTextLable)
         setUpPhoneInput()
         self.addSubview(phoneInput)
         setUpCodeInput()
         self.addSubview(codeInput)
+        self.addSubview(genderTextLable)
     }
     
     required init?(coder: NSCoder) {
@@ -56,6 +58,12 @@ class PhoneAndGender: UIView {
             x: self.bounds.size.width * 0.3,
             y: 0,
             width: self.bounds.size.width * 0.15,
+            height: self.bounds.size.height * 0.5
+        )
+        genderTextLable.frame = CGRect(
+            x: self.bounds.size.width * 0.03,
+            y: self.bounds.size.height * 0.5,
+            width: self.bounds.size.width * 0.3,
             height: self.bounds.size.height * 0.5
         )
     }
