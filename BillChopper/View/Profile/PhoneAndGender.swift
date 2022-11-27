@@ -55,9 +55,9 @@ class PhoneAndGender: UIView {
             height: self.bounds.size.height * 0.5
         )
         codeInput.frame = CGRect(
-            x: self.bounds.size.width * 0.3,
+            x: self.bounds.size.width * 0.27,
             y: 0,
-            width: self.bounds.size.width * 0.15,
+            width: self.bounds.size.width * 0.18,
             height: self.bounds.size.height * 0.5
         )
         genderTextLable.frame = CGRect(
@@ -120,13 +120,19 @@ class PhoneAndGender: UIView {
 extension PhoneAndGender: UITextFieldDelegate {
 
         func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-            print("While entering the characters this method gets called")
             switch textField.tag {
             case 0:
                 if textField.text!.count == 0 && string != "+"{
                     textField.text = "+"
-                    return true
                 }
+                if textField.text!.count == 4 && range.length == 0{
+                    return false
+                }
+                if range.length != 0 && textField.text!.count - 1 == range.length{
+                    textField.text = nil
+                    return false
+                }
+                return true
             case 1:
                 if range.lowerBound == 15{
                     return false
