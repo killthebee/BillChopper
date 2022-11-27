@@ -11,6 +11,7 @@ final class ProfileViewController: UIViewController {
     // TODO: to lower case, mb change type to custom
     lazy var UsernameTextField: UITextField = setUpUsernameTextField()
     lazy var usernameHelpText: UILabel = setUpUsernameHelpText()
+    lazy var PhoneAndGender: UIView = BillChopper.PhoneAndGender()
     
     var isIconZoomed = false
     var imagePicker: ImagePicker!
@@ -30,6 +31,14 @@ final class ProfileViewController: UIViewController {
         view.addSubview(UsernameTextField)
         view.addSubview(usernameHelpText)
         
+        // probably I'll make a seperate func what set ups frames for views
+        PhoneAndGender.frame = CGRect(
+            x: view.frame.size.width * 0.1,
+            y: view.frame.size.height * 0.45,
+            width: view.frame.size.width * 0.78,
+            height: view.frame.size.height * 0.1
+        )
+        view.addSubview(PhoneAndGender)
         // over all other stuff
         view.addSubview(iconView)
     }
@@ -56,12 +65,12 @@ final class ProfileViewController: UIViewController {
     
     private func setUpUploadButton() -> UIButton {
         let uploadButton = UIButton(frame: CGRect(
-            x: view.frame.size.width * 0.3,
+            x: view.frame.size.width * 0.25,
             y: view.frame.size.height * 0.2,
-            width: view.frame.size.width * 0.4,
-            height: view.frame.size.height * 0.1
+            width: view.frame.size.width * 0.5,
+            height: view.frame.size.height * 0.05
         ))
-        uploadButton.setTitle("set up profile icon", for: .normal)
+        uploadButton.setTitle("set up profile photo", for: .normal)
         uploadButton.setTitleColor(.systemBlue, for: .normal)
         
         uploadButton.addTarget(self, action: #selector(handleUploadButtonClicked), for: .touchDown)
@@ -76,6 +85,7 @@ final class ProfileViewController: UIViewController {
             height: view.frame.size.height * 0.05
         ))
         usernameTextField.text = "John Dhoe"
+        usernameTextField.placeholder = "username"
         usernameTextField.font = UIFont.boldSystemFont(ofSize: 21)
         //usernameTextField.borderStyle = UITextField.BorderStyle.roundedRect
         usernameTextField.autocorrectionType = UITextAutocorrectionType.no

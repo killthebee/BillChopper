@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		301159C8292CE49A001E254D /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301159C7292CE49A001E254D /* ImagePicker.swift */; };
+		301159CC292FA322001E254D /* PhoneAndGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301159CB292FA322001E254D /* PhoneAndGender.swift */; };
 		3078498A28EB349D00AEFECA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3078498928EB349D00AEFECA /* AppDelegate.swift */; };
 		3078498C28EB349D00AEFECA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3078498B28EB349D00AEFECA /* SceneDelegate.swift */; };
 		3078499328EB349E00AEFECA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3078499228EB349E00AEFECA /* Assets.xcassets */; };
@@ -33,6 +34,7 @@
 
 /* Begin PBXFileReference section */
 		301159C7292CE49A001E254D /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		301159CB292FA322001E254D /* PhoneAndGender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneAndGender.swift; sourceTree = "<group>"; };
 		3078498628EB349D00AEFECA /* BillChopper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BillChopper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3078498928EB349D00AEFECA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3078498B28EB349D00AEFECA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 		30DA407F2926801100E2DC17 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				301159CB292FA322001E254D /* PhoneAndGender.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -235,6 +238,7 @@
 				3078498C28EB349D00AEFECA /* SceneDelegate.swift in Sources */,
 				307849A028EB5A6600AEFECA /* DataModel.xcdatamodeld in Sources */,
 				307849E228F59AF700AEFECA /* Spend+CoreDataProperties.swift in Sources */,
+				301159CC292FA322001E254D /* PhoneAndGender.swift in Sources */,
 				307849DF28F59AF700AEFECA /* AppUser+CoreDataClass.swift in Sources */,
 				307849A528EC860500AEFECA /* Persistance.swift in Sources */,
 			);
