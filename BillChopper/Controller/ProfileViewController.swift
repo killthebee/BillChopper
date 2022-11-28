@@ -4,10 +4,12 @@ import UIKit
 final class ProfileViewController: UIViewController {
     //""" Yeah it's "heavely inspired" by tg profile screen
     //"""
+    // why lazy tho?
     lazy var iconView: ProfileIcon = setUpIconView()
     // TODO: rename func bellow
     lazy var coverView: UIView = makeCoverView()
     lazy var uploadButton: UIButton = setUpUploadButton()
+    lazy var saveButton: UIButton = setUpSaveButton()
     // TODO: to lower case, mb change type to custom
     lazy var UsernameTextField: UITextField = setUpUsernameTextField()
     lazy var usernameHelpText: UILabel = setUpUsernameHelpText()
@@ -39,6 +41,7 @@ final class ProfileViewController: UIViewController {
             height: view.frame.size.height * 0.1
         )
         view.addSubview(PhoneAndGender)
+        view.addSubview(saveButton)
         // over all other stuff
         view.addSubview(iconView)
     }
@@ -122,6 +125,26 @@ final class ProfileViewController: UIViewController {
         return usernameHelpTextLable
     }
     
+    private func setUpSaveButton() -> UIButton {
+        let saveButton = UIButton()
+        saveButton.frame = CGRect(
+            x: view.frame.size.width * 0.25,
+            y: view.frame.size.height * 0.6,
+            width: view.frame.size.width * 0.5,
+            height: view.frame.size.height * 0.05
+        )
+        saveButton.backgroundColor = UIColor(
+            hue: 0/360, saturation: 0/100, brightness: 98/100, alpha: 1.0
+        )
+        saveButton.layer.borderWidth = 1
+        saveButton.layer.cornerRadius = 15
+        saveButton.setTitle("save", for: .normal )
+        saveButton.setTitleColor(.black, for: .normal)
+        saveButton.addTarget(self, action: #selector(handleSaveButtonClicked), for: .touchDown)
+        
+        return saveButton
+    }
+    
     private func makeCoverView() -> UIView {
         let coverView = UIView(frame: CGRect(
                 x: 0,
@@ -199,6 +222,10 @@ final class ProfileViewController: UIViewController {
     
     @objc func handleUploadButtonClicked(_ sender: UIButton) {
         self.imagePicker.present(from: sender)
+    }
+    
+    @objc func handleSaveButtonClicked (_ sender: UIButton) {
+        print("save requested")
     }
 }
 
