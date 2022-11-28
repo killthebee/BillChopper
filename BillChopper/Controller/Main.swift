@@ -13,6 +13,8 @@ class Main: UIViewController {
     let testData: [String] = ["1", "2", "3", "4" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8"]
     
     lazy var profileViewController = ProfileViewController()
+    lazy var addEventOrSpendViewController = AddEventOrSpendViewController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -23,11 +25,16 @@ class Main: UIViewController {
         let balanceButton = setUpBalanceButton()
         let profileIcon = setUpProfileIcon()
         let footer = setUpFooterView()
+        let coverPlusIconView = setUpCoverPlusIconView()
         
-        let tapGesutre = UITapGestureRecognizer(
-            target: self, action: #selector(handleTap(sender:))
+        let tapOnProfileIconGesutre = UITapGestureRecognizer(
+            target: self, action: #selector(handleTapOnProfileIcon(sender:))
         )
-        profileIcon.addGestureRecognizer(tapGesutre)
+        let tapOnPlusIconGesutre = UITapGestureRecognizer(
+            target: self, action: #selector(handleTapOnPlusIcon(sender:))
+        )
+        profileIcon.addGestureRecognizer(tapOnProfileIconGesutre)
+        coverPlusIconView.addGestureRecognizer(tapOnPlusIconGesutre)
         
         view.addSubview(profileIcon)
         view.addSubview(tableView)
@@ -35,6 +42,7 @@ class Main: UIViewController {
         view.addSubview(balanceButton)
         
         view.addSubview(footer)
+        view.addSubview(coverPlusIconView)
         //view.addSubview(EditUSerView())
     }
     
@@ -157,10 +165,8 @@ class Main: UIViewController {
     }
     
     private func setUpProfileLable() -> UILabel {
-        //let profileLableCover = UIView()
         let profileLable = UILabel()
         
-        //profileLable.center = self.view.center
         profileLable.text = "me"
         profileLable.textAlignment = .center
         profileLable.textColor = .black
@@ -172,7 +178,6 @@ class Main: UIViewController {
             height: view.frame.size.height * 0.02
         )
         
-        //profileLableCover.addSubview(profileLable)
         return profileLable
     }
     
@@ -185,9 +190,21 @@ class Main: UIViewController {
         )
         
         let footer = FooterView(frame: frame1)
-//        footer.layer.borderColor = UIColor.red.cgColor
-//        footer.layer.borderWidth = 5
         return footer
+    }
+    
+    private func setUpCoverPlusIconView() -> UIView {
+        let coverView = UIView()
+        coverView.frame = CGRect(
+            x: view.frame.size.width * 0.4,
+            y: view.frame.size.height * 0.8,
+            width: view.frame.size.width * 0.2,
+            height: view.frame.size.width * 0.2
+        )
+        //coverView.backgroundColor = .red
+        coverView.asCircle()
+        
+        return coverView
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -211,11 +228,18 @@ class Main: UIViewController {
         }
     }
     
-    @objc func handleTap(sender: UITapGestureRecognizer) {
+    @objc func handleTapOnProfileIcon(sender: UITapGestureRecognizer) {
         // NOTE: https://developer.apple.com/documentation/uikit/uiviewcontroller/1621505-dismiss
         profileViewController.modalPresentationStyle = .pageSheet
         profileViewController.modalTransitionStyle = .coverVertical
         present(profileViewController, animated: true)
+    }
+    
+    @objc func handleTapOnPlusIcon(sender: UITapGestureRecognizer) {
+        // NOTE: https://developer.apple.com/documentation/uikit/uiviewcontroller/1621505-dismiss
+        addEventOrSpendViewController.modalPresentationStyle = .pageSheet
+        addEventOrSpendViewController.modalTransitionStyle = .coverVertical
+        present(addEventOrSpendViewController, animated: true)
     }
 }
 
@@ -251,14 +275,3 @@ extension Main: UITableViewDelegate {
         print(testData[indexPath.row])
     }
 }
-
-
-//extension UILabel {
-//    func centerVertically() {
-//        let fittingSize = CGSize(width: bounds.width, height: CGFloat.greatestFiniteMagnitude)
-//        let size = sizeThatFits(fittingSize)
-//        let topOffset = (bounds.size.height - size.height * zoomScale) / 2
-//        let positiveTopOffset = max(1, topOffset)
-//        contentOffset.y = -positiveTopOffset
-//    }
-//}
