@@ -5,6 +5,7 @@ final class ProfileViewController: UIViewController {
     //""" Yeah it's "heavely inspired" by tg profile screen
     //"""
     // why lazy tho?
+    // TODO: add a cross icon to quit from the screen
     lazy var iconView: ProfileIcon = setUpIconView()
     // TODO: rename func bellow
     lazy var coverView: UIView = makeCoverView()
