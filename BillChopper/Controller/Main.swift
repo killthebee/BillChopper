@@ -13,7 +13,6 @@ class Main: UIViewController {
     let testData: [String] = ["1", "2", "3", "4" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8"]
     
     lazy var profileViewController = ProfileViewController()
-    lazy var addEventOrSpendViewController = AddEventOrSpendViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,11 +29,7 @@ class Main: UIViewController {
         let tapOnProfileIconGesutre = UITapGestureRecognizer(
             target: self, action: #selector(handleTapOnProfileIcon(sender:))
         )
-        let tapOnPlusIconGesutre = UITapGestureRecognizer(
-            target: self, action: #selector(handleTapOnPlusIcon(sender:))
-        )
         profileIcon.addGestureRecognizer(tapOnProfileIconGesutre)
-        coverPlusIconView.addGestureRecognizer(tapOnPlusIconGesutre)
         
         view.addSubview(profileIcon)
         view.addSubview(tableView)
@@ -193,8 +188,8 @@ class Main: UIViewController {
         return footer
     }
     
-    private func setUpCoverPlusIconView() -> UIView {
-        let coverView = UIView()
+    private func setUpCoverPlusIconView() -> UIButton {
+        let coverView = UIButton()
         coverView.frame = CGRect(
             x: view.frame.size.width * 0.4,
             y: view.frame.size.height * 0.8,
@@ -204,7 +199,29 @@ class Main: UIViewController {
         //coverView.backgroundColor = .red
         coverView.asCircle()
         
+        coverView.menu = getCoverPlusIconMenu()
+        coverView.showsMenuAsPrimaryAction = true
+        
         return coverView
+    }
+    
+    private func getCoverPlusIconMenu() -> UIMenu {
+        // TODO: mb add icons
+        let addEvent = UIAction(title: "add event") {
+            (action) in
+            print("dummy event1")
+        }
+        let addSpend = UIAction(title: "add spend") {
+            (action) in
+            print("dummy event2")
+        }
+        
+        let menu = UIMenu(
+            options: .displayInline,
+            children: [addEvent, addSpend]
+        )
+        
+        return menu
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -235,12 +252,6 @@ class Main: UIViewController {
         present(profileViewController, animated: true)
     }
     
-    @objc func handleTapOnPlusIcon(sender: UITapGestureRecognizer) {
-        // NOTE: https://developer.apple.com/documentation/uikit/uiviewcontroller/1621505-dismiss
-        addEventOrSpendViewController.modalPresentationStyle = .pageSheet
-        addEventOrSpendViewController.modalTransitionStyle = .coverVertical
-        present(addEventOrSpendViewController, animated: true)
-    }
 }
 
 

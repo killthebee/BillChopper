@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		301159C8292CE49A001E254D /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301159C7292CE49A001E254D /* ImagePicker.swift */; };
 		301159CC292FA322001E254D /* PhoneAndGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301159CB292FA322001E254D /* PhoneAndGender.swift */; };
-		304FDCDF2934D44900737B7B /* AddEventOrSpendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304FDCDE2934D44900737B7B /* AddEventOrSpendViewController.swift */; };
 		304FDCE22934E11B00737B7B /* UIView + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304FDCE12934E11B00737B7B /* UIView + ext.swift */; };
+		304FDCE429350D5700737B7B /* AddEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304FDCE329350D5700737B7B /* AddEventViewController.swift */; };
 		3078498A28EB349D00AEFECA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3078498928EB349D00AEFECA /* AppDelegate.swift */; };
 		3078498C28EB349D00AEFECA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3078498B28EB349D00AEFECA /* SceneDelegate.swift */; };
 		3078499328EB349E00AEFECA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3078499228EB349E00AEFECA /* Assets.xcassets */; };
@@ -37,8 +37,8 @@
 /* Begin PBXFileReference section */
 		301159C7292CE49A001E254D /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		301159CB292FA322001E254D /* PhoneAndGender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneAndGender.swift; sourceTree = "<group>"; };
-		304FDCDE2934D44900737B7B /* AddEventOrSpendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventOrSpendViewController.swift; sourceTree = "<group>"; };
 		304FDCE12934E11B00737B7B /* UIView + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + ext.swift"; sourceTree = "<group>"; };
+		304FDCE329350D5700737B7B /* AddEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventViewController.swift; sourceTree = "<group>"; };
 		3078498628EB349D00AEFECA /* BillChopper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BillChopper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3078498928EB349D00AEFECA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3078498B28EB349D00AEFECA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -139,7 +139,7 @@
 			children = (
 				307849A228EB5D2700AEFECA /* Main.swift */,
 				30DA407C2926793600E2DC17 /* ProfileViewController.swift */,
-				304FDCDE2934D44900737B7B /* AddEventOrSpendViewController.swift */,
+				304FDCE329350D5700737B7B /* AddEventViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -241,8 +241,8 @@
 				308E62C12913D5FD005E0F13 /* EditUserView.swift in Sources */,
 				307849E128F59AF700AEFECA /* Spend+CoreDataClass.swift in Sources */,
 				307849B828F573ED00AEFECA /* backwardsStuff.swift in Sources */,
-				304FDCDF2934D44900737B7B /* AddEventOrSpendViewController.swift in Sources */,
 				30DA407D2926793600E2DC17 /* ProfileViewController.swift in Sources */,
+				304FDCE429350D5700737B7B /* AddEventViewController.swift in Sources */,
 				301159C8292CE49A001E254D /* ImagePicker.swift in Sources */,
 				309179EA290FE56B007783A2 /* FooterView.swift in Sources */,
 				304FDCE22934E11B00737B7B /* UIView + ext.swift in Sources */,
