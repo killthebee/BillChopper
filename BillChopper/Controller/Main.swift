@@ -13,6 +13,7 @@ class Main: UIViewController {
     let testData: [String] = ["1", "2", "3", "4" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8" , "5", "6", "7", "8"]
     
     lazy var profileViewController = ProfileViewController()
+    lazy var addEventViewController = AddEventViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -207,11 +208,13 @@ class Main: UIViewController {
     
     private func getCoverPlusIconMenu() -> UIMenu {
         // TODO: mb add icons
-        let addEvent = UIAction(title: "add event") {
+        let addEvent = UIAction(title: "add new event", image: UIImage(named: "eventIcon")) {
             (action) in
-            print("dummy event1")
+            self.addEventViewController.modalPresentationStyle = .pageSheet
+            self.addEventViewController.modalTransitionStyle = .coverVertical
+            self.present(self.addEventViewController, animated: true)
         }
-        let addSpend = UIAction(title: "add spend") {
+        let addSpend = UIAction(title: "add new spend", image: UIImage(named: "spendIcon")) {
             (action) in
             print("dummy event2")
         }
