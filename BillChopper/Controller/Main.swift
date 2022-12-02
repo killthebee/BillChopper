@@ -207,7 +207,6 @@ class Main: UIViewController {
     }
     
     private func getCoverPlusIconMenu() -> UIMenu {
-        // TODO: mb add icons
         let addEvent = UIAction(title: "add new event", image: UIImage(named: "eventIcon")) {
             (action) in
             self.addEventViewController.modalPresentationStyle = .pageSheet
