@@ -60,15 +60,21 @@ extension CollectionTableViewCell: UICollectionViewDelegate, UICollectionViewDat
             fatalError()
         }
         cell.configure(with: viewModels[indexPath.row])
-        
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        let viewModel = viewModels[indexPath.row]
-        
-        delegatee?.collectionViewDidTapItem(with: viewModel)
+        repaintCellViewModels()
+        viewModels[indexPath.row].backgroundColor = .quaternaryLabel
+        delegatee?.collectionViewDidTapItem(with: viewModels[indexPath.row])
+        collectionView.reloadData()
+    }
+    
+    func repaintCellViewModels() {
+        for var modelIndex in 0..<viewModels.count {
+            viewModels[modelIndex].backgroundColor = .white
+        }
     }
 }
 

@@ -12,12 +12,27 @@ class AddEventViewController: UIViewController {
         return helpTextLable
     }()
     
-    private let viewModels: [CollectionTableViewCellViewModel] = [
+    private var viewModels: [CollectionTableViewCellViewModel] = [
         CollectionTableViewCellViewModel(viewModels: [
-            TileCollectionViewModel(eventTypeName: "apple", eventTypeIcon: UIImage(named: "eventIcon")!),
-            TileCollectionViewModel(eventTypeName: "google", eventTypeIcon: UIImage(named: "eventIcon")!),
-            TileCollectionViewModel(eventTypeName: "nvidea", eventTypeIcon: UIImage(named: "eventIcon")!),
-            TileCollectionViewModel(eventTypeName: "meta", eventTypeIcon: UIImage(named: "eventIcon")!)
+            TileCollectionViewModel(
+                eventTypeName: "trip",
+                eventTypeIcon: UIImage(named: "tripIcon")!,
+                backgroundColor: .white
+            ),
+            TileCollectionViewModel(
+                eventTypeName: "purchase",
+                eventTypeIcon: UIImage(named: "purchaseIcon")!,
+                backgroundColor: .white),
+            TileCollectionViewModel(
+                eventTypeName: "party",
+                eventTypeIcon: UIImage(named: "partyIcon")!,
+                backgroundColor: .white
+            ),
+            TileCollectionViewModel(
+                eventTypeName: "other",
+                eventTypeIcon: UIImage(named: "otherIcon")!,
+                backgroundColor: .white
+            )
         ])
     ]
     
@@ -79,12 +94,10 @@ class AddEventViewController: UIViewController {
         
         eventNameTextField.sidePadding = eventNameTextField.frame.width * 0.05
         eventNameTextField.topPadding = eventNameTextField.frame.height * 0.1
-        eventNameTextField.layer.borderColor = UIColor.black.cgColor
+        eventNameTextField.layer.borderColor = UIColor.quaternaryLabel.cgColor
         eventNameTextField.layer.borderWidth = 1
         eventNameTextField.layer.cornerRadius = 15
-        eventNameTextField.backgroundColor = UIColor(
-            hue: 0/360, saturation: 0/100, brightness: 98/100, alpha: 1.0
-        )
+        eventNameTextField.backgroundColor = .white
         
         return eventNameTextField
     }
@@ -145,14 +158,9 @@ extension AddEventViewController: UITableViewDataSource, UITableViewDelegate {
 
 extension AddEventViewController: CollectionTableViewCellDelegate {
     func collectionViewDidTapItem(with viewModel: TileCollectionViewModel) {
-//        let alert = UIAlertController(
-//            title: viewModel.name,
-//            message: "ookay",
-//            preferredStyle: .alert
-//        )
-//        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
-//        present(alert, animated: true)
-        print(viewModel.eventTypeName)
+        iconView.removeFromSuperview()
+        iconView = setUpIconView(viewModel.eventTypeIcon)
+        view.addSubview(iconView)
     }
 }
 

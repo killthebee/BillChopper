@@ -4,6 +4,7 @@ import UIKit
 struct TileCollectionViewModel {
     let eventTypeName: String
     let eventTypeIcon: UIImage
+    var backgroundColor: UIColor
 }
 
 class TileCollectionViewCell: UICollectionViewCell {
@@ -37,7 +38,7 @@ class TileCollectionViewCell: UICollectionViewCell {
         eventTypeNameLable.frame = CGRect(
             x: contentView.bounds.size.width * 0.3,
             y: 0,
-            width: contentView.bounds.size.width * 0.5,
+            width: contentView.bounds.size.width * 0.6,
             height: contentView.bounds.size.height
         )
         eventTypeIcon.frame = CGRect(
@@ -55,7 +56,7 @@ class TileCollectionViewCell: UICollectionViewCell {
     }
     
     func configure(with viewModel: TileCollectionViewModel) {
-        //contentView.backgroundColor = viewModel.backgroundColor
+        contentView.backgroundColor = viewModel.backgroundColor
         eventTypeNameLable.text = viewModel.eventTypeName
         eventTypeIcon.image = viewModel.eventTypeIcon
     }
