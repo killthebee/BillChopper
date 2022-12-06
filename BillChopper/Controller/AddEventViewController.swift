@@ -6,6 +6,26 @@ class AddEventViewController: UIViewController {
     lazy var iconView: ProfileIcon = setUpIconView()
     lazy var eventNameTextField: UITextField = setUpUsernameTextField()
     lazy var eventNameHelpLable: UILabel = setUpEventNameHelp()
+    let eventTypeHelpLable: UILabel = {
+        let helpTextLable = UILabel()
+        helpTextLable.text = "Select event type"
+        return helpTextLable
+    }()
+    
+    private let viewModels: [CollectionTableViewCellViewModel] = [
+        CollectionTableViewCellViewModel(viewModels: [
+            TileCollectionViewModel(eventTypeName: "apple", eventTypeIcon: UIImage(named: "eventIcon")!),
+            TileCollectionViewModel(eventTypeName: "google", eventTypeIcon: UIImage(named: "eventIcon")!),
+            TileCollectionViewModel(eventTypeName: "nvidea", eventTypeIcon: UIImage(named: "eventIcon")!),
+            TileCollectionViewModel(eventTypeName: "meta", eventTypeIcon: UIImage(named: "eventIcon")!)
+        ])
+    ]
+    
+    private let tableView: UITableView = {
+        let table = UITableView()
+        table.register(CollectionTableViewCell.self, forCellReuseIdentifier: CollectionTableViewCell.identifier)
+        return table
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -13,6 +33,10 @@ class AddEventViewController: UIViewController {
         view.addSubview(iconView)
         view.addSubview(eventNameTextField)
         view.addSubview(eventNameHelpLable)
+        view.addSubview(tableView)
+        view.addSubview(eventTypeHelpLable)
+        tableView.dataSource = self
+        tableView.delegate = self
     }
     
     // I can refactor the shit out of this
@@ -76,7 +100,63 @@ class AddEventViewController: UIViewController {
         eventNameHelpLable.text = "Name the event"
         return eventNameHelpLable
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.frame = CGRect(
+            x: 0,
+            y: view.frame.size.height * 0.25,
+            width: view.frame.size.width,
+            height: view.frame.size.height * 0.05
+        )
+        eventTypeHelpLable.frame = CGRect(
+            x: view.frame.size.width * 0.05,
+            y: view.frame.size.height * 0.3,
+            width: view.frame.size.width * 0.9,
+            height: view.frame.size.height * 0.05
+        )
+    }
 }
+
+
+extension AddEventViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return viewModels.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let viewModel = viewModels[indexPath.row]
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: CollectionTableViewCell.identifier,
+            for: indexPath
+        ) as? CollectionTableViewCell else {
+            fatalError()
+        }
+        cell.configure(with: viewModel)
+        cell.delegatee = self
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return tableView.frame.size.height
+    }
+}
+
+
+extension AddEventViewController: CollectionTableViewCellDelegate {
+    func collectionViewDidTapItem(with viewModel: TileCollectionViewModel) {
+//        let alert = UIAlertController(
+//            title: viewModel.name,
+//            message: "ookay",
+//            preferredStyle: .alert
+//        )
+//        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
+//        present(alert, animated: true)
+        print(viewModel.eventTypeName)
+    }
+}
+
+
 
 
 extension AddEventViewController: UITextFieldDelegate {
