@@ -41,7 +41,41 @@ class AddEventViewController: UIViewController {
         table.register(CollectionTableViewCell.self, forCellReuseIdentifier: CollectionTableViewCell.identifier)
         return table
     }()
-
+    
+    var rawNumber = ""
+    
+    private let phoneInput: UITextField = {
+        // Make a separete phone text field view
+        let phoneInput = UITextField()
+        
+        phoneInput.placeholder = "(999) 111 11 11"
+        phoneInput.font = UIFont.boldSystemFont(ofSize: 19)
+        phoneInput.autocorrectionType = UITextAutocorrectionType.no
+        phoneInput.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        phoneInput.keyboardType = UIKeyboardType.namePhonePad
+        phoneInput.returnKeyType = UIReturnKeyType.done
+        phoneInput.tag = 1
+        
+        return phoneInput
+    }()
+    
+    private let codeInput: UITextField = {
+        let codeInput = UITextField()
+        
+        codeInput.placeholder = "+7"
+        codeInput.font = UIFont.boldSystemFont(ofSize: 19)
+        codeInput.autocorrectionType = UITextAutocorrectionType.no
+        codeInput.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        codeInput.keyboardType = UIKeyboardType.namePhonePad
+        codeInput.returnKeyType = UIReturnKeyType.done
+        codeInput.textAlignment = .right
+        codeInput.tag = 0
+        
+        return codeInput
+    }()
+    
+    let phoneNumDelegate = PhoneDelegate()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -50,6 +84,13 @@ class AddEventViewController: UIViewController {
         view.addSubview(eventNameHelpLable)
         view.addSubview(tableView)
         view.addSubview(eventTypeHelpLable)
+        
+        phoneInput.delegate = phoneNumDelegate
+        codeInput.delegate = phoneNumDelegate
+        view.addSubview(phoneInput)
+        view.addSubview(codeInput)
+        
+        addLayer()
         tableView.dataSource = self
         tableView.delegate = self
     }
@@ -128,7 +169,43 @@ class AddEventViewController: UIViewController {
             width: view.frame.size.width * 0.9,
             height: view.frame.size.height * 0.05
         )
+        phoneInput.frame = CGRect(
+            x: view.frame.size.width * 0.3,
+            y: view.frame.size.height * 0.35,
+            width: view.frame.size.width * 0.35,
+            height: view.frame.size.height * 0.1
+        )
+        codeInput.frame = CGRect(
+            x: view.frame.size.width * 0.14,
+            y: view.frame.size.height * 0.35,
+            width: view.frame.size.width * 0.15,
+            height: view.frame.size.height * 0.1
+        )
+        
     }
+    
+    private func addLayer() {
+        // TODO: Add couple vertical lines ji est'
+        let middleLineLayer = CAShapeLayer()
+        view.layer.addSublayer(middleLineLayer)
+        
+        middleLineLayer.strokeColor = UIColor.darkGray.cgColor
+        middleLineLayer.fillColor = UIColor.white.cgColor
+        middleLineLayer.lineWidth = 1
+        middleLineLayer.path = getPath().cgPath
+    }
+    
+    private func getPath() -> UIBezierPath {
+        let path = UIBezierPath()
+        path.move(to: CGPoint(
+            x: view.frame.size.width * 0.15, y: view.frame.size.height * 0.4
+        ))
+        path.addLine(to: CGPoint(x: view.frame.size.width * 0.85, y: view.frame.size.height * 0.4))
+        path.close()
+        
+        return path
+    }
+    
 }
 
 
@@ -170,3 +247,42 @@ extension AddEventViewController: CollectionTableViewCellDelegate {
 extension AddEventViewController: UITextFieldDelegate {
     
 }
+
+
+class PhoneDelegate: NSObject {
+    var rawNumber = ""
+}
+
+
+extension PhoneDelegate: UITextFieldDelegate {
+        
+    
+        func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+            print("hmmm?")
+            switch textField.tag {
+            case 0:
+                if textField.text!.count == 0 && string != "+"{
+                    textField.text = "+"
+                }
+                if textField.text!.count == 4 && range.length == 0{
+                    return false
+                }
+                if range.length != 0 && textField.text!.count - 1 == range.length{
+                    textField.text = nil
+                    return false
+                }
+                return true
+            case 1:
+                if range.lowerBound == 15{
+                    return false
+                }
+                rawNumber = getNewRawNumber(from: rawNumber, range: range, num: string)
+                textField.text = getNewNumberText(from: rawNumber, range: range, num: string)
+            default:
+                break
+            }
+            return false
+        }
+
+}
+
