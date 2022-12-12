@@ -76,6 +76,13 @@ class AddEventViewController: UIViewController {
     
     let phoneNumDelegate = PhoneDelegate()
     
+    let addUserButton: UIButton = {
+        let addUserButton = UIButton()
+        addUserButton.backgroundColor = .black
+        
+        return addUserButton
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -89,6 +96,7 @@ class AddEventViewController: UIViewController {
         codeInput.delegate = phoneNumDelegate
         view.addSubview(phoneInput)
         view.addSubview(codeInput)
+        //view.addSubview(addUserButton)
         
         addLayer()
         tableView.dataSource = self
@@ -171,17 +179,22 @@ class AddEventViewController: UIViewController {
         )
         phoneInput.frame = CGRect(
             x: view.frame.size.width * 0.3,
-            y: view.frame.size.height * 0.35,
+            y: view.frame.size.height * 0.37,
             width: view.frame.size.width * 0.35,
-            height: view.frame.size.height * 0.1
+            height: view.frame.size.height * 0.05
         )
         codeInput.frame = CGRect(
             x: view.frame.size.width * 0.14,
-            y: view.frame.size.height * 0.35,
+            y: view.frame.size.height * 0.37,
             width: view.frame.size.width * 0.15,
-            height: view.frame.size.height * 0.1
+            height: view.frame.size.height * 0.05
         )
-        
+        addUserButton.frame = CGRect(
+            x: view.frame.size.width * 0.7,
+            y: view.frame.size.height * 0.37,
+            width: view.frame.size.height * 0.05,
+            height: view.frame.size.height * 0.05
+        )
     }
     
     private func addLayer() {
@@ -198,9 +211,9 @@ class AddEventViewController: UIViewController {
     private func getPath() -> UIBezierPath {
         let path = UIBezierPath()
         path.move(to: CGPoint(
-            x: view.frame.size.width * 0.15, y: view.frame.size.height * 0.4
+            x: view.frame.size.width * 0.15, y: view.frame.size.height * 0.39
         ))
-        path.addLine(to: CGPoint(x: view.frame.size.width * 0.85, y: view.frame.size.height * 0.4))
+        path.addLine(to: CGPoint(x: view.frame.size.width * 0.85, y: view.frame.size.height * 0.39))
         path.close()
         
         return path
