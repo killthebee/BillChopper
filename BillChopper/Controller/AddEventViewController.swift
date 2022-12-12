@@ -78,7 +78,8 @@ class AddEventViewController: UIViewController {
     
     let addUserButton: UIButton = {
         let addUserButton = UIButton()
-        addUserButton.backgroundColor = .black
+        addUserButton.setImage(UIImage(named: "plusIconUser")!, for: .normal)
+        addUserButton.addTarget(self, action: #selector(handleAddUser), for: .touchDown)
         
         return addUserButton
     }()
@@ -96,9 +97,8 @@ class AddEventViewController: UIViewController {
         codeInput.delegate = phoneNumDelegate
         view.addSubview(phoneInput)
         view.addSubview(codeInput)
-        //view.addSubview(addUserButton)
+        view.addSubview(addUserButton)
         
-        addLayer()
         tableView.dataSource = self
         tableView.delegate = self
     }
@@ -191,34 +191,38 @@ class AddEventViewController: UIViewController {
         )
         addUserButton.frame = CGRect(
             x: view.frame.size.width * 0.7,
-            y: view.frame.size.height * 0.37,
-            width: view.frame.size.height * 0.05,
-            height: view.frame.size.height * 0.05
+            y: view.frame.size.height * 0.378,
+            width: view.frame.size.height * 0.038,
+            height: view.frame.size.height * 0.038
         )
+        
+        addLayer()
     }
     
     private func addLayer() {
-        // TODO: Add couple vertical lines ji est'
         let middleLineLayer = CAShapeLayer()
         view.layer.addSublayer(middleLineLayer)
         
         middleLineLayer.strokeColor = UIColor.darkGray.cgColor
         middleLineLayer.fillColor = UIColor.white.cgColor
         middleLineLayer.lineWidth = 1
-        middleLineLayer.path = getPath().cgPath
+        middleLineLayer.path = getMiddleLinePath().cgPath
     }
     
-    private func getPath() -> UIBezierPath {
+    private func getMiddleLinePath() -> UIBezierPath {
         let path = UIBezierPath()
         path.move(to: CGPoint(
-            x: view.frame.size.width * 0.15, y: view.frame.size.height * 0.39
+            x: view.frame.size.width * 0.15, y: view.frame.size.height * 0.42
         ))
-        path.addLine(to: CGPoint(x: view.frame.size.width * 0.85, y: view.frame.size.height * 0.39))
+        path.addLine(to: CGPoint(x: view.frame.size.width * 0.85, y: view.frame.size.height * 0.42))
         path.close()
         
         return path
     }
     
+    @objc func handleAddUser(_ sender: UIButton) {
+        print("add user pls")
+    }
 }
 
 
