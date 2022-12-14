@@ -43,9 +43,15 @@ class AddEventViewController: UIViewController {
         ])
     ]
     
-    private let tableView: UITableView = {
+    private let carouselTableView: UITableView = {
         let table = UITableView()
         table.register(CollectionTableViewCell.self, forCellReuseIdentifier: CollectionTableViewCell.identifier)
+        return table
+    }()
+    
+    private let userTableView: UITableView = {
+        let table = UITableView()
+        table.register(UserTableViewCell.self, forCellReuseIdentifier: UserTableViewCell.identifier)
         return table
     }()
     
@@ -82,6 +88,7 @@ class AddEventViewController: UIViewController {
     }()
     
     let phoneNumDelegate = PhoneDelegate()
+    let userTableDelegateAndDataSource = UserTableDelegateAndDataSource()
     
     let addUserButton: UIButton = {
         let addUserButton = UIButton()
@@ -97,19 +104,22 @@ class AddEventViewController: UIViewController {
         view.addSubview(iconView)
         view.addSubview(eventNameTextField)
         view.addSubview(eventNameHelpLable)
-        view.addSubview(tableView)
+        view.addSubview(carouselTableView)
         view.addSubview(eventTypeHelpLable)
         
         phoneInput.delegate = phoneNumDelegate
         codeInput.delegate = phoneNumDelegate
         view.addSubview(phoneInput)
         view.addSubview(codeInput)
-        //this fucking button is ugly
+        //this fucking button is ugly or not..?
         view.addSubview(addUserButton)
         view.addSubview(addUserText)
+        view.addSubview(userTableView)
         
-        tableView.dataSource = self
-        tableView.delegate = self
+        carouselTableView.dataSource = self
+        carouselTableView.delegate = self
+        userTableView.delegate = userTableDelegateAndDataSource
+        userTableView.dataSource = userTableDelegateAndDataSource
     }
     
     // I can refactor the shit out of this
@@ -123,12 +133,6 @@ class AddEventViewController: UIViewController {
             width: view.frame.size.width * 0.3,
             height: view.frame.size.width * 0.3
         )
-        
-//        let tapOnIconGestureRecognizer = UITapGestureRecognizer(
-//            target: self, action: #selector(handleTapOnIcon)
-//        )
-//        profileIcon.isUserInteractionEnabled = true
-//        profileIcon.addGestureRecognizer(tapOnIconGestureRecognizer)
         
         return profileIcon
     }
@@ -174,7 +178,7 @@ class AddEventViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        tableView.frame = CGRect(
+        carouselTableView.frame = CGRect(
             x: 0,
             y: view.frame.size.height * 0.25,
             width: view.frame.size.width,
@@ -209,6 +213,12 @@ class AddEventViewController: UIViewController {
             y: view.frame.size.height * 0.37,
             width: view.frame.size.width * 0.35,
             height: view.frame.size.height * 0.05
+        )
+        userTableView.frame = CGRect(
+            x: view.frame.size.width * 0.1,
+            y: view.frame.size.height * 0.45,
+            width: view.frame.size.width * 0.8,
+            height: view.frame.size.height * 0.3
         )
         
         addLayer()
@@ -290,7 +300,6 @@ extension PhoneDelegate: UITextFieldDelegate {
         
     
         func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-            print("hmmm?")
             switch textField.tag {
             case 0:
                 if textField.text!.count == 0 && string != "+"{
@@ -318,3 +327,27 @@ extension PhoneDelegate: UITextFieldDelegate {
 
 }
 
+
+class UserTableDelegateAndDataSource: NSObject {
+    // TODO: fetch array with user models here
+}
+
+extension UserTableDelegateAndDataSource: UITableViewDataSource, UITableViewDelegate{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 4
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: UserTableViewCell.identifier,
+            for: indexPath
+        ) as? UserTableViewCell else {
+            fatalError()
+        }
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return tableView.frame.size.height * 0.25
+    }
+}
