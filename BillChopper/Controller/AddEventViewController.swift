@@ -98,6 +98,25 @@ class AddEventViewController: UIViewController {
         return addUserButton
     }()
     
+    let saveButton: UIButton = {
+        // move this button into a separate file
+        // TODO: Add the save icon
+        let button = UIButton()
+        button.backgroundColor = UIColor.quaternaryLabel
+        button.layer.cornerRadius = 15
+        button.addTarget(self, action: #selector(handleSaveEvent), for: .touchDown)
+        
+        return button
+    }()
+    
+    let saveButtonText: UILabel = {
+        let text = UILabel()
+        text.text = "save"
+        text.textAlignment = .center
+        
+        return text
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -115,6 +134,8 @@ class AddEventViewController: UIViewController {
         view.addSubview(addUserButton)
         view.addSubview(addUserText)
         view.addSubview(userTableView)
+        view.addSubview(saveButton)
+        view.addSubview(saveButtonText)
         
         carouselTableView.dataSource = self
         carouselTableView.delegate = self
@@ -220,6 +241,18 @@ class AddEventViewController: UIViewController {
             width: view.frame.size.width * 0.8,
             height: view.frame.size.height * 0.3
         )
+        saveButton.frame = CGRect(
+            x: view.frame.size.width * 0.3,
+            y: view.frame.size.height * 0.8,
+            width: view.frame.size.width * 0.4,
+            height: view.frame.size.height * 0.05
+        )
+        saveButtonText.frame = CGRect(
+            x: view.frame.size.width * 0.3,
+            y: view.frame.size.height * 0.8,
+            width: view.frame.size.width * 0.4,
+            height: view.frame.size.height * 0.05
+        )
         
         addLayer()
     }
@@ -247,6 +280,10 @@ class AddEventViewController: UIViewController {
     
     @objc func handleAddUser(_ sender: UIButton) {
         print("add user pls")
+    }
+    
+    @objc func handleSaveEvent(_ sender: UIButton) {
+        print("save event pls")
     }
 }
 
