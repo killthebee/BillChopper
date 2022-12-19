@@ -35,6 +35,8 @@
 		30DA407B2923BD3900E2DC17 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 30DA407A2923BD3900E2DC17 /* .gitignore */; };
 		30DA407D2926793600E2DC17 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DA407C2926793600E2DC17 /* ProfileViewController.swift */; };
 		30DBDCD0294A134A00D44D9C /* UserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCCF294A134A00D44D9C /* UserTableViewCell.swift */; };
+		30DBDCD2294B2A6500D44D9C /* AddSpendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCD1294B2A6500D44D9C /* AddSpendViewController.swift */; };
+		30DBDCD9294B2FA900D44D9C /* ChooseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCD8294B2FA900D44D9C /* ChooseButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +70,8 @@
 		30DA407A2923BD3900E2DC17 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		30DA407C2926793600E2DC17 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		30DBDCCF294A134A00D44D9C /* UserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTableViewCell.swift; sourceTree = "<group>"; };
+		30DBDCD1294B2A6500D44D9C /* AddSpendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSpendViewController.swift; sourceTree = "<group>"; };
+		30DBDCD8294B2FA900D44D9C /* ChooseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +160,7 @@
 				307849A228EB5D2700AEFECA /* Main.swift */,
 				30DA407C2926793600E2DC17 /* ProfileViewController.swift */,
 				304FDCE329350D5700737B7B /* AddEventViewController.swift */,
+				30DBDCD1294B2A6500D44D9C /* AddSpendViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -163,6 +168,7 @@
 		307849E528F8012D00AEFECA /* View */ = {
 			isa = PBXGroup;
 			children = (
+				30DBDCD3294B2D0400D44D9C /* AddSpend */,
 				304FDCE52939F10F00737B7B /* Cell */,
 				30DA407F2926801100E2DC17 /* Profile */,
 				307849E628F8018800AEFECA /* SpendTableViewCell.swift */,
@@ -179,6 +185,14 @@
 				301159CB292FA322001E254D /* PhoneAndGender.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		30DBDCD3294B2D0400D44D9C /* AddSpend */ = {
+			isa = PBXGroup;
+			children = (
+				30DBDCD8294B2FA900D44D9C /* ChooseButton.swift */,
+			);
+			path = AddSpend;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -273,10 +287,12 @@
 				3078498C28EB349D00AEFECA /* SceneDelegate.swift in Sources */,
 				307849A028EB5A6600AEFECA /* DataModel.xcdatamodeld in Sources */,
 				307849E228F59AF700AEFECA /* Spend+CoreDataProperties.swift in Sources */,
+				30DBDCD9294B2FA900D44D9C /* ChooseButton.swift in Sources */,
 				301159CC292FA322001E254D /* PhoneAndGender.swift in Sources */,
 				307849DF28F59AF700AEFECA /* AppUser+CoreDataClass.swift in Sources */,
 				304FDCE72939F13700737B7B /* CarouselCell.swift in Sources */,
 				307849A528EC860500AEFECA /* Persistance.swift in Sources */,
+				30DBDCD2294B2A6500D44D9C /* AddSpendViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

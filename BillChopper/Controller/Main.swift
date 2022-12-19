@@ -14,6 +14,7 @@ class Main: UIViewController {
     
     lazy var profileViewController = ProfileViewController()
     lazy var addEventViewController = AddEventViewController()
+    lazy var addSpendViewController = AddSpendViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -215,7 +216,9 @@ class Main: UIViewController {
         }
         let addSpend = UIAction(title: "add new spend", image: UIImage(named: "spendIcon")) {
             (action) in
-            print("dummy event2")
+            self.addSpendViewController.modalPresentationStyle = .pageSheet
+            self.addSpendViewController.modalTransitionStyle = .coverVertical
+            self.present(self.addSpendViewController, animated: true)
         }
         
         let menu = UIMenu(
