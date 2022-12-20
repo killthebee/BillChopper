@@ -19,7 +19,16 @@ class AddSpendViewController: UIViewController {
         lable.textAlignment = .right
         return lable
     }()
-
+    
+    let selectSplitText: UILabel = {
+        let lable = UILabel()
+        lable.text = "select split"
+        lable.textAlignment = .center
+        return lable
+    }()
+    
+    let selectSplitView: SelectSplitView = SelectSplitView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -30,6 +39,8 @@ class AddSpendViewController: UIViewController {
         view.addSubview(chooseEventText)
         view.addSubview(choosePayerText)
         view.addSubview(chooseUserView)
+        view.addSubview(selectSplitText)
+        view.addSubview(selectSplitView)
         
     }
 
@@ -57,6 +68,18 @@ class AddSpendViewController: UIViewController {
             x: view.frame.size.width * 0.4,
             y: view.frame.size.height * 0.3,
             width: view.frame.size.width * 0.5,
+            height: view.frame.size.height * 0.05
+        )
+        selectSplitText.frame = CGRect(
+            x: view.frame.size.width * 0,
+            y: view.frame.size.height * 0.4,
+            width: view.frame.size.width,
+            height: view.frame.size.height * 0.05
+        )
+        selectSplitView.frame = CGRect(
+            x: view.frame.size.width * 0.05,
+            y: view.frame.size.height * 0.45,
+            width: view.frame.size.width * 0.9,
             height: view.frame.size.height * 0.05
         )
     }
