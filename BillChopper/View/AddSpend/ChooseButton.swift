@@ -70,6 +70,7 @@ class ChooseButtonView: UIView {
     
     public func configure(text: String, image: UIImage) {
         // TODO: pass events or users through to the create menus func
+        // TODO: make a circle around user image
         chooseButton.menu = getChooseMenu()
         chooseEventLable.text = text
         chooseEventImage.image = image

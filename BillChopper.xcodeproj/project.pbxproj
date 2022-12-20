@@ -37,8 +37,8 @@
 		30DBDCD0294A134A00D44D9C /* UserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCCF294A134A00D44D9C /* UserTableViewCell.swift */; };
 		30DBDCD2294B2A6500D44D9C /* AddSpendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCD1294B2A6500D44D9C /* AddSpendViewController.swift */; };
 		30DBDCD9294B2FA900D44D9C /* ChooseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCD8294B2FA900D44D9C /* ChooseButton.swift */; };
-		30DBDCE32951C83400D44D9C /* SelectSplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCE22951C83400D44D9C /* SelectSplitView.swift */; };
 		30DBDCE72951D59400D44D9C /* SplitControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCE62951D59400D44D9C /* SplitControl.swift */; };
+		30DBDCE929520BFC00D44D9C /* SplitSelectorViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCE829520BFC00D44D9C /* SplitSelectorViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,8 +74,8 @@
 		30DBDCCF294A134A00D44D9C /* UserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTableViewCell.swift; sourceTree = "<group>"; };
 		30DBDCD1294B2A6500D44D9C /* AddSpendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSpendViewController.swift; sourceTree = "<group>"; };
 		30DBDCD8294B2FA900D44D9C /* ChooseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseButton.swift; sourceTree = "<group>"; };
-		30DBDCE22951C83400D44D9C /* SelectSplitView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SelectSplitView.swift; path = ../../../../../../.Trash/SelectSplitView.swift; sourceTree = "<group>"; };
 		30DBDCE62951D59400D44D9C /* SplitControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitControl.swift; sourceTree = "<group>"; };
+		30DBDCE829520BFC00D44D9C /* SplitSelectorViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitSelectorViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +103,7 @@
 				304FDCE62939F13700737B7B /* CarouselCell.swift */,
 				304FDCEA293E15BC00737B7B /* CarouselTableCell.swift */,
 				30DBDCCF294A134A00D44D9C /* UserTableViewCell.swift */,
+				30DBDCE829520BFC00D44D9C /* SplitSelectorViewCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -194,7 +195,6 @@
 		30DBDCD3294B2D0400D44D9C /* AddSpend */ = {
 			isa = PBXGroup;
 			children = (
-				30DBDCE22951C83400D44D9C /* SelectSplitView.swift */,
 				30DBDCD8294B2FA900D44D9C /* ChooseButton.swift */,
 				30DBDCE62951D59400D44D9C /* SplitControl.swift */,
 			);
@@ -280,6 +280,7 @@
 				307849E128F59AF700AEFECA /* Spend+CoreDataClass.swift in Sources */,
 				307849B828F573ED00AEFECA /* backwardsStuff.swift in Sources */,
 				30DA407D2926793600E2DC17 /* ProfileViewController.swift in Sources */,
+				30DBDCE929520BFC00D44D9C /* SplitSelectorViewCell.swift in Sources */,
 				304FDCE429350D5700737B7B /* AddEventViewController.swift in Sources */,
 				301159C8292CE49A001E254D /* ImagePicker.swift in Sources */,
 				309179EA290FE56B007783A2 /* FooterView.swift in Sources */,
@@ -297,7 +298,6 @@
 				30DBDCD9294B2FA900D44D9C /* ChooseButton.swift in Sources */,
 				301159CC292FA322001E254D /* PhoneAndGender.swift in Sources */,
 				307849DF28F59AF700AEFECA /* AppUser+CoreDataClass.swift in Sources */,
-				30DBDCE32951C83400D44D9C /* SelectSplitView.swift in Sources */,
 				304FDCE72939F13700737B7B /* CarouselCell.swift in Sources */,
 				307849A528EC860500AEFECA /* Persistance.swift in Sources */,
 				30DBDCD2294B2A6500D44D9C /* AddSpendViewController.swift in Sources */,

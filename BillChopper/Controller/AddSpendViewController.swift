@@ -27,7 +27,12 @@ class AddSpendViewController: UIViewController {
         return lable
     }()
     
-    let selectSplitView: SelectSplitView = SelectSplitView()
+    let splitSelectorsView: UITableView  = {
+        let tableView = UITableView()
+        tableView.register(SplitSelectorViewCell.self, forCellReuseIdentifier: SplitSelectorViewCell.identifier)
+        
+        return tableView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,7 +45,11 @@ class AddSpendViewController: UIViewController {
         view.addSubview(choosePayerText)
         view.addSubview(chooseUserView)
         view.addSubview(selectSplitText)
-        view.addSubview(selectSplitView)
+        
+        splitSelectorsView.dataSource = self
+        splitSelectorsView.delegate = self
+        
+        view.addSubview(splitSelectorsView)
         
     }
 
@@ -76,11 +85,29 @@ class AddSpendViewController: UIViewController {
             width: view.frame.size.width,
             height: view.frame.size.height * 0.05
         )
-        selectSplitView.frame = CGRect(
+        splitSelectorsView.frame = CGRect(
             x: view.frame.size.width * 0.05,
             y: view.frame.size.height * 0.45,
             width: view.frame.size.width * 0.9,
-            height: view.frame.size.height * 0.05
+            height: view.frame.size.height * 0.24
         )
     }
+}
+
+
+extension AddSpendViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SplitSelectorViewCell.identifier) as? SplitSelectorViewCell else { return UITableViewCell() }
+
+        return cell 
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 4
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return view.frame.size.height * 0.06
+    }
+    
 }
