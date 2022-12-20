@@ -34,6 +34,19 @@ class AddSpendViewController: UIViewController {
         return tableView
     }()
     
+    let saveButton: UIButton = {
+        // move this button into a separate file
+        // TODO: Add the save icon
+        let button = UIButton()
+        button.backgroundColor = UIColor.quaternaryLabel
+        button.layer.cornerRadius = 15
+        button.addTarget(self, action: #selector(handleSaveEvent), for: .touchDown)
+        button.setTitle("save", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -50,7 +63,7 @@ class AddSpendViewController: UIViewController {
         splitSelectorsView.delegate = self
         
         view.addSubview(splitSelectorsView)
-        
+        view.addSubview(saveButton)
     }
 
     override func viewDidLayoutSubviews() {
@@ -91,6 +104,16 @@ class AddSpendViewController: UIViewController {
             width: view.frame.size.width * 0.9,
             height: view.frame.size.height * 0.24
         )
+        saveButton.frame = CGRect(
+            x: view.frame.size.width * 0.3,
+            y: view.frame.size.height * 0.8,
+            width: view.frame.size.width * 0.4,
+            height: view.frame.size.height * 0.05
+        )
+    }
+    
+    @objc func handleSaveEvent(_ sender: UIButton) {
+        print("save spend pls")
     }
 }
 
