@@ -18,7 +18,6 @@ final class ProfileViewController: UIViewController {
     
     var isIconZoomed = false
     var imagePicker: ImagePicker!
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()

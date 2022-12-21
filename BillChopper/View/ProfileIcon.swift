@@ -6,9 +6,14 @@ class ProfileIcon: UIView {
     var shapeLayer: CAShapeLayer?
     var image: UIImage? { didSet { setupView() } }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    required init(profileImage: UIImage?) {
+        super.init(frame: .zero)
+        self.image = profileImage
         setupView()
+    }
+
+    required override init(frame: CGRect) {
+        super.init(frame: frame)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -20,15 +25,6 @@ class ProfileIcon: UIView {
         internalUIImageView = UIImageView()
         self.addSubview(internalUIImageView!)
         let padding: CGFloat = 1
-        
-        // TODO: layout??>>>>>?????
-//        print(self.frame.size.width)
-//        internalUIImageView?.frame = CGRect(
-//            x: 0,
-//            y: 0,
-//            width: self.frame.size.width,
-//            height: self.frame.size.height
-//        )
         
         internalUIImageView?.translatesAutoresizingMaskIntoConstraints = false
         internalUIImageView?.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: padding).isActive = true

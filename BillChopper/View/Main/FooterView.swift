@@ -9,15 +9,21 @@ enum balanceType: String {
 
 final class FooterView: UIView {
     
+    override var frame: CGRect { didSet { setupView() }}
+    
     let plusIcon = UIImage(named:"plusIcon")
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+    }
+    
+    private func setupView() {
         addLayer()
         
         let plusIconView = setupPlusIconView()
         let balanceView = setupBalanceView()
         let eventsView = setupEventsView()
+        
         self.addSubview(plusIconView)
         self.addSubview(balanceView)
         self.addSubview(eventsView)
@@ -41,6 +47,7 @@ final class FooterView: UIView {
     private func getPath() -> UIBezierPath {
         let path = UIBezierPath()
         path.move(to: CGPoint(x: 0, y: 0))
+        print(self.bounds.size.width)
         path.addLine(to: CGPoint(x: self.bounds.size.width * 0.4, y: 0))
         path.addArc(
             withCenter: CGPoint(x: self.bounds.size.width * 0.5, y: 0),
