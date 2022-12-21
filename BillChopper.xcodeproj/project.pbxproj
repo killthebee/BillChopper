@@ -102,6 +102,7 @@
 		304FDCE52939F10F00737B7B /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				307849E628F8018800AEFECA /* SpendTableViewCell.swift */,
 				304FDCE62939F13700737B7B /* CarouselCell.swift */,
 				304FDCEA293E15BC00737B7B /* CarouselTableCell.swift */,
 				30DBDCCF294A134A00D44D9C /* UserTableViewCell.swift */,
@@ -188,7 +189,6 @@
 				30DBDCD3294B2D0400D44D9C /* AddSpend */,
 				304FDCE52939F10F00737B7B /* Cell */,
 				30DA407F2926801100E2DC17 /* Profile */,
-				307849E628F8018800AEFECA /* SpendTableViewCell.swift */,
 				30A7F1B5290A99B0003F0812 /* ProfileIcon.swift */,
 				308E62C02913D5FD005E0F13 /* EditUserView.swift */,
 			);
