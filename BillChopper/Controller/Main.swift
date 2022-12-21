@@ -206,6 +206,10 @@ extension Main: UITableViewDataSource {
         
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return tableView.frame.size.height * 0.1
+    }
 }
 
 
