@@ -27,8 +27,9 @@ extension PhoneInputDelegate: UITextFieldDelegate {
             if range.lowerBound == 15{
                 return false
             }
-            rawNumber = getNewRawNumber(from: rawNumber, range: range, num: string)
-            textField.text = getNewNumberText(from: rawNumber, range: range, num: string)
+            let phoneConverter = PhoneConverter(oldRawNumber: rawNumber, range: range, num: string)
+            rawNumber = phoneConverter.getNewRawNumber()
+            textField.text = phoneConverter.newNumber
         default:
             break
         }
