@@ -57,37 +57,11 @@ class AddEventViewController: UIViewController {
     
     var rawNumber = ""
     
-    private let phoneInput: UITextField = {
-        // Make a separete phone text field view
-        let phoneInput = UITextField()
-        
-        phoneInput.placeholder = "(999) 111 11 11"
-        phoneInput.font = UIFont.boldSystemFont(ofSize: 19)
-        phoneInput.autocorrectionType = UITextAutocorrectionType.no
-        phoneInput.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-        phoneInput.keyboardType = UIKeyboardType.namePhonePad
-        phoneInput.returnKeyType = UIReturnKeyType.done
-        phoneInput.tag = 1
-        
-        return phoneInput
-    }()
+    private let phoneInput = PhoneInput(isCode: false)
     
-    private let codeInput: UITextField = {
-        let codeInput = UITextField()
-        
-        codeInput.placeholder = "+7"
-        codeInput.font = UIFont.boldSystemFont(ofSize: 19)
-        codeInput.autocorrectionType = UITextAutocorrectionType.no
-        codeInput.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-        codeInput.keyboardType = UIKeyboardType.namePhonePad
-        codeInput.returnKeyType = UIReturnKeyType.done
-        codeInput.textAlignment = .right
-        codeInput.tag = 0
-        
-        return codeInput
-    }()
+    private let codeInput = PhoneInput(isCode: true)
     
-    let phoneNumDelegate = PhoneDelegate()
+    let phoneNumDelegate = PhoneInputDelegate()
     let userTableDelegateAndDataSource = UserTableDelegateAndDataSource()
     
     let addUserButton: UIButton = {
@@ -117,6 +91,12 @@ class AddEventViewController: UIViewController {
         return text
     }()
     
+    let exitButton: UIButton = {
+        let button = ExitCross()
+        button.addTarget(self, action: #selector(handleExitButtonClicked), for: .touchDown)
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -125,6 +105,7 @@ class AddEventViewController: UIViewController {
         view.addSubview(eventNameHelpLable)
         view.addSubview(carouselTableView)
         view.addSubview(eventTypeHelpLable)
+        view.addSubview(exitButton)
         
         phoneInput.delegate = phoneNumDelegate
         codeInput.delegate = phoneNumDelegate
@@ -253,6 +234,12 @@ class AddEventViewController: UIViewController {
             width: view.frame.size.width * 0.4,
             height: view.frame.size.height * 0.05
         )
+        exitButton.frame = CGRect(
+            x: view.bounds.size.width * 0.85,
+            y: view.bounds.size.height * 0.05,
+            width: view.bounds.size.width * 0.1,
+            height: view.bounds.size.width * 0.1
+        )
         
         addLayer()
     }
@@ -309,6 +296,10 @@ extension AddEventViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return tableView.frame.size.height
     }
+    
+    @objc func handleExitButtonClicked(_ sender: UIButton) {
+        dismiss(animated: true)
+    }
 }
 
 
@@ -321,53 +312,15 @@ extension AddEventViewController: CollectionTableViewCellDelegate {
 }
 
 
-
-
 extension AddEventViewController: UITextFieldDelegate {
     
-}
-
-
-class PhoneDelegate: NSObject {
-    var rawNumber = ""
-}
-
-
-extension PhoneDelegate: UITextFieldDelegate {
-        
-    
-        func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-            switch textField.tag {
-            case 0:
-                if textField.text!.count == 0 && string != "+"{
-                    textField.text = "+"
-                }
-                if textField.text!.count == 4 && range.length == 0{
-                    return false
-                }
-                if range.length != 0 && textField.text!.count - 1 == range.length{
-                    textField.text = nil
-                    return false
-                }
-                return true
-            case 1:
-                if range.lowerBound == 15{
-                    return false
-                }
-                rawNumber = getNewRawNumber(from: rawNumber, range: range, num: string)
-                textField.text = getNewNumberText(from: rawNumber, range: range, num: string)
-            default:
-                break
-            }
-            return false
-        }
-
 }
 
 
 class UserTableDelegateAndDataSource: NSObject {
     // TODO: fetch array with user models here
 }
+
 
 extension UserTableDelegateAndDataSource: UITableViewDataSource, UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
