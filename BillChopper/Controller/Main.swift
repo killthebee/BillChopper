@@ -24,7 +24,7 @@ class Main: UIViewController {
     
     let eventButton = TopMainButton(color: UIColor.systemGray, title: "event:")
     
-    let balanceButton = TopMainButton(color: UIColor.systemGreen, title: "balance with:")
+    let balanceButton = TopMainButton(color: customGreen, title: "balance with:")
     
     let profileIcon = ProfileIcon(profileImage: UIImage(named: "HombreDefault1"))
     
