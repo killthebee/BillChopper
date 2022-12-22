@@ -15,6 +15,8 @@
 		304FDCEB293E15BC00737B7B /* CarouselTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304FDCEA293E15BC00737B7B /* CarouselTableCell.swift */; };
 		305A0D4429530F54004CCA23 /* TopMainButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 305A0D4329530F54004CCA23 /* TopMainButton.swift */; };
 		305A0D4629533DEC004CCA23 /* ExitCross.swift in Sources */ = {isa = PBXBuildFile; fileRef = 305A0D4529533DEC004CCA23 /* ExitCross.swift */; };
+		305A0D4929546D63004CCA23 /* PhoneInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 305A0D4829546D63004CCA23 /* PhoneInput.swift */; };
+		305A0D4B29546F75004CCA23 /* PhoneInputDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 305A0D4A29546F75004CCA23 /* PhoneInputDelegate.swift */; };
 		3078498A28EB349D00AEFECA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3078498928EB349D00AEFECA /* AppDelegate.swift */; };
 		3078498C28EB349D00AEFECA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3078498B28EB349D00AEFECA /* SceneDelegate.swift */; };
 		3078499328EB349E00AEFECA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3078499228EB349E00AEFECA /* Assets.xcassets */; };
@@ -51,6 +53,8 @@
 		304FDCEA293E15BC00737B7B /* CarouselTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselTableCell.swift; sourceTree = "<group>"; };
 		305A0D4329530F54004CCA23 /* TopMainButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopMainButton.swift; sourceTree = "<group>"; };
 		305A0D4529533DEC004CCA23 /* ExitCross.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExitCross.swift; sourceTree = "<group>"; };
+		305A0D4829546D63004CCA23 /* PhoneInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneInput.swift; sourceTree = "<group>"; };
+		305A0D4A29546F75004CCA23 /* PhoneInputDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneInputDelegate.swift; sourceTree = "<group>"; };
 		3078498628EB349D00AEFECA /* BillChopper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BillChopper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3078498928EB349D00AEFECA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3078498B28EB349D00AEFECA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -120,6 +124,13 @@
 			path = Main;
 			sourceTree = "<group>";
 		};
+		305A0D4729546D36004CCA23 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		3078497D28EB349D00AEFECA = {
 			isa = PBXGroup;
 			children = (
@@ -140,6 +151,7 @@
 		3078498828EB349D00AEFECA /* BillChopper */ = {
 			isa = PBXGroup;
 			children = (
+				305A0D4729546D36004CCA23 /* Utilities */,
 				304FDCE02934E09300737B7B /* Extentions */,
 				307849E528F8012D00AEFECA /* View */,
 				307849A128EB5CEF00AEFECA /* Controller */,
@@ -190,6 +202,8 @@
 				304FDCE52939F10F00737B7B /* Cell */,
 				30DA407F2926801100E2DC17 /* Profile */,
 				30A7F1B5290A99B0003F0812 /* ProfileIcon.swift */,
+				305A0D4A29546F75004CCA23 /* PhoneInputDelegate.swift */,
+				305A0D4829546D63004CCA23 /* PhoneInput.swift */,
 				305A0D4529533DEC004CCA23 /* ExitCross.swift */,
 			);
 			path = View;
@@ -300,12 +314,14 @@
 				304FDCE22934E11B00737B7B /* UIView + ext.swift in Sources */,
 				307849DD28F59AF700AEFECA /* Event+CoreDataClass.swift in Sources */,
 				3078498A28EB349D00AEFECA /* AppDelegate.swift in Sources */,
+				305A0D4929546D63004CCA23 /* PhoneInput.swift in Sources */,
 				30DBDCD0294A134A00D44D9C /* UserTableViewCell.swift in Sources */,
 				307849E028F59AF700AEFECA /* AppUser+CoreDataProperties.swift in Sources */,
 				30A7F1B6290A99B0003F0812 /* ProfileIcon.swift in Sources */,
 				307849E728F8018800AEFECA /* SpendTableViewCell.swift in Sources */,
 				3078498C28EB349D00AEFECA /* SceneDelegate.swift in Sources */,
 				307849A028EB5A6600AEFECA /* DataModel.xcdatamodeld in Sources */,
+				305A0D4B29546F75004CCA23 /* PhoneInputDelegate.swift in Sources */,
 				307849E228F59AF700AEFECA /* Spend+CoreDataProperties.swift in Sources */,
 				30DBDCD9294B2FA900D44D9C /* ChooseButton.swift in Sources */,
 				301159CC292FA322001E254D /* PhoneAndGender.swift in Sources */,

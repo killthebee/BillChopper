@@ -6,33 +6,34 @@ class PhoneAndGender: UIView {
     let phoneTextLable = UILabel()
     let genderTextLable = UILabel()
     
-    let phoneInput = UITextField()
-    let codeInput = UITextField()
+    let phoneInput = PhoneInput(isCode: false)
+    let codeInput = PhoneInput(isCode: true)
+    let phoneInputDelegate = PhoneInputDelegate()
     
-    let genderButton = UIButton()
-    
-    var numberFormated = ""
-    var rawNumber = ""
+    lazy var genderButton: UIButton = {
+        let genderButton = UIButton()
+        genderButton.setTitle("gender", for: .normal )
+        genderButton.setTitleColor(.lightGray, for: .normal)
+        genderButton.menu = getGenderMenu()
+        genderButton.showsMenuAsPrimaryAction = true
+        
+        return genderButton
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = UIColor(
-            hue: 0/360, saturation: 0/100, brightness: 98/100, alpha: 1.0
-        )
-        self.layer.borderWidth = 1
-        self.layer.cornerRadius = 15
-        
-        
+
         phoneTextLable.text = "phone:"
         genderTextLable.text = "gender:"
-        self.addSubview(phoneTextLable)
-        setUpPhoneInput()
+        
+        phoneInput.delegate = phoneInputDelegate
+        codeInput.delegate = phoneInputDelegate
+    
         self.addSubview(phoneInput)
-        setUpCodeInput()
+        self.addSubview(genderButton)
+        self.addSubview(phoneTextLable)
         self.addSubview(codeInput)
         self.addSubview(genderTextLable)
-        setUpGenderButton()
-        self.addSubview(genderButton)
     }
     
     required init?(coder: NSCoder) {
@@ -41,6 +42,11 @@ class PhoneAndGender: UIView {
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
+        self.backgroundColor = UIColor(
+            hue: 0/360, saturation: 0/100, brightness: 98/100, alpha: 1.0
+        )
+        self.layer.borderWidth = 1
+        self.layer.cornerRadius = 15
         addLayer()
     }
     
@@ -78,38 +84,6 @@ class PhoneAndGender: UIView {
         )
     }
     
-    private func setUpPhoneInput() {
-        //phoneInput.text = "(000) 000 00 00"
-        phoneInput.placeholder = "(999) 111 11 11"
-        phoneInput.font = UIFont.boldSystemFont(ofSize: 19)
-        phoneInput.autocorrectionType = UITextAutocorrectionType.no
-        phoneInput.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-        phoneInput.keyboardType = UIKeyboardType.namePhonePad
-        phoneInput.returnKeyType = UIReturnKeyType.done
-        phoneInput.delegate = self
-        phoneInput.tag = 1
-    }
-    
-    private func setUpCodeInput() {
-        //codeInput.text = "+7"
-        codeInput.placeholder = "+7"
-        codeInput.font = UIFont.boldSystemFont(ofSize: 19)
-        codeInput.autocorrectionType = UITextAutocorrectionType.no
-        codeInput.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-        codeInput.keyboardType = UIKeyboardType.namePhonePad
-        codeInput.returnKeyType = UIReturnKeyType.done
-        codeInput.delegate = self
-        codeInput.textAlignment = .right
-        codeInput.tag = 0
-    }
-    
-    private func setUpGenderButton() {
-        genderButton.setTitle("gender", for: .normal )
-        genderButton.setTitleColor(.lightGray, for: .normal)
-        genderButton.menu = getGenderMenu()
-        genderButton.showsMenuAsPrimaryAction = true
-    }
-    
     private func getGenderMenu() -> UIMenu{
         let gender1 = UIAction(title: "male") {
             (action) in
@@ -132,9 +106,7 @@ class PhoneAndGender: UIView {
     }
     
     private func addLayer() {
-        // TODO: Add couple vertical lines ji est'
         let middleLineLayer = CAShapeLayer()
-        let betweenPhoneNumberLineLayer = CAShapeLayer()
         self.layer.addSublayer(middleLineLayer)
         
         middleLineLayer.strokeColor = UIColor.darkGray.cgColor
@@ -153,35 +125,5 @@ class PhoneAndGender: UIView {
         
         return path
     }
-}
-
-
-extension PhoneAndGender: UITextFieldDelegate {
-
-        func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-            switch textField.tag {
-            case 0:
-                if textField.text!.count == 0 && string != "+"{
-                    textField.text = "+"
-                }
-                if textField.text!.count == 4 && range.length == 0{
-                    return false
-                }
-                if range.length != 0 && textField.text!.count - 1 == range.length{
-                    textField.text = nil
-                    return false
-                }
-                return true
-            case 1:
-                if range.lowerBound == 15{
-                    return false
-                }
-                rawNumber = getNewRawNumber(from: rawNumber, range: range, num: string)
-                textField.text = getNewNumberText(from: rawNumber, range: range, num: string)
-            default:
-                break
-            }
-            return false
-        }
-
+    
 }
