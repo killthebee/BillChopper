@@ -5,6 +5,7 @@ class PhoneConverter {
     
     let formatedIndexToRawForAddition = [
         0: 0,
+        1: 0,
         2: 1,
         3: 2,
         4: 3,
@@ -23,6 +24,7 @@ class PhoneConverter {
 
     let formatedIndexToRawForDecrease = [
         0: 0,
+        1: 0,
         2: 1,
         3: 2,
         4: 2,
