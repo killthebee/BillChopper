@@ -102,7 +102,7 @@ class PhoneConverter {
         var leftNumberPart = oldNumber[..<firstIndex]
         leftNumberPart.popLast() // kek
         let rightNumberPart = oldNumber[firstIndex...]
-        var newRawNumber = leftNumberPart + rightNumberPart
+        let newRawNumber = leftNumberPart + rightNumberPart
         return String(newRawNumber)
     }
     
@@ -111,9 +111,9 @@ class PhoneConverter {
         let secondRawIndex = formatedIndexToRawForMultiDecrease[range.upperBound]!
         let firstIndex = oldNumber.index(oldNumber.startIndex, offsetBy: firstRawIndex)
         let secondIndex = oldNumber.index(oldNumber.startIndex, offsetBy: secondRawIndex)
-        var leftNumberPart = oldNumber[..<firstIndex]
+        let leftNumberPart = oldNumber[..<firstIndex]
         let rightNumberPart = oldNumber[secondIndex...]
-        var newRawNumber = leftNumberPart + rightNumberPart
+        let newRawNumber = leftNumberPart + rightNumberPart
         return String(newRawNumber)
     }
     
