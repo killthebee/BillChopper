@@ -2,7 +2,7 @@ import UIKit
 
 
 final class ProfileViewController: UIViewController {
-    lazy var iconView: ProfileIcon = setUpIconView()
+    var iconView = ProfileIcon().setUpIconView()
     
     lazy var coverView: UIView = {
         let coverView = UIView()
@@ -83,8 +83,15 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        
         self.imagePicker = ImagePicker(presentationController: self, delegate: self)
         usernameTextField.delegate = self
+        
+        let tapOnIconGestureRecognizer = UITapGestureRecognizer(
+            target: ProfileViewController.self, action: #selector(handleTapOnIcon)
+        )
+        iconView.isUserInteractionEnabled = true
+        iconView.addGestureRecognizer(tapOnIconGestureRecognizer)
         
         view.addSubview(PhoneAndGender)
         view.addSubview(saveButton)
@@ -93,19 +100,6 @@ final class ProfileViewController: UIViewController {
         view.addSubview(usernameTextField)
         view.addSubview(usernameHelpText)
         view.addSubview(iconView)// over all other stuff
-    }
-    
-    private func setUpIconView(_ image: UIImage = UIImage(named: "HombreDefault1")!) -> ProfileIcon {
-        let profileIcon = ProfileIcon()
-        profileIcon.image = image
-        
-        let tapOnIconGestureRecognizer = UITapGestureRecognizer(
-            target: self, action: #selector(handleTapOnIcon)
-        )
-        profileIcon.isUserInteractionEnabled = true
-        profileIcon.addGestureRecognizer(tapOnIconGestureRecognizer)
-        
-        return profileIcon
     }
     
     @objc func handleTapOnIcon() {
@@ -240,7 +234,12 @@ extension ProfileViewController: ImagePickerDelegate {
             return
         }
         iconView.removeFromSuperview()
-        iconView = setUpIconView(image)
+        iconView = ProfileIcon().setUpIconView(image)
+        let tapOnIconGestureRecognizer = UITapGestureRecognizer(
+            target: self, action: #selector(handleTapOnIcon)
+        )
+        iconView.isUserInteractionEnabled = true
+        iconView.addGestureRecognizer(tapOnIconGestureRecognizer)
         view.addSubview(iconView)
     }
 }

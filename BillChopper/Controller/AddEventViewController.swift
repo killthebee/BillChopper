@@ -3,7 +3,7 @@ import UIKit
 
 class AddEventViewController: UIViewController {
     
-    lazy var iconView: ProfileIcon = setUpIconView()
+    var iconView = ProfileIcon().setUpIconView(UIImage(named: "eventIcon")!)
     lazy var eventNameTextField: UITextField = setUpUsernameTextField()
     lazy var eventNameHelpLable: UILabel = setUpEventNameHelp()
     let eventTypeHelpLable: UILabel = {
@@ -124,21 +124,6 @@ class AddEventViewController: UIViewController {
         userTableView.dataSource = userTableDelegateAndDataSource
     }
     
-    // I can refactor the shit out of this
-    private func setUpIconView(_ image: UIImage = UIImage(named: "eventIcon")!) -> ProfileIcon {
-        let profileIcon = ProfileIcon()
-        profileIcon.image = image
-        // for the fuck sake stop using width to messure height...
-        profileIcon.frame = CGRect(
-            x: view.frame.size.width * 0.1,
-            y: view.frame.size.height * 0.05,
-            width: view.frame.size.width * 0.3,
-            height: view.frame.size.width * 0.3
-        )
-        
-        return profileIcon
-    }
-    
     private func setUpUsernameTextField() -> UITextField {
         let eventNameTextField = CustomTextField(frame: CGRect(
             x: view.frame.size.width * 0.45,
@@ -180,6 +165,12 @@ class AddEventViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        iconView.frame = CGRect(
+            x: view.frame.size.width * 0.1,
+            y: view.frame.size.height * 0.05,
+            width: view.frame.size.width * 0.3,
+            height: view.frame.size.width * 0.3
+        )
         carouselTableView.frame = CGRect(
             x: 0,
             y: view.frame.size.height * 0.25,
@@ -234,6 +225,7 @@ class AddEventViewController: UIViewController {
             width: view.frame.size.width * 0.4,
             height: view.frame.size.height * 0.05
         )
+        // TODO: change the layout to feet exit button
         exitButton.frame = CGRect(
             x: view.bounds.size.width * 0.85,
             y: view.bounds.size.height * 0.05,
@@ -306,7 +298,7 @@ extension AddEventViewController: UITableViewDataSource, UITableViewDelegate {
 extension AddEventViewController: CollectionTableViewCellDelegate {
     func collectionViewDidTapItem(with viewModel: TileCollectionViewModel) {
         iconView.removeFromSuperview()
-        iconView = setUpIconView(viewModel.eventTypeIcon)
+        iconView = ProfileIcon().setUpIconView(viewModel.eventTypeIcon)
         view.addSubview(iconView)
     }
 }

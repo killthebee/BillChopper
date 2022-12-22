@@ -67,4 +67,10 @@ class ProfileIcon: UIView {
         imgView.layer.cornerRadius = imgView.frame.size.height / 2
         imgView.clipsToBounds = true
     }
+    
+    public func setUpIconView(_ image: UIImage = UIImage(named: "HombreDefault1")!) -> ProfileIcon {
+        self.image = image
+        
+        return self
+    }
 }
