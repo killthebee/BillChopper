@@ -52,7 +52,6 @@ class TileCollectionViewCell: UICollectionViewCell {
         contentView.layer.cornerRadius = 15
         contentView.layer.borderWidth = 1.5
         contentView.layer.borderColor = UIColor.quaternaryLabel.cgColor
-        //contentView.backgroundColor = .white
     }
     
     func configure(with viewModel: TileCollectionViewModel) {
