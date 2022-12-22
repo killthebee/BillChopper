@@ -41,6 +41,12 @@ class AddSpendViewController: UIViewController {
         return button
     }()
     
+    let exitButton: UIButton = {
+        let button = ExitCross()
+        button.addTarget(self, action: #selector(handleExitButtonClicked), for: .touchDown)
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -52,6 +58,7 @@ class AddSpendViewController: UIViewController {
         view.addSubview(selectSplitText)
         view.addSubview(splitSelectorsView)
         view.addSubview(saveButton)
+        view.addSubview(exitButton)
         
         splitSelectorsView.dataSource = self
         splitSelectorsView.delegate = self
@@ -101,10 +108,20 @@ class AddSpendViewController: UIViewController {
             width: view.frame.size.width * 0.4,
             height: view.frame.size.height * 0.05
         )
+        exitButton.frame = CGRect(
+            x: view.bounds.size.width * 0.85,
+            y: view.bounds.size.height * 0.05,
+            width: view.bounds.size.width * 0.1,
+            height: view.bounds.size.width * 0.1
+        )
     }
     
     @objc func handleSaveEvent(_ sender: UIButton) {
         print("save spend pls")
+    }
+    
+    @objc func handleExitButtonClicked(_ sender: UIButton) {
+        dismiss(animated: true)
     }
 }
 
