@@ -4,19 +4,67 @@ import UIKit
 class AddEventViewController: UIViewController {
     
     var iconView = ProfileIcon().setUpIconView(UIImage(named: "eventIcon")!)
-    lazy var eventNameTextField: UITextField = setUpUsernameTextField()
-    lazy var eventNameHelpLable: UILabel = setUpEventNameHelp()
-    let eventTypeHelpLable: UILabel = {
-        let helpTextLable = UILabel()
-        helpTextLable.text = "Select event type"
-        return helpTextLable
+    
+    lazy var eventNameTextField: CustomTextField = {
+        let eventNameTextField = CustomTextField()
+        eventNameTextField.placeholder = "new event name"
+        eventNameTextField.font = UIFont.boldSystemFont(ofSize: 21)
+        eventNameTextField.autocorrectionType = UITextAutocorrectionType.no
+        eventNameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
+        eventNameTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        eventNameTextField.keyboardType = UIKeyboardType.default
+        eventNameTextField.returnKeyType = UIReturnKeyType.done
+        eventNameTextField.delegate = self
+        
+        eventNameTextField.layer.borderColor = UIColor.quaternaryLabel.cgColor
+        eventNameTextField.layer.borderWidth = 1
+        eventNameTextField.layer.cornerRadius = 15
+        eventNameTextField.backgroundColor = .white
+        
+        return eventNameTextField
     }()
     
-    private let addUserText: UILabel = {
-        let addUserText = UILabel()
-        addUserText.text = "add user:"
+    let eventNameHelpLable = UILabel(text: "Name the event")
+    
+    let eventTypeHelpLable = UILabel(text: "Select event type")
+    
+    let addUserText = UILabel(text: "add user:")
+    
+    let carouselTableView: UITableView = {
+        let table = UITableView()
+        table.register(CollectionTableViewCell.self, forCellReuseIdentifier: CollectionTableViewCell.identifier)
+        return table
+    }()
+    
+    let userTableView: UITableView = {
+        let table = UITableView()
+        table.register(UserTableViewCell.self, forCellReuseIdentifier: UserTableViewCell.identifier)
+        return table
+    }()
+    
+    let phoneInput = PhoneInput(isCode: false)
+    
+    let codeInput = PhoneInput(isCode: true)
+    
+    let addUserButton: UIButton = {
+        let addUserButton = UIButton()
+        addUserButton.setImage(UIImage(named: "plusIconUser")!, for: .normal)
+        addUserButton.addTarget(self, action: #selector(handleAddUser), for: .touchDown)
         
-        return addUserText
+        return addUserButton
+    }()
+    
+    let saveButton: SaveButton = {
+        let button = SaveButton()
+        button.addTarget(self, action: #selector(handleSaveEvent), for: .touchDown)
+        
+        return button
+    }()
+    
+    let exitButton: UIButton = {
+        let button = ExitCross()
+        button.addTarget(self, action: #selector(handleExitButtonClicked), for: .touchDown)
+        return button
     }()
     
     private var viewModels: [CollectionTableViewCellViewModel] = [
@@ -43,72 +91,21 @@ class AddEventViewController: UIViewController {
         ])
     ]
     
-    private let carouselTableView: UITableView = {
-        let table = UITableView()
-        table.register(CollectionTableViewCell.self, forCellReuseIdentifier: CollectionTableViewCell.identifier)
-        return table
-    }()
-    
-    private let userTableView: UITableView = {
-        let table = UITableView()
-        table.register(UserTableViewCell.self, forCellReuseIdentifier: UserTableViewCell.identifier)
-        return table
-    }()
-    
     var rawNumber = ""
-    
-    private let phoneInput = PhoneInput(isCode: false)
-    
-    private let codeInput = PhoneInput(isCode: true)
     
     let phoneNumDelegate = PhoneInputDelegate()
     let userTableDelegateAndDataSource = UserTableDelegateAndDataSource()
     
-    let addUserButton: UIButton = {
-        let addUserButton = UIButton()
-        addUserButton.setImage(UIImage(named: "plusIconUser")!, for: .normal)
-        addUserButton.addTarget(self, action: #selector(handleAddUser), for: .touchDown)
-        
-        return addUserButton
-    }()
-    
-    let saveButton: UIButton = {
-        // move this button into a separate file
-        // TODO: Add the save icon
-        let button = UIButton()
-        button.backgroundColor = UIColor.quaternaryLabel
-        button.layer.cornerRadius = 15
-        button.addTarget(self, action: #selector(handleSaveEvent), for: .touchDown)
-        
-        return button
-    }()
-    
-    let saveButtonText: UILabel = {
-        let text = UILabel()
-        text.text = "save"
-        text.textAlignment = .center
-        
-        return text
-    }()
-    
-    let exitButton: UIButton = {
-        let button = ExitCross()
-        button.addTarget(self, action: #selector(handleExitButtonClicked), for: .touchDown)
-        return button
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        
         view.addSubview(iconView)
         view.addSubview(eventNameTextField)
         view.addSubview(eventNameHelpLable)
         view.addSubview(carouselTableView)
         view.addSubview(eventTypeHelpLable)
         view.addSubview(exitButton)
-        
-        phoneInput.delegate = phoneNumDelegate
-        codeInput.delegate = phoneNumDelegate
         view.addSubview(phoneInput)
         view.addSubview(codeInput)
         //this fucking button is ugly or not..?
@@ -116,60 +113,36 @@ class AddEventViewController: UIViewController {
         view.addSubview(addUserText)
         view.addSubview(userTableView)
         view.addSubview(saveButton)
-        view.addSubview(saveButtonText)
+        
+        phoneInput.delegate = phoneNumDelegate
+        codeInput.delegate = phoneNumDelegate
         
         carouselTableView.dataSource = self
         carouselTableView.delegate = self
+        
         userTableView.delegate = userTableDelegateAndDataSource
         userTableView.dataSource = userTableDelegateAndDataSource
-    }
-    
-    private func setUpUsernameTextField() -> UITextField {
-        let eventNameTextField = CustomTextField(frame: CGRect(
-            x: view.frame.size.width * 0.45,
-            y: view.frame.size.height * 0.1,
-            width: view.frame.size.width * 0.5,
-            height: view.frame.size.height * 0.05
-        ))
-        //eventNameTextField.text = "new event name"
-        eventNameTextField.placeholder = "new event name"
-        eventNameTextField.font = UIFont.boldSystemFont(ofSize: 21)
-        eventNameTextField.autocorrectionType = UITextAutocorrectionType.no
-        eventNameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
-        eventNameTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-        eventNameTextField.keyboardType = UIKeyboardType.default
-        eventNameTextField.returnKeyType = UIReturnKeyType.done
-        eventNameTextField.delegate = self
-        
-        eventNameTextField.sidePadding = eventNameTextField.frame.width * 0.05
-        eventNameTextField.topPadding = eventNameTextField.frame.height * 0.1
-        eventNameTextField.layer.borderColor = UIColor.quaternaryLabel.cgColor
-        eventNameTextField.layer.borderWidth = 1
-        eventNameTextField.layer.cornerRadius = 15
-        eventNameTextField.backgroundColor = .white
-        
-        return eventNameTextField
-    }
-    
-    private func setUpEventNameHelp() -> UILabel {
-        let eventNameHelpLable = UILabel()
-        eventNameHelpLable.frame = CGRect(
-            x: view.frame.size.width * 0.47,
-            y: view.frame.size.height * 0.14,
-            width: view.frame.size.width * 0.5,
-            height: view.frame.size.height * 0.05
-        )
-        eventNameHelpLable.text = "Name the event"
-        return eventNameHelpLable
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         iconView.frame = CGRect(
             x: view.frame.size.width * 0.1,
-            y: view.frame.size.height * 0.05,
+            y: view.frame.size.height * 0.08,
             width: view.frame.size.width * 0.3,
             height: view.frame.size.width * 0.3
+        )
+        eventNameTextField.frame = CGRect(
+            x: view.frame.size.width * 0.45,
+            y: view.frame.size.height * 0.13,
+            width: view.frame.size.width * 0.5,
+            height: view.frame.size.height * 0.05
+        )
+        eventNameHelpLable.frame = CGRect(
+            x: view.frame.size.width * 0.47,
+            y: view.frame.size.height * 0.17,
+            width: view.frame.size.width * 0.5,
+            height: view.frame.size.height * 0.05
         )
         carouselTableView.frame = CGRect(
             x: 0,
@@ -219,13 +192,6 @@ class AddEventViewController: UIViewController {
             width: view.frame.size.width * 0.4,
             height: view.frame.size.height * 0.05
         )
-        saveButtonText.frame = CGRect(
-            x: view.frame.size.width * 0.3,
-            y: view.frame.size.height * 0.8,
-            width: view.frame.size.width * 0.4,
-            height: view.frame.size.height * 0.05
-        )
-        // TODO: change the layout to feet exit button
         exitButton.frame = CGRect(
             x: view.bounds.size.width * 0.85,
             y: view.bounds.size.height * 0.05,
@@ -233,6 +199,8 @@ class AddEventViewController: UIViewController {
             height: view.bounds.size.width * 0.1
         )
         
+        eventNameTextField.sidePadding = eventNameTextField.frame.width * 0.05
+        eventNameTextField.topPadding = eventNameTextField.frame.height * 0.1
         addLayer()
     }
     
