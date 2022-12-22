@@ -18,14 +18,22 @@ class ChooseButtonView: UIView {
         return button
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    convenience init(frame: CGRect = .zero, text: String, image: UIImage) {
+        self.init(frame: frame)
         self.layer.borderWidth = 1
         self.layer.borderColor = UIColor.black.cgColor
         self.layer.cornerRadius = 15
         self.addSubview(chooseButton)
         self.addSubview(chooseEventLable)
         self.addSubview(chooseEventImage)
+        
+        chooseButton.menu = getChooseMenu()
+        chooseEventLable.text = text
+        chooseEventImage.image = image
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
     }
     
     required init?(coder: NSCoder) {
@@ -68,11 +76,4 @@ class ChooseButtonView: UIView {
         return menu
     }
     
-    public func configure(text: String, image: UIImage) {
-        // TODO: pass events or users through to the create menus func
-        // TODO: make a circle around user image
-        chooseButton.menu = getChooseMenu()
-        chooseEventLable.text = text
-        chooseEventImage.image = image
-    }
 }

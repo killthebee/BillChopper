@@ -10,8 +10,8 @@ class AddSpendViewController: UIViewController {
         return lable
     }()
     
-    let chooseEventView: ChooseButtonView = ChooseButtonView()
-    let chooseUserView: ChooseButtonView = ChooseButtonView()
+    let chooseEventView = ChooseButtonView(text: "dummy event", image: UIImage(named: "saveIcon")!)
+    let chooseUserView = ChooseButtonView(text: "dummy user", image: UIImage(named: "HombreDefault1")!)
     
     let choosePayerText: UILabel = {
         let lable = UILabel()
@@ -34,15 +34,9 @@ class AddSpendViewController: UIViewController {
         return tableView
     }()
     
-    let saveButton: UIButton = {
-        // move this button into a separate file
-        // TODO: Add the save icon
-        let button = UIButton()
-        button.backgroundColor = UIColor.quaternaryLabel
-        button.layer.cornerRadius = 15
+    let saveButton: SaveButton = {
+        let button = SaveButton()
         button.addTarget(self, action: #selector(handleSaveEvent), for: .touchDown)
-        button.setTitle("save", for: .normal)
-        button.setTitleColor(.black, for: .normal)
         
         return button
     }()
@@ -51,19 +45,16 @@ class AddSpendViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         
-        chooseEventView.configure(text: "dummy event", image: UIImage(named: "saveIcon")!)
-        chooseUserView.configure(text: "dummy user", image: UIImage(named: "HombreDefault1")!)
         view.addSubview(chooseEventView)
         view.addSubview(chooseEventText)
         view.addSubview(choosePayerText)
         view.addSubview(chooseUserView)
         view.addSubview(selectSplitText)
+        view.addSubview(splitSelectorsView)
+        view.addSubview(saveButton)
         
         splitSelectorsView.dataSource = self
         splitSelectorsView.delegate = self
-        
-        view.addSubview(splitSelectorsView)
-        view.addSubview(saveButton)
     }
 
     override func viewDidLayoutSubviews() {
