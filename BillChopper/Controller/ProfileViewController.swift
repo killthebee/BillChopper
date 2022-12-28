@@ -88,7 +88,7 @@ final class ProfileViewController: UIViewController {
         usernameTextField.delegate = self
         
         let tapOnIconGestureRecognizer = UITapGestureRecognizer(
-            target: ProfileViewController.self, action: #selector(handleTapOnIcon)
+            target: self, action: #selector(handleTapOnIcon)
         )
         iconView.isUserInteractionEnabled = true
         iconView.addGestureRecognizer(tapOnIconGestureRecognizer)
