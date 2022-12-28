@@ -1,20 +1,15 @@
 import UIKit
 import CoreData
 
-
-// TODO: Make table a bit higher
-// TODO: put a logo above buttons
-
-
-class Main: UIViewController {
+final class MainViewController: UIViewController {
     
-    var viewContext: NSManagedObjectContext!
+    private var viewContext: NSManagedObjectContext!
     
-    lazy var profileViewController = ProfileViewController()
-    lazy var addEventViewController = AddEventViewController()
-    lazy var addSpendViewController = AddSpendViewController()
+    private lazy var profileViewController = ProfileViewController()
+    private lazy var addEventViewController = AddEventViewController()
+    private lazy var addSpendViewController = AddSpendViewController()
     
-    let tableView: UITableView = {
+    private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(SpendTableViewCell.self, forCellReuseIdentifier: SpendTableViewCell.identifier)
         tableView.register(LentCell.self, forCellReuseIdentifier: LentCell.newIdentifier)
@@ -22,15 +17,15 @@ class Main: UIViewController {
         return tableView
     }()
     
-    let eventButton = TopMainButton(color: UIColor.systemGray, title: "event:")
+    private let eventButton = TopMainButton(color: UIColor.systemGray, title: "event:")
     
-    let balanceButton = TopMainButton(color: customGreen, title: "balance with:")
+    private let balanceButton = TopMainButton(color: customGreen, title: "balance with:")
     
-    let profileIcon = ProfileIcon(profileImage: UIImage(named: "HombreDefault1"))
+    private let profileIcon = ProfileIcon(profileImage: UIImage(named: "HombreDefault1"))
     
-    let footer = FooterView()
+    private let footer = FooterView()
     
-    let coverPlusIconView: UIButton = {
+    private let coverPlusIconView: UIButton = {
         let coverView = UIButton()
         coverView.asCircle()
         coverView.showsMenuAsPrimaryAction = true
@@ -177,7 +172,7 @@ class Main: UIViewController {
 }
 
 
-extension Main: UITableViewDataSource {
+extension MainViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return SpendTableViewCell.cellSpacingHeight
@@ -213,6 +208,6 @@ extension Main: UITableViewDataSource {
 }
 
 
-extension Main: UITableViewDelegate {
+extension MainViewController: UITableViewDelegate {
     
 }
