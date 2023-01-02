@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		301159C8292CE49A001E254D /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301159C7292CE49A001E254D /* ImagePicker.swift */; };
 		301159CC292FA322001E254D /* PhoneAndGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301159CB292FA322001E254D /* PhoneAndGender.swift */; };
+		302B817929632D74008380A0 /* test.strings in Resources */ = {isa = PBXBuildFile; fileRef = 302B817829632D74008380A0 /* test.strings */; };
 		304FDCE22934E11B00737B7B /* UIView + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304FDCE12934E11B00737B7B /* UIView + ext.swift */; };
 		304FDCE429350D5700737B7B /* AddEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304FDCE329350D5700737B7B /* AddEventViewController.swift */; };
 		304FDCE72939F13700737B7B /* CarouselCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304FDCE62939F13700737B7B /* CarouselCell.swift */; };
@@ -41,6 +42,7 @@
 		30A7F1B6290A99B0003F0812 /* ProfileIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A7F1B5290A99B0003F0812 /* ProfileIcon.swift */; };
 		30DA407B2923BD3900E2DC17 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 30DA407A2923BD3900E2DC17 /* .gitignore */; };
 		30DA407D2926793600E2DC17 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DA407C2926793600E2DC17 /* ProfileViewController.swift */; };
+		30DBDB2829631CAF002D4329 /* RswiftLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = 30DBDB2729631CAF002D4329 /* RswiftLibrary */; };
 		30DBDCD0294A134A00D44D9C /* UserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCCF294A134A00D44D9C /* UserTableViewCell.swift */; };
 		30DBDCD2294B2A6500D44D9C /* AddSpendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCD1294B2A6500D44D9C /* AddSpendViewController.swift */; };
 		30DBDCD9294B2FA900D44D9C /* ChooseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCD8294B2FA900D44D9C /* ChooseButton.swift */; };
@@ -51,6 +53,7 @@
 /* Begin PBXFileReference section */
 		301159C7292CE49A001E254D /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		301159CB292FA322001E254D /* PhoneAndGender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneAndGender.swift; sourceTree = "<group>"; };
+		302B817829632D74008380A0 /* test.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = test.strings; sourceTree = "<group>"; };
 		304FDCE12934E11B00737B7B /* UIView + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + ext.swift"; sourceTree = "<group>"; };
 		304FDCE329350D5700737B7B /* AddEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventViewController.swift; sourceTree = "<group>"; };
 		304FDCE62939F13700737B7B /* CarouselCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselCell.swift; sourceTree = "<group>"; };
@@ -97,12 +100,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30DBDB2829631CAF002D4329 /* RswiftLibrary in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		302B817A29632E7B008380A0 /* Strings */ = {
+			isa = PBXGroup;
+			children = (
+				302B817829632D74008380A0 /* test.strings */,
+			);
+			path = Strings;
+			sourceTree = "<group>";
+		};
 		304FDCE02934E09300737B7B /* Extentions */ = {
 			isa = PBXGroup;
 			children = (
@@ -148,6 +160,7 @@
 				30DA407A2923BD3900E2DC17 /* .gitignore */,
 				3078498828EB349D00AEFECA /* BillChopper */,
 				3078498728EB349D00AEFECA /* Products */,
+				30DBDB2929631D22002D4329 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -162,6 +175,7 @@
 		3078498828EB349D00AEFECA /* BillChopper */ = {
 			isa = PBXGroup;
 			children = (
+				302B817A29632E7B008380A0 /* Strings */,
 				305A0D4729546D36004CCA23 /* Utilities */,
 				304FDCE02934E09300737B7B /* Extentions */,
 				307849E528F8012D00AEFECA /* View */,
@@ -229,6 +243,13 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
+		30DBDB2929631D22002D4329 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		30DBDCD3294B2D0400D44D9C /* AddSpend */ = {
 			isa = PBXGroup;
 			children = (
@@ -252,8 +273,12 @@
 			buildRules = (
 			);
 			dependencies = (
+				302B817629632018008380A0 /* PBXTargetDependency */,
 			);
 			name = BillChopper;
+			packageProductDependencies = (
+				30DBDB2729631CAF002D4329 /* RswiftLibrary */,
+			);
 			productName = BillChopper;
 			productReference = 3078498628EB349D00AEFECA /* BillChopper.app */;
 			productType = "com.apple.product-type.application";
@@ -282,6 +307,9 @@
 				Base,
 			);
 			mainGroup = 3078497D28EB349D00AEFECA;
+			packageReferences = (
+				30DBDB2629631CAF002D4329 /* XCRemoteSwiftPackageReference "R" */,
+			);
 			productRefGroup = 3078498728EB349D00AEFECA /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -296,6 +324,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				302B817929632D74008380A0 /* test.strings in Resources */,
 				30DA407B2923BD3900E2DC17 /* .gitignore in Resources */,
 				3078499628EB349E00AEFECA /* LaunchScreen.storyboard in Resources */,
 				3078499328EB349E00AEFECA /* Assets.xcassets in Resources */,
@@ -349,6 +378,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		302B817629632018008380A0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 302B817529632018008380A0 /* RswiftGenerateInternalResources */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		3078499428EB349E00AEFECA /* LaunchScreen.storyboard */ = {
@@ -490,6 +526,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -517,6 +554,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -552,6 +590,29 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		30DBDB2629631CAF002D4329 /* XCRemoteSwiftPackageReference "R" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mac-cain13/R.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		302B817529632018008380A0 /* RswiftGenerateInternalResources */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "plugin:RswiftGenerateInternalResources";
+		};
+		30DBDB2729631CAF002D4329 /* RswiftLibrary */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 30DBDB2629631CAF002D4329 /* XCRemoteSwiftPackageReference "R" */;
+			productName = RswiftLibrary;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		3078499E28EB5A6600AEFECA /* DataModel.xcdatamodeld */ = {
