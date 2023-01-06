@@ -1,21 +1,13 @@
 import UIKit
 
-
 enum balanceType: String {
     case borrow = "you borrowed"
     case owe = "you lent"
 }
 
-
 final class FooterView: UIView {
     
     override var frame: CGRect { didSet { setupView() }}
-    
-    let plusIcon = UIImage(named:"plusIcon")
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
     
     private func setupView() {
         addLayer()
@@ -27,6 +19,10 @@ final class FooterView: UIView {
         self.addSubview(plusIconView)
         self.addSubview(balanceView)
         self.addSubview(eventsView)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
     }
     
     required init?(coder: NSCoder) {
@@ -47,7 +43,6 @@ final class FooterView: UIView {
     private func getPath() -> UIBezierPath {
         let path = UIBezierPath()
         path.move(to: CGPoint(x: 0, y: 0))
-        print(self.bounds.size.width)
         path.addLine(to: CGPoint(x: self.bounds.size.width * 0.4, y: 0))
         path.addArc(
             withCenter: CGPoint(x: self.bounds.size.width * 0.5, y: 0),
@@ -66,7 +61,7 @@ final class FooterView: UIView {
     
     private func setupPlusIconView() -> UIImageView {
         let iconView = UIImageView()
-        iconView.image = plusIcon
+        iconView.image = R.image.plusIcon()
         iconView.frame = CGRect(
             x: self.bounds.size.width * 0.4,
             y: self.bounds.size.height * -0.33,
@@ -97,6 +92,7 @@ final class FooterView: UIView {
         // TODO: format string
         balanceWithLabal.text = "in total:"
         balanceWithLabal.textAlignment = .right
+        balanceWithLabal.textColor = .black
         
         balanceTypeLabel.text = "you borrowed"
         balanceTypeLabel.font = balanceTypeLabel.font.withSize(11)
@@ -157,6 +153,7 @@ final class FooterView: UIView {
         
         eventLable.text = "events"
         eventLable.textAlignment = .center
+        eventLable.textColor = .black
         
         eventsView.frame = CGRect(
             x: self.frame.size.width * 0.06,
