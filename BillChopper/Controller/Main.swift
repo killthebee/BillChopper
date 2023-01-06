@@ -9,20 +9,12 @@ final class MainViewController: UIViewController {
     private lazy var addEventViewController = AddEventViewController()
     private lazy var addSpendViewController = AddSpendViewController()
     
-    private let tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(SpendTableViewCell.self, forCellReuseIdentifier: SpendTableViewCell.identifier)
-        tableView.register(LentCell.self, forCellReuseIdentifier: LentCell.newIdentifier)
-        
-        return tableView
-    }()
+    private let eventButton = TopMainButton(color: UIColor.systemGray, title: R.string.main.eventButtonText())
+
+    private let balanceButton = TopMainButton(color: customGreen, title: R.string.main.balanceButtonText())
     
-    private let eventButton = TopMainButton(color: UIColor.systemGray, title: "event:")
-    
-    private let balanceButton = TopMainButton(color: customGreen, title: "balance with:")
-    
-    private let profileIcon = ProfileIcon(profileImage: UIImage(named: "HombreDefault1"))
-    
+    private let profileIcon = ProfileIcon(profileImage: R.image.hombreDefault1())
+
     private let footer = FooterView()
     
     private let coverPlusIconView: UIButton = {
@@ -33,9 +25,23 @@ final class MainViewController: UIViewController {
         return coverView
     }()
     
+    private let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.backgroundColor = .white
+        tableView.register(SpendTableViewCell.self, forCellReuseIdentifier: SpendTableViewCell.identifier)
+        tableView.register(LentCell.self, forCellReuseIdentifier: LentCell.newIdentifier)
+        
+        return tableView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        setupViews()
+        addSubviews()
+    }
+    
+    private func setupViews() {
         viewContext = PersistanceController.shared.container.viewContext
         
         tableView.dataSource = self
@@ -49,7 +55,9 @@ final class MainViewController: UIViewController {
             target: self, action: #selector(handleTapOnProfileIcon(sender:))
         )
         profileIcon.addGestureRecognizer(tapOnProfileIconGesutre)
-        
+    }
+    
+    private func addSubviews() {
         view.addSubview(profileIcon)
         view.addSubview(tableView)
         view.addSubview(eventButton)
@@ -67,7 +75,7 @@ final class MainViewController: UIViewController {
         }
         
         let menu = UIMenu(
-            title: "events",
+            title: R.string.main.eventMenuText(),
             options: .displayInline,
             children: [dummyEvent1, dummyEvent2]
         )
@@ -84,7 +92,7 @@ final class MainViewController: UIViewController {
         }
         
         let menu = UIMenu(
-            title: "users",
+            title: R.string.main.getBalanceMenuText(),
             options: .displayInline,
             children: [dummyBalance1, dummyBalance2]
         )
@@ -172,7 +180,7 @@ final class MainViewController: UIViewController {
 }
 
 
-extension MainViewController: UITableViewDataSource {
+extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return SpendTableViewCell.cellSpacingHeight
@@ -192,22 +200,27 @@ extension MainViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = .white
+        
         if indexPath.section != 3 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: SpendTableViewCell.identifier) as? SpendTableViewCell else { return UITableViewCell() }
-
-            return cell 
+            cell.backgroundColor = .white
+            cell.selectedBackgroundView = backgroundView
+            
+            return cell
+        } else {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: LentCell.newIdentifier) as? LentCell else { return UITableViewCell() }
+            cell.backgroundColor = .white
+            cell.selectedBackgroundView = backgroundView
+            
+            return cell
         }
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: LentCell.newIdentifier) as? LentCell else { return UITableViewCell() }
         
-        return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return tableView.frame.size.height * 0.09
     }
-}
-
-
-extension MainViewController: UITableViewDelegate {
     
 }

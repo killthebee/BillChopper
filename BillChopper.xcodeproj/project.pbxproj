@@ -10,6 +10,7 @@
 		301159C8292CE49A001E254D /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301159C7292CE49A001E254D /* ImagePicker.swift */; };
 		301159CC292FA322001E254D /* PhoneAndGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301159CB292FA322001E254D /* PhoneAndGender.swift */; };
 		302B817929632D74008380A0 /* test.strings in Resources */ = {isa = PBXBuildFile; fileRef = 302B817829632D74008380A0 /* test.strings */; };
+		302B817D2963395E008380A0 /* main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 302B817C2963395E008380A0 /* main.strings */; };
 		304FDCE22934E11B00737B7B /* UIView + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304FDCE12934E11B00737B7B /* UIView + ext.swift */; };
 		304FDCE429350D5700737B7B /* AddEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304FDCE329350D5700737B7B /* AddEventViewController.swift */; };
 		304FDCE72939F13700737B7B /* CarouselCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304FDCE62939F13700737B7B /* CarouselCell.swift */; };
@@ -54,6 +55,7 @@
 		301159C7292CE49A001E254D /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		301159CB292FA322001E254D /* PhoneAndGender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneAndGender.swift; sourceTree = "<group>"; };
 		302B817829632D74008380A0 /* test.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = test.strings; sourceTree = "<group>"; };
+		302B817C2963395E008380A0 /* main.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = main.strings; sourceTree = "<group>"; };
 		304FDCE12934E11B00737B7B /* UIView + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + ext.swift"; sourceTree = "<group>"; };
 		304FDCE329350D5700737B7B /* AddEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventViewController.swift; sourceTree = "<group>"; };
 		304FDCE62939F13700737B7B /* CarouselCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselCell.swift; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				302B817829632D74008380A0 /* test.strings */,
+				302B817C2963395E008380A0 /* main.strings */,
 			);
 			path = Strings;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				302B817D2963395E008380A0 /* main.strings in Resources */,
 				302B817929632D74008380A0 /* test.strings in Resources */,
 				30DA407B2923BD3900E2DC17 /* .gitignore in Resources */,
 				3078499628EB349E00AEFECA /* LaunchScreen.storyboard in Resources */,
