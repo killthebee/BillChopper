@@ -1,18 +1,30 @@
 import UIKit
 
-
-class PhoneAndGender: UIView {
+final class PhoneAndGender: UIView {
     
-    let phoneTextLable = UILabel()
-    let genderTextLable = UILabel()
+    private let phoneTextLable: UILabel = {
+        let lable = UILabel()
+        lable.text = R.string.profileView.phoneText()
+        lable.textColor = .black
+        
+        return lable
+    }()
     
-    let phoneInput = PhoneInput(isCode: false)
-    let codeInput = PhoneInput(isCode: true)
-    let phoneInputDelegate = PhoneInputDelegate()
+    private let genderTextLable: UILabel = {
+        let lable = UILabel()
+        lable.text = R.string.profileView.gender()
+        lable.textColor = .black
+        
+        return lable
+    }()
     
-    lazy var genderButton: UIButton = {
+    private let phoneInput = PhoneInput(isCode: false)
+    private let codeInput = PhoneInput(isCode: true)
+    private let phoneInputDelegate = PhoneInputDelegate()
+    
+    private lazy var genderButton: UIButton = {
         let genderButton = UIButton()
-        genderButton.setTitle("gender", for: .normal )
+        genderButton.setTitle(R.string.profileView.gender(), for: .normal )
         genderButton.setTitleColor(.lightGray, for: .normal)
         genderButton.menu = getGenderMenu()
         genderButton.showsMenuAsPrimaryAction = true
@@ -22,13 +34,16 @@ class PhoneAndGender: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-
-        phoneTextLable.text = "phone:"
-        genderTextLable.text = "gender:"
-        
+        setupViews()
+        addSubviews()
+    }
+    
+    private func setupViews() {
         phoneInput.delegate = phoneInputDelegate
         codeInput.delegate = phoneInputDelegate
+    }
     
+    private func addSubviews() {
         self.addSubview(phoneInput)
         self.addSubview(genderButton)
         self.addSubview(phoneTextLable)
@@ -85,19 +100,19 @@ class PhoneAndGender: UIView {
     }
     
     private func getGenderMenu() -> UIMenu{
-        let gender1 = UIAction(title: "male") {
+        let gender1 = UIAction(title: R.string.profileView.male()) {
             (action) in
-            self.genderButton.setTitle("male", for: .normal )
+            self.genderButton.setTitle(R.string.profileView.male(), for: .normal )
             self.genderButton.setTitleColor(.black, for: .normal)
         }
-        let gender2 = UIAction(title: "female") {
+        let gender2 = UIAction(title: R.string.profileView.female()) {
             (action) in
-            self.genderButton.setTitle("female", for: .normal )
+            self.genderButton.setTitle(R.string.profileView.female(), for: .normal )
             self.genderButton.setTitleColor(.black, for: .normal)
         }
         
         let menu = UIMenu(
-            title: "gender",
+            title: R.string.profileView.gender(),
             options: .displayInline,
             children: [gender1, gender2]
         )

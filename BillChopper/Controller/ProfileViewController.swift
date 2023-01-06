@@ -1,29 +1,30 @@
 import UIKit
 
-
 final class ProfileViewController: UIViewController {
-    var iconView = ProfileIcon().setUpIconView()
     
-    lazy var coverView: UIView = {
+    private var iconView = ProfileIcon().setUpIconView()
+    
+    private lazy var coverView: UIView = {
         let coverView = UIView()
         coverView.isUserInteractionEnabled = true
         let tapOnZoomedIconGestureRecognizer = UITapGestureRecognizer(
             target: self, action: #selector(handleTapOnZoomedIcon)
         )
         coverView.addGestureRecognizer(tapOnZoomedIconGestureRecognizer)
+        
         return coverView
     }()
     
-    var uploadButton: UIButton = {
+    private var uploadButton: UIButton = {
         let uploadButton = UIButton()
-        uploadButton.setTitle("set up profile photo", for: .normal)
+        uploadButton.setTitle(R.string.profileView.uploadButtonTitle(), for: .normal)
         uploadButton.setTitleColor(.systemBlue, for: .normal)
         uploadButton.addTarget(self, action: #selector(handleUploadButtonClicked), for: .touchDown)
         
         return uploadButton
     }()
     
-    var saveButton: UIButton = {
+    private var saveButton: UIButton = {
         let saveButton = UIButton()
         
         saveButton.backgroundColor = UIColor(
@@ -31,19 +32,19 @@ final class ProfileViewController: UIViewController {
         )
         saveButton.layer.borderWidth = 1
         saveButton.layer.cornerRadius = 15
-        saveButton.setTitle("save", for: .normal )
+        saveButton.setTitle(R.string.profileView.saveButtonTitle(), for: .normal )
         saveButton.setTitleColor(.black, for: .normal)
         saveButton.addTarget(self, action: #selector(handleSaveButtonClicked), for: .touchDown)
         
         return saveButton
     }()
     
-    var usernameTextField: CustomTextField = {
+    private var usernameTextField: CustomTextField = {
         let usernameTextField = CustomTextField()
         usernameTextField.text = "John Dhoe"
+        usernameTextField.textColor = .black
         usernameTextField.placeholder = "username"
         usernameTextField.font = UIFont.boldSystemFont(ofSize: 21)
-        //usernameTextField.borderStyle = UITextField.BorderStyle.roundedRect
         usernameTextField.autocorrectionType = UITextAutocorrectionType.no
         usernameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
         usernameTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
@@ -60,30 +61,38 @@ final class ProfileViewController: UIViewController {
         return usernameTextField
     }()
     
-    var usernameHelpText: UILabel = {
+    private var usernameHelpText: UILabel = {
         let usernameHelpTextLable = UILabel()
-        usernameHelpTextLable.text = "Enter the name other people to see, also an optional profile photo"
+        usernameHelpTextLable.text = R.string.profileView.helpText()
         usernameHelpTextLable.font = usernameHelpTextLable.font.withSize(15)
         usernameHelpTextLable.lineBreakMode = .byWordWrapping
         usernameHelpTextLable.numberOfLines = 0
+        usernameHelpTextLable.textColor = .black
         
         return usernameHelpTextLable
     }()
-    var PhoneAndGender: UIView = BillChopper.PhoneAndGender()
     
-    let exitButton: UIButton = {
+    private var PhoneAndGender: UIView = BillChopper.PhoneAndGender()
+    
+    private let exitButton: UIButton = {
         let button = ExitCross()
         button.addTarget(self, action: #selector(handleExitButtonClicked), for: .touchDown)
+        
         return button
     }()
     
-    var isIconZoomed = false
-    var imagePicker: ImagePicker!
+    private var isIconZoomed = false
+    private var imagePicker: ImagePicker!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
         
+        setupViews()
+        addSubviews()
+    }
+    
+    private func setupViews() {
+        view.backgroundColor = .white
         self.imagePicker = ImagePicker(presentationController: self, delegate: self)
         usernameTextField.delegate = self
         
@@ -92,7 +101,9 @@ final class ProfileViewController: UIViewController {
         )
         iconView.isUserInteractionEnabled = true
         iconView.addGestureRecognizer(tapOnIconGestureRecognizer)
-        
+    }
+    
+    private func addSubviews() {
         view.addSubview(PhoneAndGender)
         view.addSubview(saveButton)
         view.addSubview(exitButton)
@@ -227,7 +238,7 @@ final class ProfileViewController: UIViewController {
 }
 
 
-extension ProfileViewController: ImagePickerDelegate {
+extension ProfileViewController: ImagePickerDelegate, UITextFieldDelegate {
     
     func didSelect(image: UIImage?) {
         guard let image = image else {
@@ -242,9 +253,4 @@ extension ProfileViewController: ImagePickerDelegate {
         iconView.addGestureRecognizer(tapOnIconGestureRecognizer)
         view.addSubview(iconView)
     }
-}
-
-
-extension ProfileViewController: UITextFieldDelegate {
-
 }
