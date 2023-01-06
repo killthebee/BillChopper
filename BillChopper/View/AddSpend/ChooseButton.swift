@@ -1,8 +1,12 @@
 import UIKit
 
-
 class ChooseButtonView: UIView {
-    let chooseEventLable = UILabel()
+    let chooseEventLable: UILabel = {
+        let lable = UILabel()
+        lable.textColor = .black
+        
+        return lable
+    }()
     
     let chooseEventImage: UIImageView = {
         let imageView = UIImageView()

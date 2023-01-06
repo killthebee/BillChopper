@@ -4,13 +4,14 @@ import UIKit
 class SplitSelectorViewCell: UITableViewCell {
     static let identifier = "SplitSelectorViewCell"
     
-    let slider = CustomSlider()
+    private let slider = CustomSlider()
     
-    let userNameLable: UILabel = {
+    private let userNameLable: UILabel = {
         let lable = UILabel()
         // that's a placeholder
         lable.text = "Maximillian"
         lable.textAlignment = .center
+        lable.textColor = .black
         
         return lable
     }()
@@ -22,11 +23,12 @@ class SplitSelectorViewCell: UITableViewCell {
         lable.layer.borderColor = UIColor.black.cgColor
         
         lable.textAlignment = .center
+        lable.textColor = .black
         
         return lable
     }()
     
-    let userIcon: ProfileIcon = {
+    private let userIcon: ProfileIcon = {
         let icon = ProfileIcon()
         // just a placeholder ( move to a configurator in the future )
         icon.image = UIImage(named: "HombreDefault1")
@@ -37,14 +39,18 @@ class SplitSelectorViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         slider.selectSplitView = self
-        contentView.addSubview(percent)
-        contentView.addSubview(slider)
-        contentView.addSubview(userIcon)
-        contentView.addSubview(userNameLable)
+        addSubviews()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func addSubviews() {
+        contentView.addSubview(percent)
+        contentView.addSubview(slider)
+        contentView.addSubview(userIcon)
+        contentView.addSubview(userNameLable)
     }
     
     override func layoutSubviews() {

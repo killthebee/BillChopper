@@ -1,40 +1,46 @@
 import UIKit
 
-
-class AddSpendViewController: UIViewController {
+final class AddSpendViewController: UIViewController {
     
-    let chooseEventText: UILabel = {
+    private let chooseEventText: UILabel = {
         let lable = UILabel()
-        lable.text = "event"
+        lable.text = R.string.addSpend.event()
         lable.textAlignment = .right
+        lable.textColor = .black
+        
         return lable
     }()
     
-    let chooseEventView = ChooseButtonView(text: "dummy event", image: UIImage(named: "saveIcon")!)
-    let chooseUserView = ChooseButtonView(text: "dummy user", image: UIImage(named: "HombreDefault1")!)
+    private let chooseEventView = ChooseButtonView(text: "dummy event", image: UIImage(named: "saveIcon")!)
+    private let chooseUserView = ChooseButtonView(text: "dummy user", image: UIImage(named: "HombreDefault1")!)
     
-    let choosePayerText: UILabel = {
+    private  let choosePayerText: UILabel = {
         let lable = UILabel()
-        lable.text = "payed by"
+        lable.text = R.string.addSpend.payedBy()
         lable.textAlignment = .right
+        lable.textColor = .black
+        
         return lable
     }()
     
-    let selectSplitText: UILabel = {
+    private let selectSplitText: UILabel = {
         let lable = UILabel()
-        lable.text = "select split"
+        lable.text = R.string.addSpend.selectSplit()
         lable.textAlignment = .center
+        lable.textColor = .black
+        
         return lable
     }()
     
-    let splitSelectorsView: UITableView  = {
+    private let splitSelectorsView: UITableView  = {
         let tableView = UITableView()
         tableView.register(SplitSelectorViewCell.self, forCellReuseIdentifier: SplitSelectorViewCell.identifier)
+        tableView.backgroundColor = .white
         
         return tableView
     }()
     
-    let saveButton: SaveButton = {
+    private let saveButton: SaveButton = {
         let button = SaveButton()
         button.addTarget(self, action: #selector(handleSaveEvent), for: .touchDown)
         
@@ -49,8 +55,11 @@ class AddSpendViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-        
+        addSubviews()
+        setupViews()
+    }
+    
+    private func addSubviews() {
         view.addSubview(chooseEventView)
         view.addSubview(chooseEventText)
         view.addSubview(choosePayerText)
@@ -59,7 +68,10 @@ class AddSpendViewController: UIViewController {
         view.addSubview(splitSelectorsView)
         view.addSubview(saveButton)
         view.addSubview(exitButton)
-        
+    }
+    
+    private func setupViews() {
+        view.backgroundColor = .white
         splitSelectorsView.dataSource = self
         splitSelectorsView.delegate = self
     }
@@ -129,7 +141,8 @@ class AddSpendViewController: UIViewController {
 extension AddSpendViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SplitSelectorViewCell.identifier) as? SplitSelectorViewCell else { return UITableViewCell() }
-
+        cell.percent.text = String(100 / tableView.numberOfRows(inSection: 0))
+        
         return cell 
     }
     
