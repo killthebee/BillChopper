@@ -1,60 +1,72 @@
 import UIKit
 
-
 class SpendTableViewCell: UITableViewCell {
     static let identifier = "SpendCell"
     static let cellSpacingHeight = CGFloat(5)
     
-    let date: UILabel = {
+    private let date: UILabel = {
         let lable = UILabel()
         lable.text = "23"
         lable.font = lable.font.withSize(21)
+        lable.textColor = .black
+        
         return lable
     }()
     
-    let month: UILabel = {
+    private let month: UILabel = {
         let lable = UILabel()
+        // TODO: make an enum with months and rswift strings
         lable.text = "sep"
         lable.font = lable.font.withSize(13)
+        lable.textColor = .black
+        
         return lable
     }()
     
-    let spendName: UILabel = {
+    private let spendName: UILabel = {
         let lable = UILabel()
         lable.text = "dummy (spend)"
         lable.font = UIFont.boldSystemFont(ofSize: 19)
+        lable.textColor = .black
+        
         return lable
     }()
     
-    let spendPayeer: UILabel = {
+    private let spendPayeer: UILabel = {
         let lable = UILabel()
         lable.text = "Pavel payed 300$"
         lable.font = lable.font.withSize(15)
+        lable.textColor = .black
+        
         return lable
     }()
     
     let userAction: UILabel = {
         let lable = UILabel()
-        lable.text = "you borrowed"
+        lable.text = R.string.mainCell.youBorrowed()
         lable.font = lable.font.withSize(11)
         lable.textAlignment = .right
         lable.textColor = .red
+        
         return lable
     }()
     
     let userBalanceDiff: UILabel = {
         let lable = UILabel()
-        lable.text = "1670 usd"
+        lable.text = "$1670"
         lable.font = lable.font.withSize(23)
         lable.textAlignment = .right
         lable.textColor = .red
+        
         return lable
     }()
     
     var actionIcon: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "BorrowActionIcon")
+        imageView.image = R.image.borrowActionIcon()
+        R.image.lentActionIcon()
         imageView.contentMode = .scaleAspectFit
+        
         return imageView
     }()
     
@@ -62,12 +74,23 @@ class SpendTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        setupView()
+        addSubviews()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupView() {
         contentView.backgroundColor = .white
         contentView.layer.borderColor = UIColor.black.cgColor
         contentView.layer.borderWidth = 1
         contentView.layer.cornerRadius = 20
         contentView.clipsToBounds = true
-        
+    }
+    
+    private func addSubviews() {
         contentView.addSubview(spendName)
         contentView.addSubview(spendPayeer)
         contentView.addSubview(userAction)
@@ -75,10 +98,6 @@ class SpendTableViewCell: UITableViewCell {
         contentView.addSubview(date)
         contentView.addSubview(month)
         contentView.addSubview(actionIcon)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     override func layoutSubviews() {
@@ -132,18 +151,20 @@ class SpendTableViewCell: UITableViewCell {
     
 }
 
-
-class LentCell: SpendTableViewCell {
+final class LentCell: SpendTableViewCell {
     static let newIdentifier = "LentCell"
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        actionIcon.image = UIImage(named: "LentActionIcon")
-        userAction.text = "you owed"
+        setupSubViews()
+    }
+    
+    private func setupSubViews() {
+        actionIcon.image = R.image.lentActionIcon()
+        userAction.text = R.string.mainCell.youLent()
         userAction.textColor = customGreen
         
-        userBalanceDiff.text = "1670 usd"
+        userBalanceDiff.text = "$1670"
         userBalanceDiff.textAlignment = .right
         userBalanceDiff.textColor = customGreen
     }

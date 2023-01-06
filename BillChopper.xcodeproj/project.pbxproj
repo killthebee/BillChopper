@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		301159C8292CE49A001E254D /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301159C7292CE49A001E254D /* ImagePicker.swift */; };
 		301159CC292FA322001E254D /* PhoneAndGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301159CB292FA322001E254D /* PhoneAndGender.swift */; };
-		302B817929632D74008380A0 /* test.strings in Resources */ = {isa = PBXBuildFile; fileRef = 302B817829632D74008380A0 /* test.strings */; };
 		302B817D2963395E008380A0 /* main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 302B817C2963395E008380A0 /* main.strings */; };
 		304FDCE22934E11B00737B7B /* UIView + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304FDCE12934E11B00737B7B /* UIView + ext.swift */; };
 		304FDCE429350D5700737B7B /* AddEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304FDCE329350D5700737B7B /* AddEventViewController.swift */; };
@@ -49,12 +48,12 @@
 		30DBDCD9294B2FA900D44D9C /* ChooseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCD8294B2FA900D44D9C /* ChooseButton.swift */; };
 		30DBDCE72951D59400D44D9C /* SplitControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCE62951D59400D44D9C /* SplitControl.swift */; };
 		30DBDCE929520BFC00D44D9C /* SplitSelectorViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCE829520BFC00D44D9C /* SplitSelectorViewCell.swift */; };
+		30E22E932968677700B9A63F /* mainCell.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30E22E922968677700B9A63F /* mainCell.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		301159C7292CE49A001E254D /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		301159CB292FA322001E254D /* PhoneAndGender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneAndGender.swift; sourceTree = "<group>"; };
-		302B817829632D74008380A0 /* test.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = test.strings; sourceTree = "<group>"; };
 		302B817C2963395E008380A0 /* main.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = main.strings; sourceTree = "<group>"; };
 		304FDCE12934E11B00737B7B /* UIView + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + ext.swift"; sourceTree = "<group>"; };
 		304FDCE329350D5700737B7B /* AddEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventViewController.swift; sourceTree = "<group>"; };
@@ -95,6 +94,7 @@
 		30DBDCD8294B2FA900D44D9C /* ChooseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseButton.swift; sourceTree = "<group>"; };
 		30DBDCE62951D59400D44D9C /* SplitControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitControl.swift; sourceTree = "<group>"; };
 		30DBDCE829520BFC00D44D9C /* SplitSelectorViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitSelectorViewCell.swift; sourceTree = "<group>"; };
+		30E22E922968677700B9A63F /* mainCell.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = mainCell.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,8 +112,8 @@
 		302B817A29632E7B008380A0 /* Strings */ = {
 			isa = PBXGroup;
 			children = (
-				302B817829632D74008380A0 /* test.strings */,
 				302B817C2963395E008380A0 /* main.strings */,
+				30E22E922968677700B9A63F /* mainCell.strings */,
 			);
 			path = Strings;
 			sourceTree = "<group>";
@@ -327,8 +327,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30E22E932968677700B9A63F /* mainCell.strings in Resources */,
 				302B817D2963395E008380A0 /* main.strings in Resources */,
-				302B817929632D74008380A0 /* test.strings in Resources */,
 				30DA407B2923BD3900E2DC17 /* .gitignore in Resources */,
 				3078499628EB349E00AEFECA /* LaunchScreen.storyboard in Resources */,
 				3078499328EB349E00AEFECA /* Assets.xcassets in Resources */,
