@@ -1,12 +1,7 @@
 import UIKit
 
-enum balanceType: String {
-    case borrow = "you borrowed"
-    case owe = "you lent"
-}
-
 final class FooterView: UIView {
-    
+    // TODO: I must have forgotten to refctor this
     override var frame: CGRect { didSet { setupView() }}
     
     private func setupView() {
@@ -90,11 +85,11 @@ final class FooterView: UIView {
         
         
         // TODO: format string
-        balanceWithLabal.text = "in total:"
+        balanceWithLabal.text = R.string.mainFooter.inTotal()
         balanceWithLabal.textAlignment = .right
         balanceWithLabal.textColor = .black
         
-        balanceTypeLabel.text = "you borrowed"
+        balanceTypeLabel.text = R.string.mainCell.youBorrowed()
         balanceTypeLabel.font = balanceTypeLabel.font.withSize(11)
         balanceTypeLabel.textColor = .red
         balanceTypeLabel.textAlignment = .right
@@ -151,7 +146,7 @@ final class FooterView: UIView {
         eventName.textAlignment = .center
         eventName.textColor = .red
         
-        eventLable.text = "events"
+        eventLable.text = R.string.mainFooter.events()
         eventLable.textAlignment = .center
         eventLable.textColor = .black
         
