@@ -5,11 +5,15 @@ class PhoneInput: UITextField {
     
     required init(isCode: Bool) {
         super.init(frame: .zero)
-        self.placeholder = isCode ? "7" : "(999) 111 11 11"
+        self.attributedPlaceholder = NSAttributedString(
+            string: isCode ? "7" : "(999) 111 11 11",
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray]
+        )
+        self.textColor = .black
         self.font = UIFont.boldSystemFont(ofSize: 19)
         self.autocorrectionType = UITextAutocorrectionType.no
         self.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-        self.keyboardType = UIKeyboardType.namePhonePad
+        self.keyboardType = UIKeyboardType.phonePad
         self.returnKeyType = UIReturnKeyType.done
         if isCode { self.textAlignment = .right }
         self.tag = isCode ? 0 : 1
