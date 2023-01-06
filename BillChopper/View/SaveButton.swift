@@ -1,7 +1,6 @@
 import UIKit
 
-
-class SaveButton: UIButton {
+final class SaveButton: UIButton {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
