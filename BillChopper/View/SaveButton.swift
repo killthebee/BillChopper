@@ -6,7 +6,7 @@ final class SaveButton: UIButton {
         super.init(frame: frame)
         self.backgroundColor = UIColor.secondaryLabel
         self.layer.cornerRadius = 15
-        self.setTitle("save", for: .normal)
+        self.setTitle(R.string.saveButton.save(), for: .normal)
         self.setTitleColor(.black, for: .normal)
     }
     
