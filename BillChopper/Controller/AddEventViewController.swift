@@ -1,13 +1,17 @@
 import UIKit
 
-
-class AddEventViewController: UIViewController {
+final class AddEventViewController: UIViewController {
     
-    var iconView = ProfileIcon().setUpIconView(UIImage(named: "eventIcon")!)
+    private var iconView = ProfileIcon().setUpIconView(
+        R.image.eventIcon()!
+    )
     
-    lazy var eventNameTextField: CustomTextField = {
+    private lazy var eventNameTextField: CustomTextField = {
         let eventNameTextField = CustomTextField()
-        eventNameTextField.placeholder = "new event name"
+        eventNameTextField.attributedPlaceholder = NSAttributedString(
+            string: R.string.addEvent.newEventPlaceholder(),
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray]
+        )
         eventNameTextField.font = UIFont.boldSystemFont(ofSize: 21)
         eventNameTextField.autocorrectionType = UITextAutocorrectionType.no
         eventNameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
@@ -16,7 +20,7 @@ class AddEventViewController: UIViewController {
         eventNameTextField.returnKeyType = UIReturnKeyType.done
         eventNameTextField.delegate = self
         
-        eventNameTextField.layer.borderColor = UIColor.quaternaryLabel.cgColor
+        eventNameTextField.layer.borderColor = UIColor.secondaryLabel.cgColor
         eventNameTextField.layer.borderWidth = 1
         eventNameTextField.layer.cornerRadius = 15
         eventNameTextField.backgroundColor = .white
@@ -24,82 +28,106 @@ class AddEventViewController: UIViewController {
         return eventNameTextField
     }()
     
-    let eventNameHelpLable = UILabel(text: "Name the event")
+    private let eventNameHelpLable = UILabel(text: R.string.addEvent.nameEventHelpText())
     
-    let eventTypeHelpLable = UILabel(text: "Select event type")
+    private let eventTypeHelpLable = UILabel(text: R.string.addEvent.eventTypeHelpText())
     
-    let addUserText = UILabel(text: "add user:")
+    private let addUserText = UILabel(text: R.string.addEvent.addUser())
     
-    let carouselTableView: UITableView = {
+    private let carouselTableView: UITableView = {
         let table = UITableView()
         table.register(CollectionTableViewCell.self, forCellReuseIdentifier: CollectionTableViewCell.identifier)
+        table.separatorStyle = .none
+        
         return table
     }()
     
-    let userTableView: UITableView = {
+    private let userTableView: UITableView = {
         let table = UITableView()
         table.register(UserTableViewCell.self, forCellReuseIdentifier: UserTableViewCell.identifier)
+        table.backgroundColor = .white
+        // TODO: need fix that looks more pleasing 
+        table.alwaysBounceVertical = false
+        
         return table
     }()
     
-    let phoneInput = PhoneInput(isCode: false)
+    // TODO: change the layout so it'll fit on mini
+    private let phoneInput = PhoneInput(isCode: false)
     
-    let codeInput = PhoneInput(isCode: true)
+    private let codeInput = PhoneInput(isCode: true)
     
-    let addUserButton: UIButton = {
+    private let addUserButton: UIButton = {
         let addUserButton = UIButton()
-        addUserButton.setImage(UIImage(named: "plusIconUser")!, for: .normal)
+        addUserButton.setImage(R.image.plusIconUser()!, for: .normal)
         addUserButton.addTarget(self, action: #selector(handleAddUser), for: .touchDown)
         
         return addUserButton
     }()
     
-    let saveButton: SaveButton = {
+    private let saveButton: SaveButton = {
         let button = SaveButton()
         button.addTarget(self, action: #selector(handleSaveEvent), for: .touchDown)
         
         return button
     }()
     
-    let exitButton: UIButton = {
+    private let exitButton: UIButton = {
         let button = ExitCross()
         button.addTarget(self, action: #selector(handleExitButtonClicked), for: .touchDown)
+        
         return button
     }()
     
     private var viewModels: [CollectionTableViewCellViewModel] = [
         CollectionTableViewCellViewModel(viewModels: [
             TileCollectionViewModel(
-                eventTypeName: "trip",
-                eventTypeIcon: UIImage(named: "tripIcon")!,
+                eventTypeName: R.string.addEvent.tripEventType(),
+                eventTypeIcon: R.image.tripIcon()!,
                 backgroundColor: .white
             ),
             TileCollectionViewModel(
-                eventTypeName: "purchase",
-                eventTypeIcon: UIImage(named: "purchaseIcon")!,
+                eventTypeName: R.string.addEvent.purchaseEventType(),
+                eventTypeIcon: R.image.purchaseIcon()!,
                 backgroundColor: .white),
             TileCollectionViewModel(
-                eventTypeName: "party",
-                eventTypeIcon: UIImage(named: "partyIcon")!,
+                eventTypeName: R.string.addEvent.partyEventType(),
+                eventTypeIcon: R.image.partyIcon()!,
                 backgroundColor: .white
             ),
             TileCollectionViewModel(
-                eventTypeName: "other",
-                eventTypeIcon: UIImage(named: "otherIcon")!,
+                eventTypeName: R.string.addEvent.otherEventType(),
+                eventTypeIcon: R.image.otherIcon()!,
                 backgroundColor: .white
             )
         ])
     ]
     
-    var rawNumber = ""
+    private var rawNumber = ""
     
-    let phoneNumDelegate = PhoneInputDelegate()
-    let userTableDelegateAndDataSource = UserTableDelegateAndDataSource()
+    private let phoneNumDelegate = PhoneInputDelegate()
+    private let userTableDelegateAndDataSource = UserTableDelegateAndDataSource()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupViews()
+        addSubviews()
+    }
+    
+    private func setupViews() {
         view.backgroundColor = .white
         
+        phoneInput.delegate = phoneNumDelegate
+        codeInput.delegate = phoneNumDelegate
+        
+        carouselTableView.dataSource = self
+        carouselTableView.delegate = self
+        
+        userTableView.delegate = userTableDelegateAndDataSource
+        userTableView.dataSource = userTableDelegateAndDataSource
+    }
+    
+    private func addSubviews() {
         view.addSubview(iconView)
         view.addSubview(eventNameTextField)
         view.addSubview(eventNameHelpLable)
@@ -113,15 +141,6 @@ class AddEventViewController: UIViewController {
         view.addSubview(addUserText)
         view.addSubview(userTableView)
         view.addSubview(saveButton)
-        
-        phoneInput.delegate = phoneNumDelegate
-        codeInput.delegate = phoneNumDelegate
-        
-        carouselTableView.dataSource = self
-        carouselTableView.delegate = self
-        
-        userTableView.delegate = userTableDelegateAndDataSource
-        userTableView.dataSource = userTableDelegateAndDataSource
     }
     
     override func viewDidLayoutSubviews() {
@@ -234,7 +253,6 @@ class AddEventViewController: UIViewController {
     }
 }
 
-
 extension AddEventViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModels.count
@@ -250,6 +268,7 @@ extension AddEventViewController: UITableViewDataSource, UITableViewDelegate {
         }
         cell.configure(with: viewModel)
         cell.delegatee = self
+        
         return cell
     }
     
@@ -262,7 +281,6 @@ extension AddEventViewController: UITableViewDataSource, UITableViewDelegate {
     }
 }
 
-
 extension AddEventViewController: CollectionTableViewCellDelegate {
     func collectionViewDidTapItem(with viewModel: TileCollectionViewModel) {
         iconView.removeFromSuperview()
@@ -271,16 +289,11 @@ extension AddEventViewController: CollectionTableViewCellDelegate {
     }
 }
 
-
-extension AddEventViewController: UITextFieldDelegate {
-    
-}
-
+extension AddEventViewController: UITextFieldDelegate { }
 
 class UserTableDelegateAndDataSource: NSObject {
     // TODO: fetch array with user models here
 }
-
 
 extension UserTableDelegateAndDataSource: UITableViewDataSource, UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

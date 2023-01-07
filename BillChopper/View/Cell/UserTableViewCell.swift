@@ -1,38 +1,28 @@
 import UIKit
 
-
-class UserTableViewCell: UITableViewCell {
+final class UserTableViewCell: UITableViewCell {
     static let identifier = "UserTableViewCell"
-    private let userIcon = UIImage(named: "HombreDefault1")
     
-    lazy var userIconView: ProfileIcon = {
-        let profileIcon = ProfileIcon()
-        profileIcon.image = userIcon
-        
-        return profileIcon
-    }()
+    private lazy var userIconView =  ProfileIcon().setUpIconView()
     
-    private let userPhoneLable: UILabel = {
-        let lable = UILabel()
-        lable.text = "8(800)5353535"
-        return lable
-    }()
+    private let userPhoneLable: UILabel = UILabel(text: "8(800)5353535")
     
-    private let userNameLable: UILabel = {
-        let lable = UILabel()
-        lable.text = "John"
-        return lable
-    }()
+    private let userNameLable: UILabel = UILabel(text: "John")
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.addSubview(userPhoneLable)
-        contentView.addSubview(userIconView)
-        contentView.addSubview(userNameLable)
+        contentView.backgroundColor = .white
+        addSubviews()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func addSubviews() {
+        contentView.addSubview(userPhoneLable)
+        contentView.addSubview(userIconView)
+        contentView.addSubview(userNameLable)
     }
     
     override func layoutSubviews() {

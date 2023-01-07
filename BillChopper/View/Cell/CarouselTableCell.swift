@@ -1,35 +1,34 @@
 import UIKit
 
-
 struct CollectionTableViewCellViewModel {
     let viewModels: [TileCollectionViewModel]
 }
-
 
 protocol CollectionTableViewCellDelegate: AnyObject {
     func collectionViewDidTapItem(with viewModel: TileCollectionViewModel)
 }
 
-
-class CollectionTableViewCell: UITableViewCell {
+final class CollectionTableViewCell: UITableViewCell {
     static let identifier = "CollectionTableViewCell"
     
     unowned var delegatee: CollectionTableViewCellDelegate?
     private var viewModels: [TileCollectionViewModel] = []
     
-    let collectionView: UICollectionView = {
+    private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.sectionInset = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(TileCollectionViewCell.self, forCellWithReuseIdentifier: TileCollectionViewCell.identifier)
-        collectionView.backgroundColor = .systemBackground
+        collectionView.backgroundColor = .white
+        collectionView.showsHorizontalScrollIndicator = false
+        
         return collectionView
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        collectionView.backgroundColor = .systemBackground
+        collectionView.backgroundColor = .white
         contentView.addSubview(collectionView)
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -78,14 +77,12 @@ extension CollectionTableViewCell: UICollectionViewDelegate, UICollectionViewDat
     }
 }
 
-
 extension CollectionTableViewCell {
     func configure(with viewModel: CollectionTableViewCellViewModel) {
         self.viewModels = viewModel.viewModels
         collectionView.reloadData()
     }
 }
-
 
 extension CollectionTableViewCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

@@ -12,6 +12,7 @@
 		302B817D2963395E008380A0 /* main.strings in Resources */ = {isa = PBXBuildFile; fileRef = 302B817C2963395E008380A0 /* main.strings */; };
 		30363E6F296881D800D48D5C /* addSpend.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30363E6E296881D800D48D5C /* addSpend.strings */; };
 		30363E72296886A000D48D5C /* saveButton.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30363E71296886A000D48D5C /* saveButton.strings */; };
+		30363E752969A70900D48D5C /* AddEvent.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30363E742969A70900D48D5C /* AddEvent.strings */; };
 		304FDCE22934E11B00737B7B /* UIView + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304FDCE12934E11B00737B7B /* UIView + ext.swift */; };
 		304FDCE429350D5700737B7B /* AddEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304FDCE329350D5700737B7B /* AddEventViewController.swift */; };
 		304FDCE72939F13700737B7B /* CarouselCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304FDCE62939F13700737B7B /* CarouselCell.swift */; };
@@ -61,6 +62,7 @@
 		302B817C2963395E008380A0 /* main.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = main.strings; sourceTree = "<group>"; };
 		30363E6E296881D800D48D5C /* addSpend.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = addSpend.strings; sourceTree = "<group>"; };
 		30363E71296886A000D48D5C /* saveButton.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = saveButton.strings; sourceTree = "<group>"; };
+		30363E742969A70900D48D5C /* AddEvent.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = AddEvent.strings; sourceTree = "<group>"; };
 		304FDCE12934E11B00737B7B /* UIView + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + ext.swift"; sourceTree = "<group>"; };
 		304FDCE329350D5700737B7B /* AddEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventViewController.swift; sourceTree = "<group>"; };
 		304FDCE62939F13700737B7B /* CarouselCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselCell.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				30E22E982968746900B9A63F /* profileView.strings */,
 				30363E6E296881D800D48D5C /* addSpend.strings */,
 				30363E71296886A000D48D5C /* saveButton.strings */,
+				30363E742969A70900D48D5C /* AddEvent.strings */,
 			);
 			path = Strings;
 			sourceTree = "<group>";
@@ -346,6 +349,7 @@
 				30DA407B2923BD3900E2DC17 /* .gitignore in Resources */,
 				3078499628EB349E00AEFECA /* LaunchScreen.storyboard in Resources */,
 				30363E72296886A000D48D5C /* saveButton.strings in Resources */,
+				30363E752969A70900D48D5C /* AddEvent.strings in Resources */,
 				30E22E9629686E6800B9A63F /* mainFooter.strings in Resources */,
 				3078499328EB349E00AEFECA /* Assets.xcassets in Resources */,
 			);

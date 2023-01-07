@@ -1,0 +1,8 @@
+"newEventPlaceholder" = "new event name";
+"nameEventHelpText" = "Name the event";
+"eventTypeHelpText" = "Select event type";
+"addUser" = "add user:";
+"tripEventType" = "trip";
+"purchaseEventType" = "purchase";
+"partyEventType" = "party";
+"otherEventType" = "other";

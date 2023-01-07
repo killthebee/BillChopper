@@ -1,6 +1,5 @@
 import UIKit
 
-
 struct TileCollectionViewModel {
     let eventTypeName: String
     let eventTypeIcon: UIImage
@@ -51,7 +50,7 @@ class TileCollectionViewCell: UICollectionViewCell {
         
         contentView.layer.cornerRadius = 15
         contentView.layer.borderWidth = 1.5
-        contentView.layer.borderColor = UIColor.quaternaryLabel.cgColor
+        contentView.layer.borderColor = UIColor.secondaryLabel.cgColor
     }
     
     func configure(with viewModel: TileCollectionViewModel) {
