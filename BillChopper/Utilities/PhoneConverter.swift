@@ -1,9 +1,8 @@
 import Foundation
 
-
 class PhoneConverter {
     
-    let formatedIndexToRawForAddition = [
+    private let formatedIndexToRawForAddition = [
         0: 0,
         1: 0,
         2: 1,
@@ -22,7 +21,7 @@ class PhoneConverter {
     ]
 
 
-    let formatedIndexToRawForDecrease = [
+    private let formatedIndexToRawForDecrease = [
         0: 0,
         1: 0,
         2: 1,
@@ -41,7 +40,7 @@ class PhoneConverter {
         15: 10,
     ]
 
-    let formatedIndexToRawForMultiDecrease = [
+    private let formatedIndexToRawForMultiDecrease = [
         0: 0,
         1: 0,
         2: 1,
@@ -76,7 +75,7 @@ class PhoneConverter {
         let newRawNumber: String
         if isAddition {
             newRawNumber = addNum()
-        } else if range.length == 1{
+        } else if range.length == 1 {
             newRawNumber = deleteOneNum()
         } else {
             newRawNumber = deleteManyNums()
