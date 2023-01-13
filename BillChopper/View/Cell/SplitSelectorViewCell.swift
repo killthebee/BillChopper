@@ -39,6 +39,7 @@ class SplitSelectorViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         slider.selectSplitView = self
+        contentView.backgroundColor = .white
         addSubviews()
     }
     
@@ -47,39 +48,35 @@ class SplitSelectorViewCell: UITableViewCell {
     }
     
     private func addSubviews() {
-        contentView.addSubview(percent)
-        contentView.addSubview(slider)
-        contentView.addSubview(userIcon)
-        contentView.addSubview(userNameLable)
+        [percent, slider, userIcon, userNameLable].forEach({contentView.addSubview($0)})
     }
     
     override func layoutSubviews() {
-        slider.frame = CGRect(
-            x: contentView.frame.size.width * 0.4,
-            y: 0,
-            width: contentView.frame.size.width * 0.4,
-            height: contentView.frame.size.height
-        )
-        percent.frame = CGRect(
-            x: contentView.frame.size.width * 0.85,
-            y: contentView.frame.size.height * 0.1,
-            width: contentView.frame.size.width * 0.15,
-            height: contentView.frame.size.height * 0.8
-        )
-        userIcon.frame = CGRect(
-            x: contentView.frame.size.width * 0,
-            y: contentView.frame.size.height * 0.1,
-            width: contentView.frame.size.height * 0.8,
-            height: contentView.frame.size.height  * 0.8
-        )
-        let remainingWidht = contentView.frame.size.width * 0.45 - contentView.frame.size.height
-        userNameLable.frame = CGRect(
-            x: contentView.frame.size.height,
-            y: 0,
-            // that * 0.05 is weird, the text is supposed to have a center alligment
-            width: remainingWidht - contentView.frame.size.width * 0.05,
-            height: contentView.frame.size.height
-        )
+        super.layoutSubviews()
+        [slider, percent, userIcon, userNameLable
+        ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
+        
+        let padding: CGFloat = 10
+        let constraints: [NSLayoutConstraint] = [
+            userIcon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            userIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
+            userIcon.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.97),
+            userIcon.widthAnchor.constraint(equalTo: userIcon.heightAnchor),
+            
+            userNameLable.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            userNameLable.leadingAnchor.constraint(equalTo: userIcon.trailingAnchor),
+            userNameLable.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.3),
+            
+            percent.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            percent.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding),
+            percent.widthAnchor.constraint(equalToConstant: 50),
+            percent.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.97),
+            
+            slider.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            slider.leadingAnchor.constraint(equalTo: userNameLable.trailingAnchor),
+            slider.trailingAnchor.constraint(equalTo: percent.leadingAnchor, constant: -5),
+        ]
+        NSLayoutConstraint.activate(constraints)
     }
 
 }
