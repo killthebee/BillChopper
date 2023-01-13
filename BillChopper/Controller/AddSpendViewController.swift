@@ -79,21 +79,21 @@ final class AddSpendViewController: UIViewController {
         super.viewDidLayoutSubviews()
         
         let eventStackView = UIStackView(arrangedSubviews: [chooseEventText, chooseEventView])
-        chooseEventView.widthAnchor.constraint(equalTo: eventStackView.widthAnchor, multiplier: 0.7).isActive = true
-        eventPayeerContainerView.addSubview(eventStackView)
-        eventStackView.distribution = .fill
-        eventStackView.spacing = 10
-        
         let payeerStackView = UIStackView(arrangedSubviews: [choosePayerText, chooseUserView])
-        chooseUserView.widthAnchor.constraint(equalTo: payeerStackView.widthAnchor, multiplier: 0.7).isActive = true
-        eventPayeerContainerView.addSubview(payeerStackView)
-        payeerStackView.distribution = .fill
-        payeerStackView.spacing = 10
+        [payeerStackView, eventStackView].forEach({ stackView in
+            stackView.distribution = .fill
+            stackView.spacing = 10
+            eventPayeerContainerView.addSubview(stackView)
+        })
         
         [exitButton, eventPayeerContainerView, chooseEventText, chooseEventView, eventStackView, payeerStackView, selectSplitText, splitSelectorsView, saveButton
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         
         let constraints: [NSLayoutConstraint] = [
+            
+            chooseUserView.widthAnchor.constraint(equalTo: payeerStackView.widthAnchor, multiplier: 0.7),
+            chooseEventView.widthAnchor.constraint(equalTo: eventStackView.widthAnchor, multiplier: 0.7),
+            
             exitButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 15),
             exitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
             exitButton.widthAnchor.constraint(equalToConstant: 41),
