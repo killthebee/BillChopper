@@ -86,8 +86,8 @@ extension CollectionTableViewCell {
 
 extension CollectionTableViewCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = contentView.frame.size.width / 2.5
-        let height = contentView.frame.size.height
+        let width = 150
+        let height = 30
         return CGSize(width: width, height: height)
     }
 }
