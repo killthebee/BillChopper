@@ -1,6 +1,5 @@
 import UIKit
 
-
 class ProfileIcon: UIView {
     var internalUIImageView: UIImageView?
     var shapeLayer: CAShapeLayer?
