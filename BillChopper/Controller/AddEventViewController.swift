@@ -207,7 +207,7 @@ final class AddEventViewController: UIViewController {
             addUserSplitStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             addUserSplitStack.heightAnchor.constraint(equalToConstant: 40),
             
-            userTableView.topAnchor.constraint(equalTo: eventTypeHelpLable.bottomAnchor, constant: 70),
+            userTableView.topAnchor.constraint(equalTo: eventTypeHelpLable.bottomAnchor, constant: 90),
             userTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             userTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             userTableView.bottomAnchor.constraint(equalTo: saveButton.topAnchor, constant: -20)
@@ -275,26 +275,6 @@ extension AddEventViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
 }
-
-//extension AddEventViewController: UICollectionViewDelegateFlowLayout {
-//    func collectionView(_ collectionView: UICollectionView,
-//                                layout collectionViewLayout: UICollectionViewLayout,
-//                                sizeForItemAt indexPath: IndexPath) -> CGSize {
-//            return CGSize(width: 300, height: 100)
-//        }
-//
-//        func collectionView(_ collectionView: UICollectionView,
-//                            layout collectionViewLayout: UICollectionViewLayout,
-//                            minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-//            return 1.0
-//        }
-//
-//        func collectionView(_ collectionView: UICollectionView, layout
-//            collectionViewLayout: UICollectionViewLayout,
-//                            minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-//            return 1.0
-//        }
-//}
 
 extension AddEventViewController: CollectionTableViewCellDelegate {
     func collectionViewDidTapItem(with viewModel: TileCollectionViewModel) {
