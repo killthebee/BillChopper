@@ -49,6 +49,7 @@ final class ProfileViewController: UIViewController {
         usernameTextField.autocorrectionType = UITextAutocorrectionType.no
         usernameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
         usernameTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        // TODO: make keyboards what make sense
         usernameTextField.keyboardType = UIKeyboardType.default
         usernameTextField.returnKeyType = UIReturnKeyType.done
         
@@ -88,6 +89,7 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupIconView(iconView: iconView)
         setupViews()
         addSubviews()
     }
@@ -105,122 +107,92 @@ final class ProfileViewController: UIViewController {
     }
     
     private func addSubviews() {
-        view.addSubview(PhoneAndGender)
-        view.addSubview(saveButton)
-        view.addSubview(exitButton)
-        view.addSubview(uploadButton)
-        view.addSubview(usernameTextField)
-        view.addSubview(usernameHelpText)
-        view.addSubview(iconView)// over all other stuff
+        [exitButton, uploadButton, usernameTextField, usernameHelpText, PhoneAndGender, saveButton, iconView].forEach({view.addSubview($0)})
     }
     
     @objc func handleTapOnIcon() {
         // why do I need selfs here?
-        
-        let repositionAnimation = CABasicAnimation(keyPath: "position")
-        repositionAnimation.fromValue = self.iconView.center
-        repositionAnimation.toValue = self.view.center
-        repositionAnimation.duration = 0.5
-        repositionAnimation.fillMode = CAMediaTimingFillMode.forwards
-        repositionAnimation.isRemovedOnCompletion = false
-        
-        let scaleAnimation = CABasicAnimation(keyPath: "transform.scale")
-        scaleAnimation.fromValue = 1
-        scaleAnimation.toValue = 2
-        scaleAnimation.duration = 0.5
-        scaleAnimation.fillMode = CAMediaTimingFillMode.forwards
-        scaleAnimation.isRemovedOnCompletion = false
-        
-        self.isIconZoomed = true
-        self.iconView.layer.add(repositionAnimation, forKey: "iconRePosition")
-        self.iconView.layer.add(scaleAnimation, forKey: "iconScale")
+        let newDiameter = CGFloat(300)
+        iconTopAnchor?.constant = CGFloat(self.view.center.y) - newDiameter / 2
+        iconWidthAnchor?.constant = newDiameter
+        iconHeigthAnchor?.constant = newDiameter
+        UIView.animate(withDuration: 0.5, animations: {
+            self.view.layoutIfNeeded()
+        })
         self.view.addSubview(coverView)
     }
     
     @objc func handleTapOnZoomedIcon() {
-        if !self.isIconZoomed { return }
-        
-        self.iconView.center = self.view.center
-        let repositionAnimation = CABasicAnimation(keyPath: "position")
-        repositionAnimation.fromValue = self.iconView.center
-        repositionAnimation.toValue = CGPoint(
-            x: view.frame.size.width * 0.5,
-            y: view.frame.size.height * 0.1
-        )
-        repositionAnimation.duration = 0.5
-        repositionAnimation.fillMode = CAMediaTimingFillMode.forwards
-        repositionAnimation.isRemovedOnCompletion = false
-        
-        let scaleAnimation = CABasicAnimation(keyPath: "transform.scale")
-        scaleAnimation.fromValue = 2
-        scaleAnimation.toValue = 1
-        scaleAnimation.duration = 0.5
-        scaleAnimation.fillMode = CAMediaTimingFillMode.forwards
-        scaleAnimation.isRemovedOnCompletion = false
-        
-        self.iconView.layer.add(repositionAnimation, forKey: "iconPosition")
-        self.iconView.layer.add(scaleAnimation, forKey: "iconDownScale")
-        self.isIconZoomed = false
+        let oldDiameter = CGFloat(150)
+        iconTopAnchor?.constant = 50
+        iconWidthAnchor?.constant = oldDiameter
+        iconHeigthAnchor?.constant = oldDiameter
+        UIView.animate(withDuration: 0.5, animations: {
+            self.view.layoutIfNeeded()
+        })
         
         coverView.removeFromSuperview()
-        self.iconView.frame = CGRect(
-            x: view.frame.size.width * 0.35,
-            y: view.frame.size.height * 0.05,
-            width: view.frame.size.width * 0.3,
-            height: view.frame.size.width * 0.3
-        )
+    }
+    
+    private var iconTopAnchor: NSLayoutConstraint?
+    private var iconCenterXAnchor: NSLayoutConstraint?
+    private var iconWidthAnchor: NSLayoutConstraint?
+    private var iconHeigthAnchor: NSLayoutConstraint?
+    
+    private let iconViewDiameter: CGFloat = 150
+    private func setupIconView (iconView: ProfileIcon) {
+        iconTopAnchor = iconView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50)
+        iconCenterXAnchor = iconView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        iconWidthAnchor = iconView.widthAnchor.constraint(equalToConstant: iconViewDiameter)
+        iconHeigthAnchor = iconView.heightAnchor.constraint(equalToConstant: iconViewDiameter)
     }
     
     override func viewDidLayoutSubviews() {
-        exitButton.frame = CGRect(
-            x: view.bounds.size.width * 0.85,
-            y: view.bounds.size.height * 0.05,
-            width: view.bounds.size.width * 0.1,
-            height: view.bounds.size.width * 0.1
-        )
-        iconView.frame = CGRect(
-            x: view.frame.size.width * 0.35,
-            y: view.frame.size.height * 0.05,
-            width: view.frame.size.width * 0.3,
-            height: view.frame.size.width * 0.3
-        )
-        coverView.frame = CGRect(
-            x: 0,
-            y: 0,
-            width: self.view.frame.width,
-            height: self.view.frame.height
-        )
-        PhoneAndGender.frame = CGRect(
-            x: view.frame.size.width * 0.1,
-            y: view.frame.size.height * 0.45,
-            width: view.frame.size.width * 0.78,
-            height: view.frame.size.height * 0.1
-        )
-        uploadButton.frame = CGRect(
-            x: view.frame.size.width * 0.25,
-            y: view.frame.size.height * 0.2,
-            width: view.frame.size.width * 0.5,
-            height: view.frame.size.height * 0.05
-        )
-        saveButton.frame = CGRect(
-            x: view.frame.size.width * 0.25,
-            y: view.frame.size.height * 0.6,
-            width: view.frame.size.width * 0.5,
-            height: view.frame.size.height * 0.05
-        )
-        usernameTextField.frame = CGRect(
-            x: view.frame.size.width * 0.1,
-            y: view.frame.size.height * 0.3,
-            width: view.frame.size.width * 0.8,
-            height: view.frame.size.height * 0.05
-        )
-        usernameHelpText.frame = CGRect(
-            x: view.frame.size.width * 0.12,
-            y: view.frame.size.height * 0.33,
-            width: view.frame.size.width * 0.78,
-            height: view.frame.size.height * 0.1
-        )
+        super.viewDidLayoutSubviews()
+        [iconView, exitButton, uploadButton, usernameTextField, usernameHelpText, PhoneAndGender,
+         saveButton].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         
+        
+        let heigthToUploadButton: CGFloat = 50 + iconViewDiameter
+        
+        let  constraints: [NSLayoutConstraint] = [
+            iconTopAnchor!,
+            iconCenterXAnchor!,
+            iconWidthAnchor!,
+            iconHeigthAnchor!,
+            
+            exitButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 15),
+            exitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
+            exitButton.widthAnchor.constraint(equalToConstant: 41),
+            exitButton.heightAnchor.constraint(equalToConstant: 41),
+            
+            uploadButton.topAnchor.constraint(equalTo: view.topAnchor, constant: heigthToUploadButton),
+            uploadButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            uploadButton.heightAnchor.constraint(equalToConstant: 40),
+            
+            usernameTextField.topAnchor.constraint(equalTo: uploadButton.bottomAnchor, constant: 50),
+            usernameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            usernameTextField.heightAnchor.constraint(equalToConstant: 40),
+            usernameTextField.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
+            
+            usernameHelpText.topAnchor.constraint(equalTo: usernameTextField.bottomAnchor, constant: 10),
+            usernameHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            usernameHelpText.heightAnchor.constraint(equalToConstant: 40),
+            usernameHelpText.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor, multiplier: 0.95),
+            
+            PhoneAndGender.topAnchor.constraint(equalTo: usernameHelpText.bottomAnchor, constant: 50),
+            PhoneAndGender.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            PhoneAndGender.heightAnchor.constraint(equalToConstant: 80),
+            PhoneAndGender.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor),
+            
+            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
+            saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            saveButton.heightAnchor.constraint(equalToConstant: 40),
+            saveButton.widthAnchor.constraint(equalToConstant: 150),
+        ]
+        NSLayoutConstraint.activate(constraints)
+        
+        coverView.frame = view.bounds
         usernameTextField.sidePadding = usernameTextField.frame.width * 0.05
         usernameTextField.topPadding = usernameTextField.frame.height * 0.1
     }
@@ -247,6 +219,8 @@ extension ProfileViewController: ImagePickerDelegate, UITextFieldDelegate {
         }
         iconView.removeFromSuperview()
         iconView = ProfileIcon().setUpIconView(image)
+        setupIconView(iconView: iconView)
+        
         let tapOnIconGestureRecognizer = UITapGestureRecognizer(
             target: self, action: #selector(handleTapOnIcon)
         )
