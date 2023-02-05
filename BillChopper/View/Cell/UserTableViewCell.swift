@@ -9,6 +9,10 @@ final class UserTableViewCell: UITableViewCell {
     
     private let userNameLable: UILabel = UILabel(text: "John")
     
+    lazy private var cellStack = UIStackView(
+        //arrangedSubviews: [userIconView, userNameLable, userPhoneLable]
+    )
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.backgroundColor = .white
@@ -20,31 +24,35 @@ final class UserTableViewCell: UITableViewCell {
     }
     
     private func addSubviews() {
-        contentView.addSubview(userPhoneLable)
-        contentView.addSubview(userIconView)
-        contentView.addSubview(userNameLable)
+        contentView.addSubview(cellStack)
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        userPhoneLable.frame = CGRect(
-            x: contentView.bounds.size.width * 0.2,
-            y: 0,
-            width: contentView.bounds.size.width * 0.6,
-            height: contentView.bounds.size.height
-        )
-        userIconView.frame = CGRect(
-            x: contentView.bounds.size.width * 0.025,
-            y: contentView.bounds.size.width * 0.025,
-            width: contentView.bounds.size.width * 0.15,
-            height: contentView.bounds.size.width * 0.15
-        )
-        userNameLable.frame = CGRect(
-            x: contentView.bounds.size.width * 0.65,
-            y: 0,
-            width: contentView.bounds.size.width * 0.35,
-            height: contentView.bounds.size.height
-        )
+        
+        cellStack.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        cellStack.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        cellStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        cellStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        
+        cellStack.translatesAutoresizingMaskIntoConstraints = false
+        cellStack.distribution = .fill
+        cellStack.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 0)
+        cellStack.isLayoutMarginsRelativeArrangement = true
+
+        userIconView.translatesAutoresizingMaskIntoConstraints = false
+        userIconView.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        userIconView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        cellStack.addArrangedSubview(userIconView)
+        cellStack.setCustomSpacing(5, after: cellStack.arrangedSubviews[0])
+        
+        userNameLable.translatesAutoresizingMaskIntoConstraints = false
+        cellStack.addArrangedSubview(userNameLable)
+        
+        userPhoneLable.translatesAutoresizingMaskIntoConstraints = false
+        userPhoneLable.textAlignment = .center
+        cellStack.addArrangedSubview(userPhoneLable)
+        userPhoneLable.widthAnchor.constraint(equalTo: cellStack.widthAnchor, multiplier: 0.6).isActive = true
     }
     
 }

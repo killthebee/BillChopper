@@ -46,7 +46,7 @@ final class AddEventViewController: UIViewController {
         let table = UITableView()
         table.register(UserTableViewCell.self, forCellReuseIdentifier: UserTableViewCell.identifier)
         table.backgroundColor = .white
-        // TODO: need fix that looks more pleasing 
+        // TODO: need a fix that looks more pleasing
         table.alwaysBounceVertical = false
         
         return table
@@ -80,6 +80,7 @@ final class AddEventViewController: UIViewController {
     }()
     
     private var viewModels: [CollectionTableViewCellViewModel] = [
+        // TODO: Add ~2 more pls
         CollectionTableViewCellViewModel(viewModels: [
             TileCollectionViewModel(
                 eventTypeName: R.string.addEvent.tripEventType(),
@@ -110,6 +111,7 @@ final class AddEventViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        (UIApplication.shared.delegate as! AppDelegate).restrictRotation = .portrait
         setupViews()
         addSubviews()
     }
@@ -128,98 +130,89 @@ final class AddEventViewController: UIViewController {
     }
     
     private func addSubviews() {
-        view.addSubview(iconView)
-        view.addSubview(eventNameTextField)
-        view.addSubview(eventNameHelpLable)
-        view.addSubview(carouselTableView)
-        view.addSubview(eventTypeHelpLable)
-        view.addSubview(exitButton)
-        view.addSubview(phoneInput)
-        view.addSubview(codeInput)
-        //this fucking button is ugly or not..?
-        view.addSubview(addUserButton)
-        view.addSubview(addUserText)
-        view.addSubview(userTableView)
-        view.addSubview(saveButton)
+        [topContainerView, carouselTableView, eventTypeHelpLable, splitSelectorStack, addUserSplitStack,
+         exitButton, userTableView, saveButton
+        ].forEach({view.addSubview($0)})
+        [iconView, eventNameTextField, eventNameHelpLable].forEach({topContainerView.addSubview($0)})
     }
+    
+    private let topContainerView = UIView()
+    private let splitSelectorStack = UIStackView()
+    private lazy var addUserSplitStack: UIStackView = {
+        let stack = UIStackView(
+            arrangedSubviews: [self.addUserText, self.codeInput, self.phoneInput]
+        )
+        stack.distribution = .fill
+        stack.spacing = 10
+        self.addUserButton.translatesAutoresizingMaskIntoConstraints = false
+        self.addUserButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        self.addUserButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        stack.addArrangedSubview(self.addUserButton)
+        stack.setCustomSpacing(5, after: stack.arrangedSubviews[1])
+        
+        return stack
+    }()
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        iconView.frame = CGRect(
-            x: view.frame.size.width * 0.1,
-            y: view.frame.size.height * 0.08,
-            width: view.frame.size.width * 0.3,
-            height: view.frame.size.width * 0.3
-        )
-        eventNameTextField.frame = CGRect(
-            x: view.frame.size.width * 0.45,
-            y: view.frame.size.height * 0.13,
-            width: view.frame.size.width * 0.5,
-            height: view.frame.size.height * 0.05
-        )
-        eventNameHelpLable.frame = CGRect(
-            x: view.frame.size.width * 0.47,
-            y: view.frame.size.height * 0.17,
-            width: view.frame.size.width * 0.5,
-            height: view.frame.size.height * 0.05
-        )
-        carouselTableView.frame = CGRect(
-            x: 0,
-            y: view.frame.size.height * 0.25,
-            width: view.frame.size.width,
-            height: view.frame.size.height * 0.05
-        )
-        eventTypeHelpLable.frame = CGRect(
-            x: view.frame.size.width * 0.05,
-            y: view.frame.size.height * 0.3,
-            width: view.frame.size.width * 0.9,
-            height: view.frame.size.height * 0.05
-        )
-        phoneInput.frame = CGRect(
-            x: view.frame.size.width * 0.45,
-            y: view.frame.size.height * 0.37,
-            width: view.frame.size.width * 0.35,
-            height: view.frame.size.height * 0.05
-        )
-        codeInput.frame = CGRect(
-            x: view.frame.size.width * 0.29,
-            y: view.frame.size.height * 0.37,
-            width: view.frame.size.width * 0.15,
-            height: view.frame.size.height * 0.05
-        )
-        addUserButton.frame = CGRect(
-            x: view.frame.size.width * 0.81,
-            y: view.frame.size.height * 0.378,
-            width: view.frame.size.height * 0.038,
-            height: view.frame.size.height * 0.038
-        )
-        addUserText.frame = CGRect(
-            x: view.frame.size.width * 0.12,
-            y: view.frame.size.height * 0.37,
-            width: view.frame.size.width * 0.35,
-            height: view.frame.size.height * 0.05
-        )
-        userTableView.frame = CGRect(
-            x: view.frame.size.width * 0.1,
-            y: view.frame.size.height * 0.45,
-            width: view.frame.size.width * 0.8,
-            height: view.frame.size.height * 0.3
-        )
-        saveButton.frame = CGRect(
-            x: view.frame.size.width * 0.3,
-            y: view.frame.size.height * 0.8,
-            width: view.frame.size.width * 0.4,
-            height: view.frame.size.height * 0.05
-        )
-        exitButton.frame = CGRect(
-            x: view.bounds.size.width * 0.85,
-            y: view.bounds.size.height * 0.05,
-            width: view.bounds.size.width * 0.1,
-            height: view.bounds.size.width * 0.1
-        )
         
-        eventNameTextField.sidePadding = eventNameTextField.frame.width * 0.05
-        eventNameTextField.topPadding = eventNameTextField.frame.height * 0.1
+        [exitButton, topContainerView, iconView, eventNameTextField, eventNameHelpLable, carouselTableView,
+         eventTypeHelpLable, saveButton, splitSelectorStack, addUserSplitStack, userTableView
+        ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
+        
+        splitSelectorStack.spacing = 10
+        
+        let constraints: [NSLayoutConstraint] = [
+            exitButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 15),
+            exitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
+            exitButton.widthAnchor.constraint(equalToConstant: 41),
+            exitButton.heightAnchor.constraint(equalToConstant: 41),
+            
+            topContainerView.topAnchor.constraint(equalTo: view.topAnchor, constant: 40),
+            topContainerView.widthAnchor.constraint(equalToConstant: 320),
+            topContainerView.heightAnchor.constraint(equalToConstant: 120),
+            topContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            iconView.topAnchor.constraint(equalTo: topContainerView.topAnchor),
+            iconView.widthAnchor.constraint(equalToConstant: 120),
+            iconView.heightAnchor.constraint(equalToConstant: 120),
+            iconView.leadingAnchor.constraint(equalTo: topContainerView.leadingAnchor),
+            
+            eventNameTextField.trailingAnchor.constraint(equalTo: topContainerView.trailingAnchor),
+            eventNameTextField.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: 10),
+            eventNameTextField.centerYAnchor.constraint(equalTo: iconView.centerYAnchor),
+            eventNameTextField.heightAnchor.constraint(equalToConstant: 40),
+            
+            eventNameHelpLable.topAnchor.constraint(equalTo: eventNameTextField.bottomAnchor),
+            eventNameHelpLable.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: 15),
+            eventNameHelpLable.trailingAnchor.constraint(equalTo: topContainerView.trailingAnchor),
+            eventNameHelpLable.heightAnchor.constraint(equalToConstant: 30),
+            
+            carouselTableView.topAnchor.constraint(equalTo: topContainerView.bottomAnchor, constant: 20),
+            carouselTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            carouselTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            carouselTableView.heightAnchor.constraint(equalToConstant: 40),
+            
+            eventTypeHelpLable.topAnchor.constraint(equalTo: carouselTableView.bottomAnchor),
+            eventTypeHelpLable.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 15),
+            eventTypeHelpLable.trailingAnchor.constraint(equalTo: topContainerView.trailingAnchor),
+            eventTypeHelpLable.heightAnchor.constraint(equalToConstant: 30),
+            
+            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
+            saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            saveButton.heightAnchor.constraint(equalToConstant: 40),
+            saveButton.widthAnchor.constraint(equalToConstant: 150),
+            
+            addUserSplitStack.topAnchor.constraint(equalTo: eventTypeHelpLable.bottomAnchor, constant: 20),
+            addUserSplitStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            addUserSplitStack.heightAnchor.constraint(equalToConstant: 40),
+            
+            userTableView.topAnchor.constraint(equalTo: eventTypeHelpLable.bottomAnchor, constant: 90),
+            userTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            userTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            userTableView.bottomAnchor.constraint(equalTo: saveButton.topAnchor, constant: -20)
+        ]
+        NSLayoutConstraint.activate(constraints)
         addLayer()
     }
     
@@ -236,9 +229,9 @@ final class AddEventViewController: UIViewController {
     private func getMiddleLinePath() -> UIBezierPath {
         let path = UIBezierPath()
         path.move(to: CGPoint(
-            x: view.frame.size.width * 0.1, y: view.frame.size.height * 0.42
+            x: addUserSplitStack.frame.minX + 5, y: addUserSplitStack.frame.maxY + 5
         ))
-        path.addLine(to: CGPoint(x: view.frame.size.width * 0.9, y: view.frame.size.height * 0.42))
+        path.addLine(to: CGPoint(x: addUserSplitStack.frame.maxX - 5, y: addUserSplitStack.frame.maxY + 5))
         path.close()
         
         return path
@@ -251,6 +244,11 @@ final class AddEventViewController: UIViewController {
     @objc func handleSaveEvent(_ sender: UIButton) {
         print("save event pls")
     }
+    
+    @objc func handleExitButtonClicked(_ sender: UIButton) {
+        dismiss(animated: true)
+    }
+    
 }
 
 extension AddEventViewController: UITableViewDataSource, UITableViewDelegate {
@@ -276,9 +274,6 @@ extension AddEventViewController: UITableViewDataSource, UITableViewDelegate {
         return tableView.frame.size.height
     }
     
-    @objc func handleExitButtonClicked(_ sender: UIButton) {
-        dismiss(animated: true)
-    }
 }
 
 extension AddEventViewController: CollectionTableViewCellDelegate {
@@ -311,6 +306,7 @@ extension UserTableDelegateAndDataSource: UITableViewDataSource, UITableViewDele
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.frame.size.height * 0.25
+        return 50
     }
+
 }

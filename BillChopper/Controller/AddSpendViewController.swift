@@ -53,6 +53,9 @@ final class AddSpendViewController: UIViewController {
         return button
     }()
     
+    private let eventPayeerContainerView = UIView()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         addSubviews()
@@ -60,14 +63,10 @@ final class AddSpendViewController: UIViewController {
     }
     
     private func addSubviews() {
-        view.addSubview(chooseEventView)
-        view.addSubview(chooseEventText)
-        view.addSubview(choosePayerText)
-        view.addSubview(chooseUserView)
-        view.addSubview(selectSplitText)
-        view.addSubview(splitSelectorsView)
-        view.addSubview(saveButton)
-        view.addSubview(exitButton)
+        [choosePayerText, chooseUserView,
+         selectSplitText, splitSelectorsView, saveButton, exitButton, eventPayeerContainerView
+        ].forEach({view.addSubview($0)})
+        
     }
     
     private func setupViews() {
@@ -75,57 +74,63 @@ final class AddSpendViewController: UIViewController {
         splitSelectorsView.dataSource = self
         splitSelectorsView.delegate = self
     }
-
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        chooseEventText.frame = CGRect(
-            x: view.frame.size.width * 0.15,
-            y: view.frame.size.height * 0.2,
-            width: view.frame.size.width * 0.2,
-            height: view.frame.size.height * 0.05
-        )
-        chooseEventView.frame = CGRect(
-            x: view.frame.size.width * 0.4,
-            y: view.frame.size.height * 0.2,
-            width: view.frame.size.width * 0.5,
-            height: view.frame.size.height * 0.05
-        )
-        choosePayerText.frame = CGRect(
-            x: view.frame.size.width * 0.15,
-            y: view.frame.size.height * 0.3,
-            width: view.frame.size.width * 0.2,
-            height: view.frame.size.height * 0.05
-        )
-        chooseUserView.frame = CGRect(
-            x: view.frame.size.width * 0.4,
-            y: view.frame.size.height * 0.3,
-            width: view.frame.size.width * 0.5,
-            height: view.frame.size.height * 0.05
-        )
-        selectSplitText.frame = CGRect(
-            x: view.frame.size.width * 0,
-            y: view.frame.size.height * 0.4,
-            width: view.frame.size.width,
-            height: view.frame.size.height * 0.05
-        )
-        splitSelectorsView.frame = CGRect(
-            x: view.frame.size.width * 0.05,
-            y: view.frame.size.height * 0.45,
-            width: view.frame.size.width * 0.9,
-            height: view.frame.size.height * 0.24
-        )
-        saveButton.frame = CGRect(
-            x: view.frame.size.width * 0.3,
-            y: view.frame.size.height * 0.8,
-            width: view.frame.size.width * 0.4,
-            height: view.frame.size.height * 0.05
-        )
-        exitButton.frame = CGRect(
-            x: view.bounds.size.width * 0.85,
-            y: view.bounds.size.height * 0.05,
-            width: view.bounds.size.width * 0.1,
-            height: view.bounds.size.width * 0.1
-        )
+        
+        let eventStackView = UIStackView(arrangedSubviews: [chooseEventText, chooseEventView])
+        let payeerStackView = UIStackView(arrangedSubviews: [choosePayerText, chooseUserView])
+        [payeerStackView, eventStackView].forEach({ stackView in
+            stackView.distribution = .fill
+            stackView.spacing = 10
+            eventPayeerContainerView.addSubview(stackView)
+        })
+        
+        [exitButton, eventPayeerContainerView, chooseEventText, chooseEventView, eventStackView, payeerStackView, selectSplitText, splitSelectorsView, saveButton
+        ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
+        
+        let constraints: [NSLayoutConstraint] = [
+            
+            chooseUserView.widthAnchor.constraint(equalTo: payeerStackView.widthAnchor, multiplier: 0.7),
+            chooseEventView.widthAnchor.constraint(equalTo: eventStackView.widthAnchor, multiplier: 0.7),
+            
+            exitButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 15),
+            exitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
+            exitButton.widthAnchor.constraint(equalToConstant: 41),
+            exitButton.heightAnchor.constraint(equalToConstant: 41),
+            
+            eventPayeerContainerView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
+            eventPayeerContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            eventPayeerContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            eventPayeerContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.3),
+            
+            eventStackView.widthAnchor.constraint(equalToConstant: 300),
+            eventStackView.heightAnchor.constraint(equalToConstant: 40),
+            eventStackView.centerYAnchor.constraint(equalTo: eventPayeerContainerView.centerYAnchor, constant:  -30),
+            eventStackView.centerXAnchor.constraint(equalTo: eventPayeerContainerView.centerXAnchor),
+            
+            payeerStackView.widthAnchor.constraint(equalToConstant: 300),
+            payeerStackView.heightAnchor.constraint(equalToConstant: 40),
+            payeerStackView.centerXAnchor.constraint(equalTo: eventPayeerContainerView.centerXAnchor),
+            payeerStackView.topAnchor.constraint(equalTo: eventStackView.bottomAnchor, constant: 30),
+            
+            selectSplitText.topAnchor.constraint(equalTo: eventPayeerContainerView.bottomAnchor, constant: 20),
+            selectSplitText.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            selectSplitText.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            selectSplitText.heightAnchor.constraint(equalToConstant: 30),
+            
+            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
+            saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            saveButton.heightAnchor.constraint(equalToConstant: 40),
+            saveButton.widthAnchor.constraint(equalToConstant: 150),
+            
+            splitSelectorsView.topAnchor.constraint(equalTo: selectSplitText.bottomAnchor, constant: 10),
+            splitSelectorsView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            splitSelectorsView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            splitSelectorsView.bottomAnchor.constraint(equalTo: saveButton.topAnchor, constant: -20)
+            
+        ]
+        NSLayoutConstraint.activate(constraints)
     }
     
     @objc func handleSaveEvent(_ sender: UIButton) {
@@ -151,7 +156,7 @@ extension AddSpendViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return view.frame.size.height * 0.06
+        return 40
     }
     
 }
