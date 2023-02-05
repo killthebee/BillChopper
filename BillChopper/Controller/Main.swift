@@ -17,14 +17,6 @@ final class MainViewController: UIViewController {
 
     private let footer = FooterView()
     
-    private let coverPlusIconView: UIButton = {
-        let coverView = UIButton()
-        coverView.asCircle()
-        coverView.showsMenuAsPrimaryAction = true
-        
-        return coverView
-    }()
-    
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .white
@@ -32,6 +24,13 @@ final class MainViewController: UIViewController {
         tableView.register(LentCell.self, forCellReuseIdentifier: LentCell.newIdentifier)
         
         return tableView
+    }()
+    
+    let coverPlusIconView: UIButton = {
+        let coverView = UIButton()
+        coverView.showsMenuAsPrimaryAction = true
+        
+        return coverView
     }()
     
     override func viewDidLoad() {
@@ -58,12 +57,10 @@ final class MainViewController: UIViewController {
     }
     
     private func addSubviews() {
-        view.addSubview(profileIcon)
-        view.addSubview(tableView)
-        view.addSubview(eventButton)
-        view.addSubview(balanceButton)
-        view.addSubview(footer)
-        view.addSubview(coverPlusIconView)
+        [topContainerView, tableView, footer, coverPlusIconView
+        ].forEach({view.addSubview($0)})
+        [eventButton, balanceButton, iconContainerView].forEach({topContainerView.addSubview($0)})
+        iconContainerView.addSubview(profileIcon)
     }
     
     private func getEventMenu() -> UIMenu {
@@ -120,43 +117,54 @@ final class MainViewController: UIViewController {
         return menu
     }
     
+    private let topContainerView = UIView()
+    private let iconContainerView = UIView()
+    
     override func viewDidLayoutSubviews() {
-        tableView.frame = CGRect(
-            x: view.frame.size.width * 0.05,
-            y: view.frame.size.height * 0.2,
-            width: view.frame.size.width * 0.9,
-            height: view.frame.size.height * 0.7
-        )
-        eventButton.frame = CGRect(
-            x: view.frame.size.height * 0.03,
-            y: view.frame.size.width * 0.3,
-            width: view.frame.size.width * 0.35,
-            height: view.frame.size.height * 0.04
-        )
-        balanceButton.frame = CGRect(
-            x: view.frame.size.height * 0.21,
-            y: view.frame.size.width * 0.3,
-            width: view.frame.size.width * 0.35,
-            height: view.frame.size.height * 0.04
-        )
-        profileIcon.frame = CGRect(
-            x: view.frame.size.height * 0.4,
-            y: view.frame.size.width * 0.3,
-            width: view.frame.size.height * 0.04,
-            height: view.frame.size.height * 0.04
-        )
-        footer.frame = CGRect(
-            x: 0,
-            y: view.frame.size.height * 0.85,
-            width: view.frame.size.width,
-            height: view.frame.size.height * 0.15
-        )
-        coverPlusIconView.frame = CGRect(
-            x: view.frame.size.width * 0.4,
-            y: view.frame.size.height * 0.8,
-            width: view.frame.size.width * 0.2,
-            height: view.frame.size.width * 0.2
-        )
+        [topContainerView, eventButton, balanceButton, profileIcon, iconContainerView, footer, tableView,
+         coverPlusIconView].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
+        
+        let  constraints: [NSLayoutConstraint] = [
+            topContainerView.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
+            topContainerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            topContainerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            topContainerView.heightAnchor.constraint(equalToConstant: 30),
+            
+            eventButton.widthAnchor.constraint(equalTo: topContainerView.widthAnchor, multiplier: 0.42),
+            eventButton.leadingAnchor.constraint(equalTo: topContainerView.leadingAnchor),
+            eventButton.topAnchor.constraint(equalTo: topContainerView.topAnchor),
+            eventButton.heightAnchor.constraint(equalTo: topContainerView.heightAnchor),
+            
+            balanceButton.widthAnchor.constraint(equalTo: topContainerView.widthAnchor, multiplier: 0.42),
+            balanceButton.heightAnchor.constraint(equalTo: eventButton.heightAnchor),
+            balanceButton.leadingAnchor.constraint(equalTo: eventButton.trailingAnchor, constant: 10),
+            
+            iconContainerView.leadingAnchor.constraint(equalTo: balanceButton.trailingAnchor),
+            iconContainerView.heightAnchor.constraint(equalTo: topContainerView.heightAnchor),
+            iconContainerView.trailingAnchor.constraint(equalTo: topContainerView.trailingAnchor),
+            
+            
+            profileIcon.widthAnchor.constraint(equalToConstant: 30),
+            profileIcon.heightAnchor.constraint(equalToConstant: 30),
+            profileIcon.centerXAnchor.constraint(equalTo: iconContainerView.centerXAnchor),
+            profileIcon.centerYAnchor.constraint(equalTo: iconContainerView.centerYAnchor),
+            
+            footer.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.2),
+            footer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            footer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            footer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            tableView.topAnchor.constraint(equalTo: topContainerView.bottomAnchor, constant: 50),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 5),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -5),
+            tableView.bottomAnchor.constraint(equalTo: footer.topAnchor, constant: 20),
+            
+            coverPlusIconView.centerXAnchor.constraint(equalTo: footer.centerXAnchor),
+            coverPlusIconView.centerYAnchor.constraint(equalTo: footer.topAnchor),
+            coverPlusIconView.widthAnchor.constraint(equalToConstant: 100),
+            coverPlusIconView.heightAnchor.constraint(equalToConstant: 100),
+        ]
+        NSLayoutConstraint.activate(constraints)
     }
     
     @objc func fetchStuff(_ sender: UIButton) {
@@ -178,7 +186,6 @@ final class MainViewController: UIViewController {
     }
     
 }
-
 
 extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     
@@ -220,7 +227,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.frame.size.height * 0.09
+        return 50
     }
     
 }

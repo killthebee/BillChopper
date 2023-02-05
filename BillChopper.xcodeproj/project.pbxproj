@@ -42,7 +42,6 @@
 		307849E128F59AF700AEFECA /* Spend+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307849DB28F59AF700AEFECA /* Spend+CoreDataClass.swift */; };
 		307849E228F59AF700AEFECA /* Spend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307849DC28F59AF700AEFECA /* Spend+CoreDataProperties.swift */; };
 		307849E728F8018800AEFECA /* SpendTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307849E628F8018800AEFECA /* SpendTableViewCell.swift */; };
-		309179EA290FE56B007783A2 /* FooterViewBack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309179E9290FE56B007783A2 /* FooterViewBack.swift */; };
 		30A7F1B6290A99B0003F0812 /* ProfileIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A7F1B5290A99B0003F0812 /* ProfileIcon.swift */; };
 		30DA407B2923BD3900E2DC17 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 30DA407A2923BD3900E2DC17 /* .gitignore */; };
 		30DA407D2926793600E2DC17 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DA407C2926793600E2DC17 /* ProfileViewController.swift */; };
@@ -95,7 +94,6 @@
 		307849DB28F59AF700AEFECA /* Spend+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Spend+CoreDataClass.swift"; sourceTree = "<group>"; };
 		307849DC28F59AF700AEFECA /* Spend+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Spend+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		307849E628F8018800AEFECA /* SpendTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendTableViewCell.swift; sourceTree = "<group>"; };
-		309179E9290FE56B007783A2 /* FooterViewBack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterViewBack.swift; sourceTree = "<group>"; };
 		30A7F1B5290A99B0003F0812 /* ProfileIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileIcon.swift; sourceTree = "<group>"; };
 		30DA407A2923BD3900E2DC17 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		30DA407C2926793600E2DC17 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -159,7 +157,6 @@
 		305A0D4229530F34004CCA23 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				309179E9290FE56B007783A2 /* FooterViewBack.swift */,
 				305A0D4329530F54004CCA23 /* TopMainButton.swift */,
 				302C845629892D1D00D8C6E5 /* FooterView.swift */,
 			);
@@ -379,7 +376,6 @@
 				30DBDCE929520BFC00D44D9C /* SplitSelectorViewCell.swift in Sources */,
 				304FDCE429350D5700737B7B /* AddEventViewController.swift in Sources */,
 				301159C8292CE49A001E254D /* ImagePicker.swift in Sources */,
-				309179EA290FE56B007783A2 /* FooterViewBack.swift in Sources */,
 				305A0D552954A5C7004CCA23 /* SaveButton.swift in Sources */,
 				304FDCEB293E15BC00737B7B /* CarouselTableCell.swift in Sources */,
 				304FDCE22934E11B00737B7B /* UIView + ext.swift in Sources */,
