@@ -94,10 +94,10 @@ class FooterView: UIView {
     func addLayer() {
         self.layer.sublayers?.filter{ $0 is CAShapeLayer }.forEach{ $0.removeFromSuperlayer() }
         let shapeLayer = CAShapeLayer()
-        self.layer.addSublayer(shapeLayer)
+        self.layer.insertSublayer(shapeLayer, at: 0)
 
         shapeLayer.strokeColor = UIColor.darkGray.cgColor
-        shapeLayer.fillColor = UIColor.clear.cgColor
+        shapeLayer.fillColor = UIColor.white.cgColor
         shapeLayer.lineWidth = 1
         shapeLayer.path = getPath().cgPath
         
@@ -122,7 +122,7 @@ class FooterView: UIView {
     }
     
     override func layoutSubviews() {
-        [eventContainer, plusIconView, eventName, eventText, eventStack, balanceContainer, balanceStack
+        [eventContainer, plusIconView, eventName, eventText, eventStack, balanceContainer, balanceStack,
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         addLayer()
         let constraints: [NSLayoutConstraint] = [
