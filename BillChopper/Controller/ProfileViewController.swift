@@ -49,7 +49,6 @@ final class ProfileViewController: UIViewController {
         usernameTextField.autocorrectionType = UITextAutocorrectionType.no
         usernameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
         usernameTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-        // TODO: make keyboards what make sense
         usernameTextField.keyboardType = UIKeyboardType.default
         usernameTextField.returnKeyType = UIReturnKeyType.done
         
@@ -74,7 +73,7 @@ final class ProfileViewController: UIViewController {
         return usernameHelpTextLable
     }()
     
-    private var PhoneAndGender: UIView = BillChopper.PhoneAndGender()
+    private var PhoneAndGender: PhoneAndGender = BillChopper.PhoneAndGender()
     
     private let exitButton: UIButton = {
         let button = ExitCross()
@@ -91,14 +90,51 @@ final class ProfileViewController: UIViewController {
         (UIApplication.shared.delegate as! AppDelegate).restrictRotation = .portrait
         
         setupIconView(iconView: iconView)
+        addToolbars()
         setupViews()
         addSubviews()
+    }
+    
+    private func addToolbars() {
+        let continueButton = UIBarButtonItem(
+            title: "Continue", style: .plain,target: self, action: nil
+        )
+        let flexSpace = UIBarButtonItem(
+            barButtonSystemItem: .flexibleSpace,target: nil, action: nil
+        )
+        
+        let codeKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let phoneKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let usernameKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        
+        continueButton.tintColor = .systemGray
+        continueButton.action = #selector(continueTapped)
+        
+        let CodeKeyboardDownView = codeKeyboardDownButton.customView as? UIButton
+        let PhoneKeyboardDownView = phoneKeyboardDownButton.customView as? UIButton
+        let usernameKeyboardDownView = usernameKeyboardDownButton.customView as? UIButton
+        [CodeKeyboardDownView, PhoneKeyboardDownView, usernameKeyboardDownView
+        ].forEach(
+            {$0?.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)}
+        )
+        PhoneAndGender.codeInput.inputAccessoryView = makeToolbar(
+            barItems: [codeKeyboardDownButton, flexSpace, continueButton]
+        )
+        PhoneAndGender.phoneInput.inputAccessoryView = makeToolbar(
+            barItems: [phoneKeyboardDownButton, flexSpace]
+        )
+        usernameTextField.inputAccessoryView = makeToolbar(
+            barItems: [usernameKeyboardDownButton, flexSpace]
+        )
+        var phoneAndGenderDelegate = PhoneAndGender.codeInput.delegate as? PhoneInputDelegate
+        phoneAndGenderDelegate?.continueButton = continueButton
     }
     
     private func setupViews() {
         view.backgroundColor = .white
         self.imagePicker = ImagePicker(presentationController: self, delegate: self)
         usernameTextField.delegate = self
+        
         
         let tapOnIconGestureRecognizer = UITapGestureRecognizer(
             target: self, action: #selector(handleTapOnIcon)
@@ -109,6 +145,14 @@ final class ProfileViewController: UIViewController {
     
     private func addSubviews() {
         [exitButton, uploadButton, usernameTextField, usernameHelpText, PhoneAndGender, saveButton, iconView].forEach({view.addSubview($0)})
+    }
+    
+    @objc func doneButtonTapped() {
+            view.endEditing(true)
+    }
+    
+    @objc func continueTapped() {
+        PhoneAndGender.phoneInput.becomeFirstResponder()
     }
     
     @objc func handleTapOnIcon() {
@@ -228,5 +272,9 @@ extension ProfileViewController: ImagePickerDelegate, UITextFieldDelegate {
         iconView.isUserInteractionEnabled = true
         iconView.addGestureRecognizer(tapOnIconGestureRecognizer)
         view.addSubview(iconView)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        view.endEditing(true)
     }
 }

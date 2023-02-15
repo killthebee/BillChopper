@@ -18,9 +18,9 @@ final class PhoneAndGender: UIView {
         return lable
     }()
     
-    private let phoneInput = PhoneInput(isCode: false)
-    private let codeInput = PhoneInput(isCode: true)
-    private let phoneInputDelegate = PhoneInputDelegate()
+    let phoneInput = PhoneInput(isCode: false)
+    let codeInput = PhoneInput(isCode: true)
+    let phoneInputDelegate = PhoneInputDelegate()
     
     private lazy var genderButton: UIButton = {
         let genderButton = UIButton()
