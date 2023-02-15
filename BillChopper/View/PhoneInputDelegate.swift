@@ -5,7 +5,6 @@ class PhoneInputDelegate: NSObject {
     
     var rawNumber = ""
     var continueButton: UIBarButtonItem? = nil
-    var tag: Int? = nil
 }
 
 extension PhoneInputDelegate: UITextFieldDelegate {
@@ -37,17 +36,5 @@ extension PhoneInputDelegate: UITextFieldDelegate {
             break
         }
         return false
-    }
-    
-    func textFieldDidBeginEditing(_ textField: UITextField)
-    {
-        tag = textField.tag
-        print(textField.tag)
-        print("tak blet")
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField){
-        print("ne tak blet")
-        tag = nil
     }
 }

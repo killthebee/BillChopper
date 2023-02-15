@@ -4,6 +4,8 @@ final class ProfileViewController: UIViewController {
     
     private var iconView = ProfileIcon().setUpIconView()
     
+    var isPhoneInput = true
+    
     private lazy var coverView: UIView = {
         let coverView = UIView()
         coverView.isUserInteractionEnabled = true
@@ -74,7 +76,6 @@ final class ProfileViewController: UIViewController {
     }()
     
     private let PhoneAndGender: PhoneAndGender = BillChopper.PhoneAndGender()
-    private lazy var phoneAndGenderDelegate = PhoneAndGender.codeInput.delegate as? PhoneInputDelegate
     
     private let exitButton: UIButton = {
         let button = ExitCross()
@@ -130,11 +131,8 @@ final class ProfileViewController: UIViewController {
             barItems: [usernameKeyboardDownButton, flexSpace]
         )
         
-        //var phoneAndGenderDelegate = PhoneAndGender.codeInput.delegate as? PhoneInputDelegate
+        let phoneAndGenderDelegate = PhoneAndGender.codeInput.delegate as? PhoneInputDelegate
         phoneAndGenderDelegate?.continueButton = continueButton
-        
-        PhoneAndGender.codeInput.tag = 1
-        PhoneAndGender.phoneInput.tag = 2
     }
     
     private func setupViews() {
@@ -187,8 +185,8 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc func keyboardWillShow(sender: NSNotification) {
-        if phoneAndGenderDelegate?.tag == nil { return }
-        self.view.frame.origin.y = -150
+        if isPhoneInput { self.view.frame.origin.y = -150 }
+        
     }
     
     @objc func keyboardWillHide(sender: NSNotification) {
@@ -292,5 +290,14 @@ extension ProfileViewController: ImagePickerDelegate, UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         view.endEditing(true)
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField)
+    {
+        isPhoneInput = false
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField){
+        isPhoneInput = true
     }
 }
