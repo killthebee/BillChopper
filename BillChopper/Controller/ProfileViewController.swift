@@ -73,7 +73,8 @@ final class ProfileViewController: UIViewController {
         return usernameHelpTextLable
     }()
     
-    private var PhoneAndGender: PhoneAndGender = BillChopper.PhoneAndGender()
+    private let PhoneAndGender: PhoneAndGender = BillChopper.PhoneAndGender()
+    private lazy var phoneAndGenderDelegate = PhoneAndGender.codeInput.delegate as? PhoneInputDelegate
     
     private let exitButton: UIButton = {
         let button = ExitCross()
@@ -88,6 +89,8 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         (UIApplication.shared.delegate as! AppDelegate).restrictRotation = .portrait
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil);
         
         setupIconView(iconView: iconView)
         addToolbars()
@@ -126,8 +129,12 @@ final class ProfileViewController: UIViewController {
         usernameTextField.inputAccessoryView = makeToolbar(
             barItems: [usernameKeyboardDownButton, flexSpace]
         )
-        var phoneAndGenderDelegate = PhoneAndGender.codeInput.delegate as? PhoneInputDelegate
+        
+        //var phoneAndGenderDelegate = PhoneAndGender.codeInput.delegate as? PhoneInputDelegate
         phoneAndGenderDelegate?.continueButton = continueButton
+        
+        PhoneAndGender.codeInput.tag = 1
+        PhoneAndGender.phoneInput.tag = 2
     }
     
     private func setupViews() {
@@ -177,6 +184,15 @@ final class ProfileViewController: UIViewController {
         })
         
         coverView.removeFromSuperview()
+    }
+    
+    @objc func keyboardWillShow(sender: NSNotification) {
+        if phoneAndGenderDelegate?.tag == nil { return }
+        self.view.frame.origin.y = -150
+    }
+    
+    @objc func keyboardWillHide(sender: NSNotification) {
+         self.view.frame.origin.y = 0
     }
     
     private var iconTopAnchor: NSLayoutConstraint?
