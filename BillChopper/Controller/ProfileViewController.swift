@@ -103,9 +103,6 @@ final class ProfileViewController: UIViewController {
         let continueButton = UIBarButtonItem(
             title: "Continue", style: .plain,target: self, action: nil
         )
-        let flexSpace = UIBarButtonItem(
-            barButtonSystemItem: .flexibleSpace,target: nil, action: nil
-        )
         
         let codeKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
         let phoneKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()

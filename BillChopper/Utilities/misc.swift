@@ -27,3 +27,7 @@ func makeKeyboardDownButton() -> UIBarButtonItem{
     
     return menuBarItem
 }
+
+let flexSpace = UIBarButtonItem(
+    barButtonSystemItem: .flexibleSpace,target: nil, action: nil
+)
