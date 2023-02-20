@@ -51,6 +51,7 @@
 		30DBDCD9294B2FA900D44D9C /* ChooseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCD8294B2FA900D44D9C /* ChooseButton.swift */; };
 		30DBDCE72951D59400D44D9C /* SplitControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCE62951D59400D44D9C /* SplitControl.swift */; };
 		30DBDCE929520BFC00D44D9C /* SplitSelectorViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBDCE829520BFC00D44D9C /* SplitSelectorViewCell.swift */; };
+		30DF1A23299E9181007B6476 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DF1A22299E9181007B6476 /* LaunchViewController.swift */; };
 		30E22E932968677700B9A63F /* mainCell.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30E22E922968677700B9A63F /* mainCell.strings */; };
 		30E22E9629686E6800B9A63F /* mainFooter.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30E22E9529686E6800B9A63F /* mainFooter.strings */; };
 		30E22E992968746900B9A63F /* profileView.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30E22E982968746900B9A63F /* profileView.strings */; };
@@ -102,6 +103,7 @@
 		30DBDCD8294B2FA900D44D9C /* ChooseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseButton.swift; sourceTree = "<group>"; };
 		30DBDCE62951D59400D44D9C /* SplitControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitControl.swift; sourceTree = "<group>"; };
 		30DBDCE829520BFC00D44D9C /* SplitSelectorViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitSelectorViewCell.swift; sourceTree = "<group>"; };
+		30DF1A22299E9181007B6476 /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 		30E22E922968677700B9A63F /* mainCell.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = mainCell.strings; sourceTree = "<group>"; };
 		30E22E9529686E6800B9A63F /* mainFooter.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = mainFooter.strings; sourceTree = "<group>"; };
 		30E22E982968746900B9A63F /* profileView.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = profileView.strings; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 				30DA407C2926793600E2DC17 /* ProfileViewController.swift */,
 				304FDCE329350D5700737B7B /* AddEventViewController.swift */,
 				30DBDCD1294B2A6500D44D9C /* AddSpendViewController.swift */,
+				30DF1A22299E9181007B6476 /* LaunchViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -372,6 +375,7 @@
 				302C845729892D1D00D8C6E5 /* FooterView.swift in Sources */,
 				30DA407D2926793600E2DC17 /* ProfileViewController.swift in Sources */,
 				305A0D4F29548F7F004CCA23 /* CustomTextField.swift in Sources */,
+				30DF1A23299E9181007B6476 /* LaunchViewController.swift in Sources */,
 				305A0D4629533DEC004CCA23 /* ExitCross.swift in Sources */,
 				30DBDCE929520BFC00D44D9C /* SplitSelectorViewCell.swift in Sources */,
 				304FDCE429350D5700737B7B /* AddEventViewController.swift in Sources */,
