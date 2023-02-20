@@ -211,7 +211,7 @@ final class ProfileViewController: UIViewController {
         
         let heigthToUploadButton: CGFloat = 50 + iconViewDiameter
         
-        let  constraints: [NSLayoutConstraint] = [
+        let constraints: [NSLayoutConstraint] = [
             iconTopAnchor!,
             iconCenterXAnchor!,
             iconWidthAnchor!,
