@@ -229,6 +229,7 @@ final class ProfileViewController: UIViewController {
             usernameTextField.topAnchor.constraint(equalTo: uploadButton.bottomAnchor, constant: 50),
             usernameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             usernameTextField.heightAnchor.constraint(equalToConstant: 40),
+            // TODO: mb change width
             usernameTextField.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
             
             usernameHelpText.topAnchor.constraint(equalTo: usernameTextField.bottomAnchor, constant: 10),
