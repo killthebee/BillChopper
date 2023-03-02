@@ -12,6 +12,8 @@ class PhoneAndPassword: UIView {
     
     let phoneNumDelegate = PhoneInputDelegate()
     
+    let passwordInput = PasswordField()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubviews()
@@ -55,12 +57,21 @@ class PhoneAndPassword: UIView {
         return stack
     }()
     
-    private let pwStack = UIStackView()
+    private lazy var pwStack: UIStackView = {
+        let stack = UIStackView(
+            arrangedSubviews: [passwordLable, passwordInput]
+        )
+        passwordInput.widthAnchor.constraint(equalTo: stack.widthAnchor, multiplier: 0.55).isActive = true
+        stack.distribution = .fill
+        stack.spacing = 10
+        
+        return stack
+    }()
     
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        [phoneStack, pwStack].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
+        [phoneStack, pwStack, passwordInput].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         
         let constraints: [NSLayoutConstraint] = [
             phoneStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14),
