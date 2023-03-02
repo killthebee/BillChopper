@@ -56,6 +56,7 @@
 		30DF1A2929A4BEAD007B6476 /* launchView.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30DF1A2829A4BEAD007B6476 /* launchView.strings */; };
 		30DF1A2D29A9E85A007B6476 /* PhoneAndPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DF1A2C29A9E85A007B6476 /* PhoneAndPassword.swift */; };
 		30DF1A3029ACC9D8007B6476 /* PasswordField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DF1A2F29ACC9D8007B6476 /* PasswordField.swift */; };
+		30DF1A3329B0DFA5007B6476 /* UITapGestureRecognizer + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DF1A3229B0DFA5007B6476 /* UITapGestureRecognizer + ext.swift */; };
 		30E22E932968677700B9A63F /* mainCell.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30E22E922968677700B9A63F /* mainCell.strings */; };
 		30E22E9629686E6800B9A63F /* mainFooter.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30E22E9529686E6800B9A63F /* mainFooter.strings */; };
 		30E22E992968746900B9A63F /* profileView.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30E22E982968746900B9A63F /* profileView.strings */; };
@@ -112,6 +113,7 @@
 		30DF1A2829A4BEAD007B6476 /* launchView.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = launchView.strings; sourceTree = "<group>"; };
 		30DF1A2C29A9E85A007B6476 /* PhoneAndPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneAndPassword.swift; sourceTree = "<group>"; };
 		30DF1A2F29ACC9D8007B6476 /* PasswordField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordField.swift; sourceTree = "<group>"; };
+		30DF1A3229B0DFA5007B6476 /* UITapGestureRecognizer + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITapGestureRecognizer + ext.swift"; sourceTree = "<group>"; };
 		30E22E922968677700B9A63F /* mainCell.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = mainCell.strings; sourceTree = "<group>"; };
 		30E22E9529686E6800B9A63F /* mainFooter.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = mainFooter.strings; sourceTree = "<group>"; };
 		30E22E982968746900B9A63F /* profileView.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = profileView.strings; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				304FDCE12934E11B00737B7B /* UIView + ext.swift */,
 				305A0D5229549F41004CCA23 /* UILable + ext.swift */,
 				30DF1A2529A3A515007B6476 /* UIButton + ext.swift */,
+				30DF1A3229B0DFA5007B6476 /* UITapGestureRecognizer + ext.swift */,
 			);
 			path = Extentions;
 			sourceTree = "<group>";
@@ -403,6 +406,7 @@
 				30DF1A2629A3A515007B6476 /* UIButton + ext.swift in Sources */,
 				304FDCE429350D5700737B7B /* AddEventViewController.swift in Sources */,
 				301159C8292CE49A001E254D /* ImagePicker.swift in Sources */,
+				30DF1A3329B0DFA5007B6476 /* UITapGestureRecognizer + ext.swift in Sources */,
 				305A0D552954A5C7004CCA23 /* SaveButton.swift in Sources */,
 				304FDCEB293E15BC00737B7B /* CarouselTableCell.swift in Sources */,
 				304FDCE22934E11B00737B7B /* UIView + ext.swift in Sources */,

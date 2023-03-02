@@ -84,7 +84,7 @@ class PhoneAndPassword: UIView {
             pwStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14),
             pwStack.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.5),
         ]
-        //print(passwordInput.rightView.frame.height)
+        
         NSLayoutConstraint.activate(constraints)
     }
     

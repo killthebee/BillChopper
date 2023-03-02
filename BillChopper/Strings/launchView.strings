@@ -1,3 +1,6 @@
 "createAccount" = "create an account";
 "login" = "Log in";
 "passwordText" = "password:";
+"welcomeBack" = "Welcome back!";
+"ifNewUser" = "Don't have an account? Sing up!";
+"singUpRange" = "Sing up!";

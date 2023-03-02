@@ -67,10 +67,36 @@ class LaunchViewController: UIViewController {
         return button
     }()
     
-    private let loginHeaderLable: UILabel = {
-        let lable = UILabel(text: R.string.launchView.login())
+    private let welcomeBackHeaderLable: UILabel = {
+        let lable = UILabel(text: R.string.launchView.welcomeBack())
         lable.font = UIFont.boldSystemFont(ofSize: 25)
+        lable.textAlignment = .center
         
+        return lable
+    }()
+    
+    private let ifNewUserText = R.string.launchView.ifNewUser()
+    private let signUpRange = R.string.launchView.singUpRange()
+    
+    private lazy var signUpLable: UILabel = {
+        let lable = UILabel()
+        lable.text = ifNewUserText
+        lable.font = lable.font.withSize(15)
+        lable.textColor = .black
+        
+        let underlineAttriString = NSMutableAttributedString(string: ifNewUserText)
+        let range1 = (ifNewUserText as NSString).range(of: signUpRange)
+        
+        underlineAttriString.addAttribute(
+            NSAttributedString.Key.foregroundColor, value: UIColor.systemGreen, range: range1
+        )
+        lable.attributedText = underlineAttriString
+        lable.isUserInteractionEnabled = true
+        lable.addGestureRecognizer(
+            UITapGestureRecognizer(target: self, action: #selector(switchToSingUp))
+        )
+        
+        lable.backgroundColor = .red
         return lable
     }()
     
@@ -97,7 +123,17 @@ class LaunchViewController: UIViewController {
             phoneAndPassword.centerYAnchor.constraint(equalTo: authCoverView.centerYAnchor),
             phoneAndPassword.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
             phoneAndPassword.widthAnchor.constraint(equalToConstant: 300),
-            phoneAndPassword.heightAnchor.constraint(equalToConstant: 80)
+            phoneAndPassword.heightAnchor.constraint(equalToConstant: 80),
+            
+            welcomeBackHeaderLable.topAnchor.constraint(equalTo: authCoverView.topAnchor),
+            welcomeBackHeaderLable.bottomAnchor.constraint(equalTo: phoneAndPassword.topAnchor),
+            welcomeBackHeaderLable.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
+            welcomeBackHeaderLable.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
+            
+            signUpLable.topAnchor.constraint(equalTo: phoneAndPassword.bottomAnchor),
+            signUpLable.centerXAnchor.constraint(equalTo: phoneAndPassword.centerXAnchor),
+            signUpLable.heightAnchor.constraint(equalToConstant: 20),
+            //signUpLable.widthAnchor.constraint(equalTo: phoneAndPassword.widthAnchor, constant: -24),
         ]
         switch stage {
         case .chooseMethod:
@@ -112,7 +148,7 @@ class LaunchViewController: UIViewController {
             [signUpButton, signInButton, authButtonsContainer].forEach({$0.removeFromSuperview()})
 //            authButtonsContainer.removeFromSuperview()
             NSLayoutConstraint.deactivate(stage1Constraints)
-            authCoverView.addSubview(phoneAndPassword)
+            [welcomeBackHeaderLable, phoneAndPassword, signUpLable].forEach({authCoverView.addSubview($0)})
             NSLayoutConstraint.activate(stage2Constaints)
             
         default:
@@ -186,7 +222,8 @@ class LaunchViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         [logoView, logoContainer, topCornerCircleView, bottomCornerCircleView, authCoverView,
-         signUpButton, signInButton, authButtonsContainer, phoneAndPassword
+         signUpButton, signInButton, authButtonsContainer, phoneAndPassword, welcomeBackHeaderLable,
+         signUpLable,
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         let viewHeight = view.frame.height
         
@@ -258,5 +295,15 @@ class LaunchViewController: UIViewController {
     
     @objc func doneButtonTapped() {
             view.endEditing(true)
+    }
+    
+    @objc func switchToSingUp(sender:UITapGestureRecognizer) {
+        let signUpRange = (ifNewUserText as NSString).range(of: signUpRange)
+        if sender.didTapAttributedTextInLabel(label: signUpLable, inRange: signUpRange) {
+            print("signup")
+        } else {
+            print("none")
+        }
+        
     }
 }
