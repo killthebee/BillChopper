@@ -8,6 +8,8 @@ class LaunchViewController: UIViewController {
         case signup
     }
     
+    private var currentStage: AuthStages = .chooseMethod
+    
     private let logoView: UIImageView = {
         let view = UIImageView()
         view.image = R.image.logo3()
@@ -88,7 +90,7 @@ class LaunchViewController: UIViewController {
         let range1 = (ifNewUserText as NSString).range(of: signUpRange)
         
         underlineAttriString.addAttribute(
-            NSAttributedString.Key.foregroundColor, value: UIColor.systemGreen, range: range1
+            NSAttributedString.Key.foregroundColor, value: customGreen, range: range1
         )
         lable.attributedText = underlineAttriString
         lable.isUserInteractionEnabled = true
@@ -96,7 +98,6 @@ class LaunchViewController: UIViewController {
             UITapGestureRecognizer(target: self, action: #selector(switchToSingUp))
         )
         
-        lable.backgroundColor = .red
         return lable
     }()
     
@@ -131,9 +132,19 @@ class LaunchViewController: UIViewController {
             welcomeBackHeaderLable.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
             
             signUpLable.topAnchor.constraint(equalTo: phoneAndPassword.bottomAnchor),
-            signUpLable.centerXAnchor.constraint(equalTo: phoneAndPassword.centerXAnchor),
             signUpLable.heightAnchor.constraint(equalToConstant: 20),
-            //signUpLable.widthAnchor.constraint(equalTo: phoneAndPassword.widthAnchor, constant: -24),
+            signUpLable.leadingAnchor.constraint(equalTo: phoneAndPassword.leadingAnchor, constant: 14),
+            signUpLable.trailingAnchor.constraint(equalTo: phoneAndPassword.trailingAnchor),
+            
+            authButtonsContainer.topAnchor.constraint(equalTo: signUpLable.bottomAnchor),
+            authButtonsContainer.bottomAnchor.constraint(equalTo: authCoverView.bottomAnchor),
+            authButtonsContainer.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
+            authButtonsContainer.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
+            
+            signInButton.centerXAnchor.constraint(equalTo: authButtonsContainer.centerXAnchor),
+            signInButton.centerYAnchor.constraint(equalTo: authButtonsContainer.centerYAnchor),
+            signInButton.heightAnchor.constraint(equalToConstant: 50),
+            signInButton.widthAnchor.constraint(equalToConstant: 200),
         ]
         switch stage {
         case .chooseMethod:
@@ -148,7 +159,11 @@ class LaunchViewController: UIViewController {
             [signUpButton, signInButton, authButtonsContainer].forEach({$0.removeFromSuperview()})
 //            authButtonsContainer.removeFromSuperview()
             NSLayoutConstraint.deactivate(stage1Constraints)
-            [welcomeBackHeaderLable, phoneAndPassword, signUpLable].forEach({authCoverView.addSubview($0)})
+            [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer
+            ].forEach({authCoverView.addSubview($0)})
+            authButtonsContainer.addSubview(signInButton)
+//            signInButton.removeTarget(self, action: #selector(loginTapped), for: .touchUpInside)
+//            signInButton..addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
             NSLayoutConstraint.activate(stage2Constaints)
             
         default:
@@ -185,13 +200,15 @@ class LaunchViewController: UIViewController {
         
         let codeKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
         let phoneKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let passwordKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
         
         continueButton.tintColor = .systemGray
         continueButton.action = #selector(continueTapped)
         
-        let CodeKeyboardDownView = codeKeyboardDownButton.customView as? UIButton
-        let PhoneKeyboardDownView = phoneKeyboardDownButton.customView as? UIButton
-        [CodeKeyboardDownView, PhoneKeyboardDownView
+        let codeKeyboardDownView = codeKeyboardDownButton.customView as? UIButton
+        let phoneKeyboardDownView = phoneKeyboardDownButton.customView as? UIButton
+        let passwordKeyboardDownView = passwordKeyboardDownButton.customView as? UIButton
+        [codeKeyboardDownView, phoneKeyboardDownView, passwordKeyboardDownView
         ].forEach(
             {$0?.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)}
         )
@@ -200,6 +217,9 @@ class LaunchViewController: UIViewController {
         )
         phoneAndPassword.phoneInput.inputAccessoryView = makeToolbar(
             barItems: [phoneKeyboardDownButton, flexSpace]
+        )
+        phoneAndPassword.passwordInput.inputAccessoryView = makeToolbar(
+            barItems: [passwordKeyboardDownButton, flexSpace]
         )
         
         let phoneAndGenderDelegate = phoneAndPassword.codeInput.delegate as? PhoneInputDelegate
@@ -277,11 +297,16 @@ class LaunchViewController: UIViewController {
     }
     
     @objc func loginTapped() {
+        if currentStage == .login {
+            print("it's time to log user in!")
+            return
+        }
+        currentStage = .login
         changeStage(stage: .login)
     }
     
     @objc func keyboardWillShow(sender: NSNotification) {
-        self.view.frame.origin.y = -150
+        self.view.frame.origin.y = -170
         
     }
     
