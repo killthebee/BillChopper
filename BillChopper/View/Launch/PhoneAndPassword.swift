@@ -71,7 +71,8 @@ class PhoneAndPassword: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        [phoneStack, pwStack, passwordInput].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
+        [phoneStack, pwStack, passwordInput,
+        ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         
         let constraints: [NSLayoutConstraint] = [
             phoneStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14),
