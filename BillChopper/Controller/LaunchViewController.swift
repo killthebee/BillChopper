@@ -52,6 +52,7 @@ class LaunchViewController: UIViewController {
         button.setTitleColor(.black, for: .normal)
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.black.cgColor
+        button.addTarget(self, action: #selector(signupTapped), for: .touchUpInside)
         
         return button
     }()
@@ -115,7 +116,6 @@ class LaunchViewController: UIViewController {
     private var usernameTextField: CustomTextField = {
         // TODO: dry this shit mb
         let usernameTextField = CustomTextField()
-        //usernameTextField.text = "John Dhoe"
         usernameTextField.textColor = .black
         usernameTextField.placeholder = "username"
         usernameTextField.font = UIFont.boldSystemFont(ofSize: 21)
@@ -318,6 +318,24 @@ class LaunchViewController: UIViewController {
             
             NSLayoutConstraint.activate(stage3Constraints)
             
+        case .signup where currentStage == .chooseMethod:
+            currentStage = .signup
+            [signUpButton, signInButton, authButtonsContainer].forEach({$0.removeFromSuperview()})
+            NSLayoutConstraint.deactivate(stage1Constraints)
+            
+            authContainerOneTwoStageHeightConstrain?.isActive = false
+            authContainerThreeStageHeightConstrain?.isActive = true
+            UIView.animate(withDuration: 0.5, animations: {
+                self.view.layoutIfNeeded()
+            })
+            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer,
+            ].forEach({authCoverView.addSubview($0)})
+            authButtonsContainer.addSubview(signUpButton)
+            phoneField.addSubview(phoneContainer)
+            [codeInput, phoneInput].forEach({phoneContainer.addSubview($0)})
+            singUpHeaderContainer.addSubview(signUpHeader)
+            
+            NSLayoutConstraint.activate(stage3Constraints)
         default:
             break
         }
@@ -465,6 +483,14 @@ class LaunchViewController: UIViewController {
             return
         }
         changeStage(stage: .login)
+    }
+    
+    @objc func signupTapped() {
+        if currentStage == .signup {
+            print("it's time to sing user up!")
+            return
+        }
+        changeStage(stage: .signup)
     }
     
     @objc func keyboardWillShow(sender: NSNotification) {
