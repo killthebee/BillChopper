@@ -61,7 +61,7 @@ class PhoneAndPassword: UIView {
         let stack = UIStackView(
             arrangedSubviews: [passwordLable, passwordInput]
         )
-        passwordInput.widthAnchor.constraint(equalTo: stack.widthAnchor, multiplier: 0.55).isActive = true
+        passwordInput.widthAnchor.constraint(equalTo: stack.widthAnchor, multiplier: 0.65).isActive = true
         stack.distribution = .fill
         stack.spacing = 10
         
