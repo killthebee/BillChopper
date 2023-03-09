@@ -167,6 +167,19 @@ class LaunchViewController: UIViewController {
         return usernameHelpTextLable
     }()
     
+    private var phoneHelpText: UILabel = {
+        let usernameHelpTextLable = UILabel()
+        usernameHelpTextLable.text = R.string.launchView.phoneHelpText()
+        usernameHelpTextLable.font = usernameHelpTextLable.font.withSize(15)
+        usernameHelpTextLable.lineBreakMode = .byWordWrapping
+        usernameHelpTextLable.numberOfLines = 0
+        usernameHelpTextLable.textColor = .black
+        
+        return usernameHelpTextLable
+    }()
+    
+    private let passwordAndPassword = PasswordAndPassword()
+    
     private func changeStage(stage: AuthStages) {
         let stage1Constraints: [NSLayoutConstraint] = [
             authButtonsContainer.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
@@ -212,7 +225,7 @@ class LaunchViewController: UIViewController {
         ]
         let stage3Constraints: [NSLayoutConstraint] = [
             singUpHeaderContainer.topAnchor.constraint(equalTo: authCoverView.topAnchor),
-            singUpHeaderContainer.heightAnchor.constraint(equalTo: authCoverView.heightAnchor, multiplier: 0.3),
+            singUpHeaderContainer.heightAnchor.constraint(equalTo: authCoverView.heightAnchor, multiplier: 0.2),
             singUpHeaderContainer.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
             singUpHeaderContainer.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
             
@@ -233,7 +246,7 @@ class LaunchViewController: UIViewController {
             phoneField.topAnchor.constraint(equalTo: usernameHelpText.bottomAnchor, constant: 40),
             phoneField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             phoneField.heightAnchor.constraint(equalToConstant: 40),
-            phoneField.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor, multiplier: 0.95),
+            phoneField.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor),
             
             phoneContainer.centerXAnchor.constraint(equalTo: phoneField.centerXAnchor),
             phoneContainer.centerYAnchor.constraint(equalTo: phoneField.centerYAnchor),
@@ -245,6 +258,16 @@ class LaunchViewController: UIViewController {
             phoneInput.leadingAnchor.constraint(equalTo: codeInput.trailingAnchor),
             phoneInput.heightAnchor.constraint(equalTo: phoneContainer.heightAnchor),
             phoneInput.trailingAnchor.constraint(equalTo: phoneContainer.trailingAnchor),
+            
+            phoneHelpText.topAnchor.constraint(equalTo: phoneContainer.bottomAnchor, constant: 10),
+            phoneHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            phoneHelpText.heightAnchor.constraint(equalToConstant: 40),
+            phoneHelpText.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor, multiplier: 0.95),
+            
+            passwordAndPassword.topAnchor.constraint(equalTo: phoneHelpText.bottomAnchor, constant: 40),
+            passwordAndPassword.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
+            passwordAndPassword.widthAnchor.constraint(equalToConstant: 300),
+            passwordAndPassword.heightAnchor.constraint(equalToConstant: 80),
         ]
         switch stage {
         case .chooseMethod:
@@ -276,7 +299,7 @@ class LaunchViewController: UIViewController {
             UIView.animate(withDuration: 0.5, animations: {
                 self.view.layoutIfNeeded()
             })
-            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField
+            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword,
             ].forEach({authCoverView.addSubview($0)})
             phoneField.addSubview(phoneContainer)
             [codeInput, phoneInput].forEach({phoneContainer.addSubview($0)})
@@ -371,7 +394,7 @@ class LaunchViewController: UIViewController {
         [logoView, logoContainer, topCornerCircleView, bottomCornerCircleView, authCoverView,
          signUpButton, signInButton, authButtonsContainer, phoneAndPassword, welcomeBackHeaderLable,
          signUpLable, singUpHeaderContainer, signUpHeader, usernameTextField, usernameHelpText, phoneField,
-         codeInput, phoneInput, phoneContainer
+         codeInput, phoneInput, phoneContainer, phoneHelpText, passwordAndPassword
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         let viewHeight = view.frame.height
         

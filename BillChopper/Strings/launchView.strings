@@ -1,7 +1,9 @@
 "createAccount" = "create an account";
 "login" = "Log in";
 "passwordText" = "password:";
+"repeatPasswordText" = "repeat:";
 "welcomeBack" = "Welcome back!";
 "ifNewUser" = "Don't have an account? Sing up!";
 "singUpRange" = "Sing up!";
 "signUp" = "Sign up";
+"phoneHelpText" = "Enter your phone number so other user can add you";

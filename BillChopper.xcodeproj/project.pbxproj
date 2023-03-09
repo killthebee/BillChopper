@@ -60,6 +60,7 @@
 		30E22E932968677700B9A63F /* mainCell.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30E22E922968677700B9A63F /* mainCell.strings */; };
 		30E22E9629686E6800B9A63F /* mainFooter.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30E22E9529686E6800B9A63F /* mainFooter.strings */; };
 		30E22E992968746900B9A63F /* profileView.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30E22E982968746900B9A63F /* profileView.strings */; };
+		30F80BAC29BA1A16003C7272 /* PasswordAndPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F80BAB29BA1A16003C7272 /* PasswordAndPassword.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -117,6 +118,7 @@
 		30E22E922968677700B9A63F /* mainCell.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = mainCell.strings; sourceTree = "<group>"; };
 		30E22E9529686E6800B9A63F /* mainFooter.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = mainFooter.strings; sourceTree = "<group>"; };
 		30E22E982968746900B9A63F /* profileView.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = profileView.strings; sourceTree = "<group>"; };
+		30F80BAB29BA1A16003C7272 /* PasswordAndPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordAndPassword.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -299,6 +301,7 @@
 			children = (
 				30DF1A2C29A9E85A007B6476 /* PhoneAndPassword.swift */,
 				30DF1A2F29ACC9D8007B6476 /* PasswordField.swift */,
+				30F80BAB29BA1A16003C7272 /* PasswordAndPassword.swift */,
 			);
 			path = Launch;
 			sourceTree = "<group>";
@@ -394,6 +397,7 @@
 				305A0D5329549F41004CCA23 /* UILable + ext.swift in Sources */,
 				305A0D4429530F54004CCA23 /* TopMainButton.swift in Sources */,
 				30DBDCE72951D59400D44D9C /* SplitControl.swift in Sources */,
+				30F80BAC29BA1A16003C7272 /* PasswordAndPassword.swift in Sources */,
 				307849E128F59AF700AEFECA /* Spend+CoreDataClass.swift in Sources */,
 				307849B828F573ED00AEFECA /* backwardsStuff.swift in Sources */,
 				302C845729892D1D00D8C6E5 /* FooterView.swift in Sources */,
