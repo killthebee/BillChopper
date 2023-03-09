@@ -103,6 +103,70 @@ class LaunchViewController: UIViewController {
     
     private let phoneAndPassword = PhoneAndPassword()
     
+    private let signUpHeader: UILabel = {
+        let lable = UILabel(text: R.string.launchView.signUp())
+        lable.font = UIFont.boldSystemFont(ofSize: 25)
+        lable.textColor = .black
+        lable.textAlignment = .center
+        
+        return lable
+    }()
+    
+    private var usernameTextField: CustomTextField = {
+        // TODO: dry this shit mb
+        let usernameTextField = CustomTextField()
+        //usernameTextField.text = "John Dhoe"
+        usernameTextField.textColor = .black
+        usernameTextField.placeholder = "username"
+        usernameTextField.font = UIFont.boldSystemFont(ofSize: 21)
+        usernameTextField.autocorrectionType = UITextAutocorrectionType.no
+        usernameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
+        usernameTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        usernameTextField.keyboardType = UIKeyboardType.default
+        usernameTextField.returnKeyType = UIReturnKeyType.done
+
+        usernameTextField.layer.borderColor = UIColor.black.cgColor
+        usernameTextField.layer.borderWidth = 1
+        usernameTextField.layer.cornerRadius = 15
+        usernameTextField.backgroundColor = UIColor(
+            hue: 0/360, saturation: 0/100, brightness: 98/100, alpha: 1.0
+        )
+
+        return usernameTextField
+    }()
+    
+    let codeInput = PhoneInput(isCode: true)
+    
+    let phoneInput = PhoneInput(isCode: false)
+    
+    let phoneNumDelegate = PhoneInputDelegate()
+    
+    private let phoneContainer = UIView()
+    
+    private let phoneField: UIView = {
+        let view = UIView()
+        
+        view.layer.borderColor = UIColor.black.cgColor
+        view.layer.borderWidth = 1
+        view.layer.cornerRadius = 15
+        view.backgroundColor = UIColor(
+            hue: 0/360, saturation: 0/100, brightness: 98/100, alpha: 1.0
+        )
+        
+        return view
+    }()
+    
+    private var usernameHelpText: UILabel = {
+        let usernameHelpTextLable = UILabel()
+        usernameHelpTextLable.text = R.string.profileView.helpText()
+        usernameHelpTextLable.font = usernameHelpTextLable.font.withSize(15)
+        usernameHelpTextLable.lineBreakMode = .byWordWrapping
+        usernameHelpTextLable.numberOfLines = 0
+        usernameHelpTextLable.textColor = .black
+        
+        return usernameHelpTextLable
+    }()
+    
     private func changeStage(stage: AuthStages) {
         let stage1Constraints: [NSLayoutConstraint] = [
             authButtonsContainer.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
@@ -146,25 +210,78 @@ class LaunchViewController: UIViewController {
             signInButton.heightAnchor.constraint(equalToConstant: 50),
             signInButton.widthAnchor.constraint(equalToConstant: 200),
         ]
+        let stage3Constraints: [NSLayoutConstraint] = [
+            singUpHeaderContainer.topAnchor.constraint(equalTo: authCoverView.topAnchor),
+            singUpHeaderContainer.heightAnchor.constraint(equalTo: authCoverView.heightAnchor, multiplier: 0.3),
+            singUpHeaderContainer.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
+            singUpHeaderContainer.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
+            
+            signUpHeader.centerXAnchor.constraint(equalTo: singUpHeaderContainer.centerXAnchor),
+            signUpHeader.centerYAnchor.constraint(equalTo: singUpHeaderContainer.centerYAnchor),
+            //signUpHeader.heightAnchor.constraint(equalToConstant: 50)
+            
+            usernameTextField.topAnchor.constraint(equalTo: singUpHeaderContainer.bottomAnchor),
+            usernameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            usernameTextField.heightAnchor.constraint(equalToConstant: 40),
+            usernameTextField.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
+            
+            usernameHelpText.topAnchor.constraint(equalTo: usernameTextField.bottomAnchor, constant: 10),
+            usernameHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            usernameHelpText.heightAnchor.constraint(equalToConstant: 40),
+            usernameHelpText.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor, multiplier: 0.95),
+            
+            phoneField.topAnchor.constraint(equalTo: usernameHelpText.bottomAnchor, constant: 40),
+            phoneField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            phoneField.heightAnchor.constraint(equalToConstant: 40),
+            phoneField.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor, multiplier: 0.95),
+            
+            phoneContainer.centerXAnchor.constraint(equalTo: phoneField.centerXAnchor),
+            phoneContainer.centerYAnchor.constraint(equalTo: phoneField.centerYAnchor),
+            phoneContainer.heightAnchor.constraint(equalTo: phoneField.heightAnchor),
+            
+            codeInput.heightAnchor.constraint(equalTo: phoneContainer.heightAnchor),
+            codeInput.leadingAnchor.constraint(equalTo: phoneContainer.leadingAnchor),
+            
+            phoneInput.leadingAnchor.constraint(equalTo: codeInput.trailingAnchor),
+            phoneInput.heightAnchor.constraint(equalTo: phoneContainer.heightAnchor),
+            phoneInput.trailingAnchor.constraint(equalTo: phoneContainer.trailingAnchor),
+        ]
         switch stage {
         case .chooseMethod:
-            authContainerBottomHeightConstrain?.isActive = false
-            authContainerTopHeightConstrain?.isActive = true
+            authContainerZeroStageHeightConstrain?.isActive = false
+            authContainerOneTwoStageHeightConstrain?.isActive = true
             
             authCoverView.addSubview(authButtonsContainer)
             [signUpButton, signInButton].forEach({authButtonsContainer.addSubview($0)})
             
             NSLayoutConstraint.activate(stage1Constraints)
         case .login:
+            currentStage = .login
             [signUpButton, signInButton, authButtonsContainer].forEach({$0.removeFromSuperview()})
-//            authButtonsContainer.removeFromSuperview()
             NSLayoutConstraint.deactivate(stage1Constraints)
+            
             [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer
             ].forEach({authCoverView.addSubview($0)})
             authButtonsContainer.addSubview(signInButton)
-//            signInButton.removeTarget(self, action: #selector(loginTapped), for: .touchUpInside)
-//            signInButton..addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
+            
             NSLayoutConstraint.activate(stage2Constaints)
+        case .signup where currentStage == .login:
+            currentStage = .signup
+            [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer
+            ].forEach({$0.removeFromSuperview()})
+            NSLayoutConstraint.deactivate(stage2Constaints)
+            
+            authContainerOneTwoStageHeightConstrain?.isActive = false
+            authContainerThreeStageHeightConstrain?.isActive = true
+            UIView.animate(withDuration: 0.5, animations: {
+                self.view.layoutIfNeeded()
+            })
+            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField
+            ].forEach({authCoverView.addSubview($0)})
+            phoneField.addSubview(phoneContainer)
+            [codeInput, phoneInput].forEach({phoneContainer.addSubview($0)})
+            singUpHeaderContainer.addSubview(signUpHeader)
+            NSLayoutConstraint.activate(stage3Constraints)
             
         default:
             break
@@ -178,6 +295,7 @@ class LaunchViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil);
         
+        setupViews()
         addSubviews()
         addToolbars()
         initialLayoutSetUp(logoContainer: logoContainer)
@@ -186,9 +304,12 @@ class LaunchViewController: UIViewController {
         logoContainer.addGestureRecognizer(tap)
     }
     
+    private func setupViews() {
+        [codeInput, phoneInput].forEach({$0.delegate = phoneNumDelegate})
+    }
+    
     private func addSubviews() {
         [logoContainer, topCornerCircleView, bottomCornerCircleView, authCoverView,
-         
         ].forEach({view.addSubview($0)})
         logoContainer.addSubview(logoView)
     }
@@ -228,22 +349,29 @@ class LaunchViewController: UIViewController {
     
     private let logoContainer = UIView()
     private var logoContainerBottomConstaint: NSLayoutConstraint?
-    private var authContainerBottomHeightConstrain: NSLayoutConstraint?
-    private var authContainerTopHeightConstrain: NSLayoutConstraint?
+    private var authContainerZeroStageHeightConstrain: NSLayoutConstraint?
+    private var authContainerOneTwoStageHeightConstrain: NSLayoutConstraint?
+    private var authContainerThreeStageHeightConstrain: NSLayoutConstraint?
     private let authButtonsContainer = UIView()
+    
+    private lazy var singUpHeaderContainer = UIView()
 
     private func initialLayoutSetUp(logoContainer: UIView) {
-        authContainerBottomHeightConstrain = authCoverView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0)
-        authContainerTopHeightConstrain = authCoverView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5)
-        authContainerBottomHeightConstrain?.isActive = true
-        authContainerTopHeightConstrain?.isActive = false
+        authContainerZeroStageHeightConstrain = authCoverView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0)
+        authContainerOneTwoStageHeightConstrain = authCoverView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5)
+        authContainerThreeStageHeightConstrain = authCoverView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7)
+        
+        authContainerZeroStageHeightConstrain?.isActive = true
+        authContainerOneTwoStageHeightConstrain?.isActive = false
+        authContainerThreeStageHeightConstrain?.isActive = false
         logoContainerBottomConstaint = logoContainer.bottomAnchor.constraint(equalTo: authCoverView.topAnchor)
     }
     
     override func viewDidLayoutSubviews() {
         [logoView, logoContainer, topCornerCircleView, bottomCornerCircleView, authCoverView,
          signUpButton, signInButton, authButtonsContainer, phoneAndPassword, welcomeBackHeaderLable,
-         signUpLable,
+         signUpLable, singUpHeaderContainer, signUpHeader, usernameTextField, usernameHelpText, phoneField,
+         codeInput, phoneInput, phoneContainer
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         let viewHeight = view.frame.height
         
@@ -301,12 +429,11 @@ class LaunchViewController: UIViewController {
             print("it's time to log user in!")
             return
         }
-        currentStage = .login
         changeStage(stage: .login)
     }
     
     @objc func keyboardWillShow(sender: NSNotification) {
-        self.view.frame.origin.y = -170
+        self.view.frame.origin.y = view.frame.maxY > 815 ? -170 : -220
         
     }
     
@@ -319,13 +446,14 @@ class LaunchViewController: UIViewController {
     }
     
     @objc func doneButtonTapped() {
-            view.endEditing(true)
+        view.endEditing(true)
     }
     
     @objc func switchToSingUp(sender:UITapGestureRecognizer) {
         let signUpRange = (ifNewUserText as NSString).range(of: signUpRange)
         if sender.didTapAttributedTextInLabel(label: signUpLable, inRange: signUpRange) {
             print("signup")
+            changeStage(stage: .signup)
         } else {
             print("none")
         }
