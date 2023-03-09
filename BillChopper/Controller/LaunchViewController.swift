@@ -268,6 +268,16 @@ class LaunchViewController: UIViewController {
             passwordAndPassword.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
             passwordAndPassword.widthAnchor.constraint(equalToConstant: 300),
             passwordAndPassword.heightAnchor.constraint(equalToConstant: 80),
+            
+            //authButtonsContainer.heightAnchor.constraint(equalTo: authCoverView.heightAnchor, multiplier: 0.3),
+            authButtonsContainer.bottomAnchor.constraint(equalTo: authCoverView.bottomAnchor),
+            authButtonsContainer.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
+            authButtonsContainer.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
+//
+            signUpButton.centerXAnchor.constraint(equalTo: authButtonsContainer.centerXAnchor),
+            signUpButton.centerYAnchor.constraint(equalTo: authButtonsContainer.centerYAnchor),
+            signUpButton.heightAnchor.constraint(equalToConstant: 50),
+            signUpButton.widthAnchor.constraint(equalToConstant: 200),
         ]
         switch stage {
         case .chooseMethod:
@@ -299,11 +309,13 @@ class LaunchViewController: UIViewController {
             UIView.animate(withDuration: 0.5, animations: {
                 self.view.layoutIfNeeded()
             })
-            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword,
+            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer,
             ].forEach({authCoverView.addSubview($0)})
+            authButtonsContainer.addSubview(signUpButton)
             phoneField.addSubview(phoneContainer)
             [codeInput, phoneInput].forEach({phoneContainer.addSubview($0)})
             singUpHeaderContainer.addSubview(signUpHeader)
+            
             NSLayoutConstraint.activate(stage3Constraints)
             
         default:
