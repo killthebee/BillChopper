@@ -8,6 +8,8 @@ class LaunchViewController: UIViewController {
         case signup
     }
     
+    private lazy var mainViewController = MainViewController()
+    
     private var currentStage: AuthStages = .chooseMethod
     
     private let logoView: UIImageView = {
@@ -514,6 +516,17 @@ class LaunchViewController: UIViewController {
     @objc func loginTapped() {
         if currentStage == .login {
             print("it's time to log user in!")
+            guard let phone = phoneAndPassword.phoneInput.text else { return }
+            guard let pw = phoneAndPassword.passwordInput.text else { return }
+            print(phoneAndPassword.phoneInput.text)
+            print(phoneAndPassword.passwordInput.text)
+            // TODO: make a func in delegate that will sanityze phone from +()etc
+            if phone == "(1" && pw == "q" {
+                print("me trying!")
+                mainViewController.modalPresentationStyle = .fullScreen
+                //mainViewController.modalTransitionStyle = .
+                present(mainViewController, animated: false)
+            }
             return
         }
         changeStage(stage: .login)
@@ -549,7 +562,6 @@ class LaunchViewController: UIViewController {
     }
     
     @objc func doneButtonTapped() {
-        print("kek")
         view.endEditing(true)
     }
     
