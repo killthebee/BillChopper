@@ -124,6 +124,7 @@ class LaunchViewController: UIViewController {
         usernameTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
         usernameTextField.keyboardType = UIKeyboardType.default
         usernameTextField.returnKeyType = UIReturnKeyType.done
+        usernameTextField.textAlignment = .center
 
         usernameTextField.layer.borderColor = UIColor.black.cgColor
         usernameTextField.layer.borderWidth = 1
@@ -368,36 +369,69 @@ class LaunchViewController: UIViewController {
     }
     
     private func addToolbars() {
-        let continueButton = UIBarButtonItem(
+        let loginContinueButton = UIBarButtonItem(
+            title: "Continue", style: .plain,target: self, action: nil
+        )
+        let signupContinueButton = UIBarButtonItem(
             title: "Continue", style: .plain,target: self, action: nil
         )
         
-        let codeKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
-        let phoneKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
-        let passwordKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let loginCodeKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let loginPhoneKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let loginPasswordKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let usernameKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let signupCodeKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let signupPhoneKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let signupPasswordKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let signupRepeatPasswordKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
         
-        continueButton.tintColor = .systemGray
-        continueButton.action = #selector(continueTapped)
+        loginContinueButton.tintColor = .systemGray
+        loginContinueButton.action = #selector(continueTapped)
+        signupContinueButton.tintColor = .systemGray
+        signupContinueButton.action = #selector(continueTapped)
         
-        let codeKeyboardDownView = codeKeyboardDownButton.customView as? UIButton
-        let phoneKeyboardDownView = phoneKeyboardDownButton.customView as? UIButton
-        let passwordKeyboardDownView = passwordKeyboardDownButton.customView as? UIButton
-        [codeKeyboardDownView, phoneKeyboardDownView, passwordKeyboardDownView
+        let loginCodeKeyboardDownView = loginCodeKeyboardDownButton.customView as? UIButton
+        let loginPhoneKeyboardDownView = loginPhoneKeyboardDownButton.customView as? UIButton
+        let loginPasswordKeyboardDownView = loginPasswordKeyboardDownButton.customView as? UIButton
+        let usernameKeyboardDownView = usernameKeyboardDownButton.customView as? UIButton
+        let signupCodeKeyboardDownView = signupCodeKeyboardDownButton.customView as? UIButton
+        let signupPhoneKeyboardDownView = signupPhoneKeyboardDownButton.customView as? UIButton
+        let signupPasswordKeyboardDownView = signupPasswordKeyboardDownButton.customView as? UIButton
+        let signupRepeatPasswordKeyboardDownView = signupRepeatPasswordKeyboardDownButton.customView as? UIButton
+        [loginCodeKeyboardDownView, loginPhoneKeyboardDownView, loginPasswordKeyboardDownView, usernameKeyboardDownView, signupCodeKeyboardDownView, signupPhoneKeyboardDownView,
+         signupRepeatPasswordKeyboardDownView, signupPasswordKeyboardDownView
         ].forEach(
             {$0?.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)}
         )
         phoneAndPassword.codeInput.inputAccessoryView = makeToolbar(
-            barItems: [codeKeyboardDownButton, flexSpace, continueButton]
+            barItems: [loginCodeKeyboardDownButton, flexSpace, loginContinueButton]
         )
         phoneAndPassword.phoneInput.inputAccessoryView = makeToolbar(
-            barItems: [phoneKeyboardDownButton, flexSpace]
+            barItems: [loginPhoneKeyboardDownButton, flexSpace]
         )
         phoneAndPassword.passwordInput.inputAccessoryView = makeToolbar(
-            barItems: [passwordKeyboardDownButton, flexSpace]
+            barItems: [loginPasswordKeyboardDownButton, flexSpace]
+        )
+        usernameTextField.inputAccessoryView = makeToolbar(
+            barItems: [usernameKeyboardDownButton, flexSpace]
+        )
+        codeInput.inputAccessoryView = makeToolbar(
+            barItems: [signupCodeKeyboardDownButton, flexSpace, signupContinueButton]
+        )
+        phoneInput.inputAccessoryView = makeToolbar(
+            barItems: [signupPhoneKeyboardDownButton, flexSpace]
+        )
+        passwordAndPassword.passwordInput.inputAccessoryView = makeToolbar(
+            barItems: [signupPasswordKeyboardDownButton, flexSpace]
+        )
+        passwordAndPassword.repeatPasswordInput.inputAccessoryView = makeToolbar(
+            barItems: [signupRepeatPasswordKeyboardDownButton, flexSpace]
         )
         
         let phoneAndGenderDelegate = phoneAndPassword.codeInput.delegate as? PhoneInputDelegate
-        phoneAndGenderDelegate?.continueButton = continueButton
+        phoneAndGenderDelegate?.continueButton = loginContinueButton
+        let signupPhoneDeledate = phoneInput.delegate as? PhoneInputDelegate
+        signupPhoneDeledate?.continueButton = signupContinueButton
     }
     
     private let logoContainer = UIView()
@@ -490,6 +524,7 @@ class LaunchViewController: UIViewController {
             print("it's time to sing user up!")
             return
         }
+        print("print is working, like ok")
         changeStage(stage: .signup)
     }
     
@@ -503,10 +538,18 @@ class LaunchViewController: UIViewController {
     }
     
     @objc func continueTapped() {
-        phoneAndPassword.phoneInput.becomeFirstResponder()
+        switch currentStage {
+        case .login:
+            phoneAndPassword.phoneInput.becomeFirstResponder()
+        case .signup:
+            phoneInput.becomeFirstResponder()
+        default:
+            return
+        }
     }
     
     @objc func doneButtonTapped() {
+        print("kek")
         view.endEditing(true)
     }
     
