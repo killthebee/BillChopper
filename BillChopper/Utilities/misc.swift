@@ -31,3 +31,13 @@ func makeKeyboardDownButton() -> UIBarButtonItem{
 let flexSpace = UIBarButtonItem(
     barButtonSystemItem: .flexibleSpace,target: nil, action: nil
 )
+
+//func makeJson(obj: [String: Any]) -> Optional<Data>? {
+//    do {
+//        let jsonData = try JSONSerialization.data(withJSONObject: obj)
+//        return jsonData
+//    } catch {
+//        print(error)
+//    }
+//    return nil
+//}

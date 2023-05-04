@@ -532,8 +532,28 @@ class LaunchViewController: UIViewController {
         changeStage(stage: .login)
     }
     
+//    func swiftjopa(
+    
     @objc func signupTapped() {
+        let signUpHeadnler = { [weak self] (res: DummyData) in
+            if res.Success {
+                print("yeey")
+            } else {
+                print("neeey!")
+            }
+        }
         if currentStage == .signup {
+            let json: [String: Any] = ["title": "hmmm", "kek": 69]
+            let jsonData = try? JSONSerialization.data(withJSONObject: json)
+            let request = setupRequest(url: .dummy, method: .post, body: jsonData)
+            performRequest(request: request, handler: signUpHeadnler)
+//            let queue = DispatchQueue.global(qos: .utility)
+//            queue.async {
+//                print("camoon!")
+//                if let data = try? Data(contentsOf: dummyUrl) {
+//                    print(data)
+//                }
+//            }
             print("it's time to sing user up!")
             return
         }

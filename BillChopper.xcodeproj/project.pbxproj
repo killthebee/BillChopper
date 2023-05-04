@@ -60,6 +60,9 @@
 		30E22E932968677700B9A63F /* mainCell.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30E22E922968677700B9A63F /* mainCell.strings */; };
 		30E22E9629686E6800B9A63F /* mainFooter.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30E22E9529686E6800B9A63F /* mainFooter.strings */; };
 		30E22E992968746900B9A63F /* profileView.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30E22E982968746900B9A63F /* profileView.strings */; };
+		30E55E6B2A02B59D00BDF49E /* APIObjs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E55E6A2A02B59D00BDF49E /* APIObjs.swift */; };
+		30E55E712A03989200BDF49E /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E55E702A03989200BDF49E /* Networking.swift */; };
+		30E55E732A0398D200BDF49E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E55E722A0398D200BDF49E /* Constants.swift */; };
 		30F80BAC29BA1A16003C7272 /* PasswordAndPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F80BAB29BA1A16003C7272 /* PasswordAndPassword.swift */; };
 /* End PBXBuildFile section */
 
@@ -118,6 +121,9 @@
 		30E22E922968677700B9A63F /* mainCell.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = mainCell.strings; sourceTree = "<group>"; };
 		30E22E9529686E6800B9A63F /* mainFooter.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = mainFooter.strings; sourceTree = "<group>"; };
 		30E22E982968746900B9A63F /* profileView.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = profileView.strings; sourceTree = "<group>"; };
+		30E55E6A2A02B59D00BDF49E /* APIObjs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIObjs.swift; sourceTree = "<group>"; };
+		30E55E702A03989200BDF49E /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
+		30E55E722A0398D200BDF49E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		30F80BAB29BA1A16003C7272 /* PasswordAndPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordAndPassword.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -210,6 +216,7 @@
 		3078498828EB349D00AEFECA /* BillChopper */ = {
 			isa = PBXGroup;
 			children = (
+				30E55E6F2A03987F00BDF49E /* Networking */,
 				302B817A29632E7B008380A0 /* Strings */,
 				305A0D4729546D36004CCA23 /* Utilities */,
 				304FDCE02934E09300737B7B /* Extentions */,
@@ -238,6 +245,7 @@
 				307849DC28F59AF700AEFECA /* Spend+CoreDataProperties.swift */,
 				307849A428EC860500AEFECA /* Persistance.swift */,
 				307849B728F573ED00AEFECA /* backwardsStuff.swift */,
+				30E55E6A2A02B59D00BDF49E /* APIObjs.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -304,6 +312,15 @@
 				30F80BAB29BA1A16003C7272 /* PasswordAndPassword.swift */,
 			);
 			path = Launch;
+			sourceTree = "<group>";
+		};
+		30E55E6F2A03987F00BDF49E /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				30E55E702A03989200BDF49E /* Networking.swift */,
+				30E55E722A0398D200BDF49E /* Constants.swift */,
+			);
+			path = Networking;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -410,10 +427,12 @@
 				30DF1A2629A3A515007B6476 /* UIButton + ext.swift in Sources */,
 				304FDCE429350D5700737B7B /* AddEventViewController.swift in Sources */,
 				301159C8292CE49A001E254D /* ImagePicker.swift in Sources */,
+				30E55E6B2A02B59D00BDF49E /* APIObjs.swift in Sources */,
 				30DF1A3329B0DFA5007B6476 /* UITapGestureRecognizer + ext.swift in Sources */,
 				305A0D552954A5C7004CCA23 /* SaveButton.swift in Sources */,
 				304FDCEB293E15BC00737B7B /* CarouselTableCell.swift in Sources */,
 				304FDCE22934E11B00737B7B /* UIView + ext.swift in Sources */,
+				30E55E712A03989200BDF49E /* Networking.swift in Sources */,
 				307849DD28F59AF700AEFECA /* Event+CoreDataClass.swift in Sources */,
 				3078498A28EB349D00AEFECA /* AppDelegate.swift in Sources */,
 				305A0D4929546D63004CCA23 /* PhoneInput.swift in Sources */,
@@ -425,6 +444,7 @@
 				307849A028EB5A6600AEFECA /* DataModel.xcdatamodeld in Sources */,
 				305A0D4D295479D8004CCA23 /* PhoneConverter.swift in Sources */,
 				305A0D4B29546F75004CCA23 /* PhoneInputDelegate.swift in Sources */,
+				30E55E732A0398D200BDF49E /* Constants.swift in Sources */,
 				307849E228F59AF700AEFECA /* Spend+CoreDataProperties.swift in Sources */,
 				30DBDCD9294B2FA900D44D9C /* ChooseButton.swift in Sources */,
 				301159CC292FA322001E254D /* PhoneAndGender.swift in Sources */,
