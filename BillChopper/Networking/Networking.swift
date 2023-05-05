@@ -20,7 +20,7 @@ func setupRequest(
 }
 
 func performRequest(
-    request: URLRequest, handler: @escaping (DummyData) -> ()
+    request: URLRequest, handler: @escaping (Data) throws -> ()
 ) {
     let tast = URLSession.shared.dataTask(with: request) { data, response, error in
         guard
@@ -37,9 +37,7 @@ func performRequest(
             return
         }
         do {
-            let responseObject = try JSONDecoder().decode(DummyData.self, from: data)
-            print(responseObject)
-            handler(responseObject)
+            try handler(data)
         } catch {
             print(error) // parsing error
 

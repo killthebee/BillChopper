@@ -532,12 +532,15 @@ class LaunchViewController: UIViewController {
         changeStage(stage: .login)
     }
     
-//    func swiftjopa(
-    
     @objc func signupTapped() {
-        let signUpHeadnler = { [weak self] (res: DummyData) in
-            if res.Success {
+        let signUpHeadnler = { [weak self] (data: Data) throws in
+            let responseObject = try JSONDecoder().decode(DummyData.self, from: data)
+            if responseObject.Success {
                 print("yeey")
+                DispatchQueue.main.async {
+                    self?.signUpButton.setTitle("yeeey", for: .normal)
+                }
+                
             } else {
                 print("neeey!")
             }
