@@ -114,6 +114,34 @@ final class AddEventViewController: UIViewController {
         (UIApplication.shared.delegate as! AppDelegate).restrictRotation = .portrait
         setupViews()
         addSubviews()
+        addToolbar()
+    }
+    
+    private func addToolbar() {
+        let continueButton = UIBarButtonItem(
+            title: "Continue", style: .plain,target: self, action: nil
+        )
+        
+        let codeKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let phoneKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        
+        continueButton.tintColor = .systemGray
+        continueButton.action = #selector(continueTapped)
+        
+        let CodeKeyboardDownView = codeKeyboardDownButton.customView as? UIButton
+        let PhoneKeyboardDownView = phoneKeyboardDownButton.customView as? UIButton
+        [CodeKeyboardDownView, PhoneKeyboardDownView
+        ].forEach(
+            {$0?.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)}
+        )
+        codeInput.inputAccessoryView = makeToolbar(
+            barItems: [codeKeyboardDownButton, flexSpace, continueButton]
+        )
+        phoneInput.inputAccessoryView = makeToolbar(
+            barItems: [phoneKeyboardDownButton, flexSpace]
+        )
+        
+        phoneNumDelegate.continueButton = continueButton
     }
     
     private func setupViews() {
@@ -249,6 +277,13 @@ final class AddEventViewController: UIViewController {
         dismiss(animated: true)
     }
     
+    @objc func continueTapped() {
+        phoneInput.becomeFirstResponder()
+    }
+    
+    @objc func doneButtonTapped() {
+            view.endEditing(true)
+    }
 }
 
 extension AddEventViewController: UITableViewDataSource, UITableViewDelegate {

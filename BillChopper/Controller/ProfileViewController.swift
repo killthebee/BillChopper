@@ -4,6 +4,8 @@ final class ProfileViewController: UIViewController {
     
     private var iconView = ProfileIcon().setUpIconView()
     
+    var isPhoneInput = true
+    
     private lazy var coverView: UIView = {
         let coverView = UIView()
         coverView.isUserInteractionEnabled = true
@@ -49,7 +51,6 @@ final class ProfileViewController: UIViewController {
         usernameTextField.autocorrectionType = UITextAutocorrectionType.no
         usernameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
         usernameTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-        // TODO: make keyboards what make sense
         usernameTextField.keyboardType = UIKeyboardType.default
         usernameTextField.returnKeyType = UIReturnKeyType.done
         
@@ -74,7 +75,7 @@ final class ProfileViewController: UIViewController {
         return usernameHelpTextLable
     }()
     
-    private var PhoneAndGender: UIView = BillChopper.PhoneAndGender()
+    private let PhoneAndGender: PhoneAndGender = BillChopper.PhoneAndGender()
     
     private let exitButton: UIButton = {
         let button = ExitCross()
@@ -89,16 +90,53 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         (UIApplication.shared.delegate as! AppDelegate).restrictRotation = .portrait
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil);
         
         setupIconView(iconView: iconView)
+        addToolbars()
         setupViews()
         addSubviews()
+    }
+    
+    private func addToolbars() {
+        let continueButton = UIBarButtonItem(
+            title: "Continue", style: .plain,target: self, action: nil
+        )
+        
+        let codeKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let phoneKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let usernameKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        
+        continueButton.tintColor = .systemGray
+        continueButton.action = #selector(continueTapped)
+        
+        let CodeKeyboardDownView = codeKeyboardDownButton.customView as? UIButton
+        let PhoneKeyboardDownView = phoneKeyboardDownButton.customView as? UIButton
+        let usernameKeyboardDownView = usernameKeyboardDownButton.customView as? UIButton
+        [CodeKeyboardDownView, PhoneKeyboardDownView, usernameKeyboardDownView
+        ].forEach(
+            {$0?.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)}
+        )
+        PhoneAndGender.codeInput.inputAccessoryView = makeToolbar(
+            barItems: [codeKeyboardDownButton, flexSpace, continueButton]
+        )
+        PhoneAndGender.phoneInput.inputAccessoryView = makeToolbar(
+            barItems: [phoneKeyboardDownButton, flexSpace]
+        )
+        usernameTextField.inputAccessoryView = makeToolbar(
+            barItems: [usernameKeyboardDownButton, flexSpace]
+        )
+        
+        let phoneAndGenderDelegate = PhoneAndGender.codeInput.delegate as? PhoneInputDelegate
+        phoneAndGenderDelegate?.continueButton = continueButton
     }
     
     private func setupViews() {
         view.backgroundColor = .white
         self.imagePicker = ImagePicker(presentationController: self, delegate: self)
         usernameTextField.delegate = self
+        
         
         let tapOnIconGestureRecognizer = UITapGestureRecognizer(
             target: self, action: #selector(handleTapOnIcon)
@@ -109,6 +147,14 @@ final class ProfileViewController: UIViewController {
     
     private func addSubviews() {
         [exitButton, uploadButton, usernameTextField, usernameHelpText, PhoneAndGender, saveButton, iconView].forEach({view.addSubview($0)})
+    }
+    
+    @objc func doneButtonTapped() {
+            view.endEditing(true)
+    }
+    
+    @objc func continueTapped() {
+        PhoneAndGender.phoneInput.becomeFirstResponder()
     }
     
     @objc func handleTapOnIcon() {
@@ -135,6 +181,15 @@ final class ProfileViewController: UIViewController {
         coverView.removeFromSuperview()
     }
     
+    @objc func keyboardWillShow(sender: NSNotification) {
+        if isPhoneInput { self.view.frame.origin.y = -150 }
+        
+    }
+    
+    @objc func keyboardWillHide(sender: NSNotification) {
+         self.view.frame.origin.y = 0
+    }
+    
     private var iconTopAnchor: NSLayoutConstraint?
     private var iconCenterXAnchor: NSLayoutConstraint?
     private var iconWidthAnchor: NSLayoutConstraint?
@@ -156,7 +211,7 @@ final class ProfileViewController: UIViewController {
         
         let heigthToUploadButton: CGFloat = 50 + iconViewDiameter
         
-        let  constraints: [NSLayoutConstraint] = [
+        let constraints: [NSLayoutConstraint] = [
             iconTopAnchor!,
             iconCenterXAnchor!,
             iconWidthAnchor!,
@@ -174,6 +229,7 @@ final class ProfileViewController: UIViewController {
             usernameTextField.topAnchor.constraint(equalTo: uploadButton.bottomAnchor, constant: 50),
             usernameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             usernameTextField.heightAnchor.constraint(equalToConstant: 40),
+            // TODO: mb change width
             usernameTextField.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
             
             usernameHelpText.topAnchor.constraint(equalTo: usernameTextField.bottomAnchor, constant: 10),
@@ -228,5 +284,18 @@ extension ProfileViewController: ImagePickerDelegate, UITextFieldDelegate {
         iconView.isUserInteractionEnabled = true
         iconView.addGestureRecognizer(tapOnIconGestureRecognizer)
         view.addSubview(iconView)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        view.endEditing(true)
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField)
+    {
+        isPhoneInput = false
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField){
+        isPhoneInput = true
     }
 }
