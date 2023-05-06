@@ -181,6 +181,39 @@ class LaunchViewController: UIViewController {
         return usernameHelpTextLable
     }()
     
+    private var passwordHelpText: UILabel = {
+        let passwordHelpText = UILabel()
+        //passwordHelpText.text = "Problems: least one uppercase, least one digit, min 8 characters total"
+        passwordHelpText.font = passwordHelpText.font.withSize(15)
+        passwordHelpText.lineBreakMode = .byWordWrapping
+        passwordHelpText.numberOfLines = 0
+        passwordHelpText.textColor = .red
+        
+        return passwordHelpText
+    }()
+    
+    private func setWarrings(erros: [String: String]) {
+        if let passwordWarning = erros["password"] {
+            passwordHelpText.text = passwordWarning
+        } else {
+            passwordHelpText.text = ""
+        }
+        if let usernameWarning = erros["username"] {
+            usernameHelpText.text = usernameWarning
+            usernameHelpText.textColor = .red
+        } else {
+            usernameHelpText.text = R.string.profileView.helpText()
+            usernameHelpText.textColor = .black
+        }
+        if let phoneWarning = erros["phone"] {
+            phoneHelpText.text = phoneWarning
+            phoneHelpText.textColor = .red
+        } else {
+            phoneHelpText.text = R.string.launchView.phoneHelpText()
+            phoneHelpText.textColor = .black
+        }
+    }
+    
     private let passwordAndPassword = PasswordAndPassword()
     
     private func changeStage(stage: AuthStages) {
@@ -272,6 +305,10 @@ class LaunchViewController: UIViewController {
             passwordAndPassword.widthAnchor.constraint(equalToConstant: 300),
             passwordAndPassword.heightAnchor.constraint(equalToConstant: 80),
             
+            passwordHelpText.topAnchor.constraint(equalTo: passwordAndPassword.bottomAnchor),
+            passwordHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            passwordHelpText.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor, multiplier: 0.95),
+            
             //authButtonsContainer.heightAnchor.constraint(equalTo: authCoverView.heightAnchor, multiplier: 0.3),
             authButtonsContainer.bottomAnchor.constraint(equalTo: authCoverView.bottomAnchor),
             authButtonsContainer.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
@@ -312,7 +349,7 @@ class LaunchViewController: UIViewController {
             UIView.animate(withDuration: 0.5, animations: {
                 self.view.layoutIfNeeded()
             })
-            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer,
+            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer, passwordHelpText
             ].forEach({authCoverView.addSubview($0)})
             authButtonsContainer.addSubview(signUpButton)
             phoneField.addSubview(phoneContainer)
@@ -331,7 +368,7 @@ class LaunchViewController: UIViewController {
             UIView.animate(withDuration: 0.5, animations: {
                 self.view.layoutIfNeeded()
             })
-            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer,
+            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer, passwordHelpText
             ].forEach({authCoverView.addSubview($0)})
             authButtonsContainer.addSubview(signUpButton)
             phoneField.addSubview(phoneContainer)
@@ -460,7 +497,7 @@ class LaunchViewController: UIViewController {
         [logoView, logoContainer, topCornerCircleView, bottomCornerCircleView, authCoverView,
          signUpButton, signInButton, authButtonsContainer, phoneAndPassword, welcomeBackHeaderLable,
          signUpLable, singUpHeaderContainer, signUpHeader, usernameTextField, usernameHelpText, phoneField,
-         codeInput, phoneInput, phoneContainer, phoneHelpText, passwordAndPassword
+         codeInput, phoneInput, phoneContainer, phoneHelpText, passwordAndPassword, passwordHelpText
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         let viewHeight = view.frame.height
         
@@ -533,30 +570,37 @@ class LaunchViewController: UIViewController {
     }
     
     @objc func signupTapped() {
-        let signUpHeadnler = { [weak self] (data: Data) throws in
-            let responseObject = try JSONDecoder().decode(DummyData.self, from: data)
-            if responseObject.Success {
-                print("yeey")
-                DispatchQueue.main.async {
-                    self?.signUpButton.setTitle("yeeey", for: .normal)
-                }
-                
-            } else {
-                print("neeey!")
-            }
-        }
         if currentStage == .signup {
-            let json: [String: Any] = ["title": "hmmm", "kek": 69]
-            let jsonData = try? JSONSerialization.data(withJSONObject: json)
-            let request = setupRequest(url: .dummy, method: .post, body: jsonData)
-            performRequest(request: request, handler: signUpHeadnler)
-//            let queue = DispatchQueue.global(qos: .utility)
-//            queue.async {
-//                print("camoon!")
-//                if let data = try? Data(contentsOf: dummyUrl) {
-//                    print(data)
-//                }
-//            }
+            let signUpHandler = { [weak self] (data: Data) throws in
+                let responseObject = try JSONDecoder().decode(DummyData.self, from: data)
+                if responseObject.Success {
+                    DispatchQueue.main.async {
+                        self?.signUpButton.setTitle("yeeey", for: .normal)
+                    }
+                    
+                } else {
+                    print("neeey!")
+                }
+            }
+            
+//            Un270193
+            let (isValid, validationResult) = Verifier().verifyUserSignUpData(
+                username: self.usernameTextField.text ?? "",
+                password: self.passwordAndPassword.passwordInput.text ?? "",
+                secondPassword: self.passwordAndPassword.repeatPasswordInput.text ?? "",
+                phone: (self.phoneInput.text ?? "") + (self.codeInput.text ?? "")
+            )
+            if !isValid {
+                setWarrings(erros: validationResult)
+                return
+            } else {
+                let json: [String: Any] = validationResult
+//                let json: [String: Any] = ["lol": 123]
+                let jsonData = try? JSONSerialization.data(withJSONObject: json)
+                print(jsonData)
+                let request = setupRequest(url: .register, method: .post, body: jsonData)
+                performRequest(request: request, handler: signUpHandler)
+            }
             print("it's time to sing user up!")
             return
         }
@@ -565,7 +609,8 @@ class LaunchViewController: UIViewController {
     }
     
     @objc func keyboardWillShow(sender: NSNotification) {
-        self.view.frame.origin.y = view.frame.maxY > 815 ? -170 : -220
+        // keypad for buttom password is covering field
+        self.view.frame.origin.y = view.frame.maxY > 845 ? -170 : -220
         
     }
     

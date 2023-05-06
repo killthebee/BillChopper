@@ -2,6 +2,7 @@ import UIKit
 
 enum Urls: String {
     case dummy = "http://127.0.0.1:8000/api/user/dummy/"
+    case register = "http://127.0.0.1:8000/api/user/register/"
 }
 
 enum Method: String {
