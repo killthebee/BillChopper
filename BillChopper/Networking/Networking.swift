@@ -20,7 +20,7 @@ func setupRequest(
 }
 
 func performRequest(
-    request: URLRequest, handler: @escaping (Data) throws -> ()
+    request: URLRequest, successHandler: @escaping (Data) throws -> (), failureHandler: @escaping (Data) throws -> ()
 ) {
     let tast = URLSession.shared.dataTask(with: request) { data, response, error in
         guard
@@ -32,12 +32,21 @@ func performRequest(
             return
         }
         guard (200 ... 299) ~= response.statusCode else {                    // check for http errors
-            print("statusCode should be 2xx, but is \(response.statusCode)")
-            print("response = \(response)")
+            do {
+                try failureHandler(data)
+            } catch {
+                print(error) // parsing error
+                
+                if let responseString = String(data: data, encoding: .utf8) {
+                    print("responseString = \(responseString)")
+                } else {
+                    print("unable to parse response as string")
+                }
+            }
             return
         }
         do {
-            try handler(data)
+            try successHandler(data)
         } catch {
             print(error) // parsing error
 

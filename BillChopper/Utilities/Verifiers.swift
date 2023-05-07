@@ -64,14 +64,14 @@ class Verifier {
         
         let cleanPhone = stripPhoneNumber(phone: phone)
         if isValidPhone(phone: cleanPhone) {
-            serializedData["phone"] = cleanPhone
+            serializedData["username"] = cleanPhone
         } else {
             isValid = false
             errors["phone"] = "phone isn't valid"
         }
         
         if isValidUsername(username: username) {
-            serializedData["username"] = username
+            serializedData["first_name"] = username
         } else {
             isValid = false
             errors["username"] = "username isn't valid"

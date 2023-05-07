@@ -571,7 +571,7 @@ class LaunchViewController: UIViewController {
     
     @objc func signupTapped() {
         if currentStage == .signup {
-            let signUpHandler = { [weak self] (data: Data) throws in
+            let signUpSuccessHandler = { [weak self] (data: Data) throws in
                 let responseObject = try JSONDecoder().decode(DummyData.self, from: data)
                 if responseObject.Success {
                     DispatchQueue.main.async {
@@ -582,14 +582,27 @@ class LaunchViewController: UIViewController {
                     print("neeey!")
                 }
             }
-            
-//            Un270193
+            let signUpFailureHandler = { [weak self] (data: Data) throws in
+                let responseObject = try JSONDecoder().decode(RegisterError.self, from: data)
+                DispatchQueue.main.async {
+                    var errors: [String: String] = [:]
+                    if let usernameWarning = responseObject.username {
+                        errors["username"] = usernameWarning.joined(separator: " ")
+                    }
+                    if responseObject.password != nil {
+                        errors["password"] = "least one uppercase, least one digit, min 8 characters total"
+                    }
+                    self?.setWarrings(erros: errors)
+                }
+            }
+            // Un270193
             let (isValid, validationResult) = Verifier().verifyUserSignUpData(
                 username: self.usernameTextField.text ?? "",
                 password: self.passwordAndPassword.passwordInput.text ?? "",
                 secondPassword: self.passwordAndPassword.repeatPasswordInput.text ?? "",
                 phone: (self.phoneInput.text ?? "") + (self.codeInput.text ?? "")
             )
+            
             if !isValid {
                 setWarrings(erros: validationResult)
                 return
@@ -597,9 +610,8 @@ class LaunchViewController: UIViewController {
                 let json: [String: Any] = validationResult
 //                let json: [String: Any] = ["lol": 123]
                 let jsonData = try? JSONSerialization.data(withJSONObject: json)
-                print(jsonData)
                 let request = setupRequest(url: .register, method: .post, body: jsonData)
-                performRequest(request: request, handler: signUpHandler)
+                performRequest(request: request, successHandler: signUpSuccessHandler, failureHandler: signUpFailureHandler)
             }
             print("it's time to sing user up!")
             return
