@@ -192,6 +192,17 @@ class LaunchViewController: UIViewController {
         return passwordHelpText
     }()
     
+    private let singInErrorHelpText: UILabel = {
+        let singInErrorHelpText = UILabel()
+//        singInErrorHelpText.text = "No active account found with the given credentials"
+        singInErrorHelpText.font = singInErrorHelpText.font.withSize(15)
+        singInErrorHelpText.lineBreakMode = .byWordWrapping
+        singInErrorHelpText.numberOfLines = 0
+        singInErrorHelpText.textColor = .red
+        
+        return singInErrorHelpText
+    }()
+    
     private func setWarrings(erros: [String: String]) {
         if let passwordWarning = erros["password"] {
             passwordHelpText.text = passwordWarning
@@ -238,6 +249,10 @@ class LaunchViewController: UIViewController {
             phoneAndPassword.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
             phoneAndPassword.widthAnchor.constraint(equalToConstant: 300),
             phoneAndPassword.heightAnchor.constraint(equalToConstant: 80),
+            
+            singInErrorHelpText.bottomAnchor.constraint(equalTo: phoneAndPassword.topAnchor),
+            singInErrorHelpText.widthAnchor.constraint(equalTo: phoneAndPassword.widthAnchor, multiplier: 0.9),
+            singInErrorHelpText.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
             
             welcomeBackHeaderLable.topAnchor.constraint(equalTo: authCoverView.topAnchor),
             welcomeBackHeaderLable.bottomAnchor.constraint(equalTo: phoneAndPassword.topAnchor),
@@ -333,7 +348,7 @@ class LaunchViewController: UIViewController {
             [signUpButton, signInButton, authButtonsContainer].forEach({$0.removeFromSuperview()})
             NSLayoutConstraint.deactivate(stage1Constraints)
             
-            [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer
+            [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer, singInErrorHelpText
             ].forEach({authCoverView.addSubview($0)})
             authButtonsContainer.addSubview(signInButton)
             
@@ -438,7 +453,7 @@ class LaunchViewController: UIViewController {
         let signupPasswordKeyboardDownView = signupPasswordKeyboardDownButton.customView as? UIButton
         let signupRepeatPasswordKeyboardDownView = signupRepeatPasswordKeyboardDownButton.customView as? UIButton
         [loginCodeKeyboardDownView, loginPhoneKeyboardDownView, loginPasswordKeyboardDownView, usernameKeyboardDownView, signupCodeKeyboardDownView, signupPhoneKeyboardDownView,
-         signupRepeatPasswordKeyboardDownView, signupPasswordKeyboardDownView
+         signupRepeatPasswordKeyboardDownView, signupPasswordKeyboardDownView,
         ].forEach(
             {$0?.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)}
         )
@@ -497,7 +512,7 @@ class LaunchViewController: UIViewController {
         [logoView, logoContainer, topCornerCircleView, bottomCornerCircleView, authCoverView,
          signUpButton, signInButton, authButtonsContainer, phoneAndPassword, welcomeBackHeaderLable,
          signUpLable, singUpHeaderContainer, signUpHeader, usernameTextField, usernameHelpText, phoneField,
-         codeInput, phoneInput, phoneContainer, phoneHelpText, passwordAndPassword, passwordHelpText
+         codeInput, phoneInput, phoneContainer, phoneHelpText, passwordAndPassword, passwordHelpText, singInErrorHelpText
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         let viewHeight = view.frame.height
         
@@ -552,12 +567,38 @@ class LaunchViewController: UIViewController {
     
     @objc func loginTapped() {
         if currentStage == .login {
+            let signUpSuccessHandler = { [weak self] (data: Data) throws in
+                let responseObject = try JSONDecoder().decode(LoginSuccess.self, from: data)
+                print(responseObject)
+                KeychainHelper.standard.save(
+                    Data(responseObject.access.utf8),
+                    serice: "access-token",
+                    account: "backend-auth"
+                )
+                KeychainHelper.standard.save(
+                    Data(responseObject.refresh.utf8),
+                    serice: "refresh-token",
+                    account: "backend-auth"
+                )
+                
+                // TODO: fetch user data
+                // TODO: present main VC
+            }
+            let signUpFailureHandler = { [weak self] (data: Data) throws in
+                let responseObject = try JSONDecoder().decode(LoginError.self, from: data)
+                DispatchQueue.main.async {
+                    self?.singInErrorHelpText.text = responseObject.detail
+                }
+            }
+            
             print("it's time to log user in!")
             guard let phone = phoneAndPassword.phoneInput.text else { return }
             guard let pw = phoneAndPassword.passwordInput.text else { return }
-            print(phoneAndPassword.phoneInput.text)
-            print(phoneAndPassword.passwordInput.text)
-            // TODO: make a func in delegate that will sanityze phone from +()etc
+            let json: [String: Any] = ["username": "admin", "password": "1234561"]
+            let jsonData = try? JSONSerialization.data(withJSONObject: json)
+            let request = setupRequest(url: .login, method: .post, body: jsonData)
+            performRequest(request: request, successHandler: signUpSuccessHandler, failureHandler: signUpFailureHandler)
+            
             if phone == "(1" && pw == "q" {
                 print("me trying!")
                 mainViewController.modalPresentationStyle = .fullScreen
@@ -572,15 +613,8 @@ class LaunchViewController: UIViewController {
     @objc func signupTapped() {
         if currentStage == .signup {
             let signUpSuccessHandler = { [weak self] (data: Data) throws in
-                let responseObject = try JSONDecoder().decode(DummyData.self, from: data)
-                if responseObject.Success {
-                    DispatchQueue.main.async {
-                        self?.signUpButton.setTitle("yeeey", for: .normal)
-                    }
-                    
-                } else {
-                    print("neeey!")
-                }
+                let responseObject = try JSONDecoder().decode(RegisterationSuccess.self, from: data)
+                // TODO: Present login view
             }
             let signUpFailureHandler = { [weak self] (data: Data) throws in
                 let responseObject = try JSONDecoder().decode(RegisterError.self, from: data)

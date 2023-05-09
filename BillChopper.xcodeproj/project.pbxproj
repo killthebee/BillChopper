@@ -65,6 +65,7 @@
 		30E55E732A0398D200BDF49E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E55E722A0398D200BDF49E /* Constants.swift */; };
 		30E55E772A05358C00BDF49E /* Verifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E55E762A05358C00BDF49E /* Verifiers.swift */; };
 		30F80BAC29BA1A16003C7272 /* PasswordAndPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F80BAB29BA1A16003C7272 /* PasswordAndPassword.swift */; };
+		84C56F562A0AAA3C00EC0EBF /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C56F552A0AAA3C00EC0EBF /* KeychainHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -127,6 +128,7 @@
 		30E55E722A0398D200BDF49E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		30E55E762A05358C00BDF49E /* Verifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Verifiers.swift; sourceTree = "<group>"; };
 		30F80BAB29BA1A16003C7272 /* PasswordAndPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordAndPassword.swift; sourceTree = "<group>"; };
+		84C56F552A0AAA3C00EC0EBF /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,6 +196,7 @@
 				305A0D4C295479D8004CCA23 /* PhoneConverter.swift */,
 				305A0D5029548FA0004CCA23 /* misc.swift */,
 				30E55E762A05358C00BDF49E /* Verifiers.swift */,
+				84C56F552A0AAA3C00EC0EBF /* KeychainHelper.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -424,6 +427,7 @@
 				30DA407D2926793600E2DC17 /* ProfileViewController.swift in Sources */,
 				305A0D4F29548F7F004CCA23 /* CustomTextField.swift in Sources */,
 				30DF1A23299E9181007B6476 /* LaunchViewController.swift in Sources */,
+				84C56F562A0AAA3C00EC0EBF /* KeychainHelper.swift in Sources */,
 				305A0D4629533DEC004CCA23 /* ExitCross.swift in Sources */,
 				30DBDCE929520BFC00D44D9C /* SplitSelectorViewCell.swift in Sources */,
 				30DF1A3029ACC9D8007B6476 /* PasswordField.swift in Sources */,
