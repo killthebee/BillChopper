@@ -260,6 +260,8 @@ final class ProfileViewController: UIViewController {
     
     @objc func handleSaveButtonClicked(_ sender: UIButton) {
         print("save requested")
+        let filename = "\(usernameTextField.text ?? "anon").png"
+        uploadImage(fileName: filename, image: iconView.image!)
     }
     
     @objc func handleExitButtonClicked(_ sender: UIButton) {
