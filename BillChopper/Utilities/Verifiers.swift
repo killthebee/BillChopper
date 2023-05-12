@@ -79,4 +79,31 @@ class Verifier {
         
         return isValid ? (isValid, serializedData) : (isValid, errors)
     }
+    
+    func verifySingIn(username: String?, password: String?) -> (Bool, [String: String]) {
+        guard username != nil, password != nil else {
+            return (false, ["errors": "No password or phone provided!"])
+        }
+        var isValid = true
+        var errors: [String: String] = [:]
+        var serializedData: [String: String] = [:]
+        
+        let cleanPhone = stripPhoneNumber(phone: username!)
+        if isValidPhone(phone: cleanPhone) {
+            serializedData["username"] = cleanPhone
+        } else {
+            isValid = false
+            errors["errors", default: ""] += "phone isn't valid "
+        }
+        
+        let pwVerificationResult = verifyPassword(password: password!)
+        if pwVerificationResult != "" {
+            isValid = false
+            errors["errors", default: ""] += "password isn't valid"
+        } else {
+            serializedData["password"] = password
+        }
+        
+        return isValid ? (isValid, serializedData) : (isValid, errors)
+    }
 }
