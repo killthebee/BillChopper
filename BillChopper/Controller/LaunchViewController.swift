@@ -1,14 +1,14 @@
 import UIKit
 
 class LaunchViewController: UIViewController {
+    
+    private lazy var mainViewController = MainViewController()
 
     enum AuthStages {
         case chooseMethod
         case login
         case signup
     }
-    
-    private lazy var mainViewController = MainViewController()
     
     private var currentStage: AuthStages = .chooseMethod
     
@@ -567,7 +567,7 @@ class LaunchViewController: UIViewController {
     
     @objc func loginTapped() {
         if currentStage == .login {
-            let signUpSuccessHandler = { [weak self] (data: Data) throws in
+            let signInSuccessHandler = { [weak self] (data: Data) throws in
                 let responseObject = try JSONDecoder().decode(LoginSuccess.self, from: data)
                 print(responseObject)
                 KeychainHelper.standard.save(
@@ -583,28 +583,36 @@ class LaunchViewController: UIViewController {
                 
                 // TODO: fetch user data
                 // TODO: present main VC
+                DispatchQueue.main.async {
+                    guard let vc = self?.mainViewController else {
+                        return
+                    }
+                    
+                    vc.modalPresentationStyle = .fullScreen
+                    //mainViewController.modalTransitionStyle = .
+                    self?.present(vc, animated: false)
+                }
+                
             }
-            let signUpFailureHandler = { [weak self] (data: Data) throws in
+            let signInFailureHandler = { [weak self] (data: Data) throws in
                 let responseObject = try JSONDecoder().decode(LoginError.self, from: data)
                 DispatchQueue.main.async {
                     self?.singInErrorHelpText.text = responseObject.detail
                 }
             }
             
-            print("it's time to log user in!")
-            guard let phone = phoneAndPassword.phoneInput.text else { return }
-            guard let pw = phoneAndPassword.passwordInput.text else { return }
-            let json: [String: Any] = ["username": "admin", "password": "1234561"]
+//            let (isValid, validationResult) = Verifier().verifySingIn(
+//                username:  phoneAndPassword.phoneInput.text,
+//                password: phoneAndPassword.passwordInput.text
+//            )
+//            if !isValid {
+//                self.singInErrorHelpText.text = validationResult["error"]
+//            }
+            let json: [String: Any] = ["username": "admin", "password": "123456"]
             let jsonData = try? JSONSerialization.data(withJSONObject: json)
             let request = setupRequest(url: .login, method: .post, body: jsonData)
-            performRequest(request: request, successHandler: signUpSuccessHandler, failureHandler: signUpFailureHandler)
+            performRequest(request: request, successHandler: signInSuccessHandler, failureHandler: signInFailureHandler)
             
-            if phone == "(1" && pw == "q" {
-                print("me trying!")
-                mainViewController.modalPresentationStyle = .fullScreen
-                //mainViewController.modalTransitionStyle = .
-                present(mainViewController, animated: false)
-            }
             return
         }
         changeStage(stage: .login)
