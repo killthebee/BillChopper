@@ -18,8 +18,8 @@ final class KeychainHelper {
         if status == errSecDuplicateItem {
             update(
                 data,
-                serice: "access-token",
-                account: "backend-auth"
+                serice: serice,
+                account: account
             )
             
             return
@@ -37,7 +37,7 @@ final class KeychainHelper {
             kSecAttrAccount: account,
         ] as CFDictionary
         
-        let attributesToUpdate = [kSecValueData, data] as! CFDictionary
+        let attributesToUpdate = [kSecValueData: data] as CFDictionary
         
         let status = SecItemUpdate(query, attributesToUpdate)
         
