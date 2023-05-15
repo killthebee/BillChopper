@@ -566,34 +566,38 @@ class LaunchViewController: UIViewController {
     }
     
     @objc func loginTapped() {
-        if currentStage == .login {
-            let signInSuccessHandler = { [weak self] (data: Data) throws in
-                let responseObject = try JSONDecoder().decode(LoginSuccess.self, from: data)
-                print(responseObject)
-                KeychainHelper.standard.save(
-                    Data(responseObject.access.utf8),
-                    serice: "access-token",
-                    account: "backend-auth"
-                )
-                KeychainHelper.standard.save(
-                    Data(responseObject.refresh.utf8),
-                    serice: "refresh-token",
-                    account: "backend-auth"
-                )
-                
-                // TODO: fetch user data
-                // TODO: present main VC
-                DispatchQueue.main.async {
-                    guard let vc = self?.mainViewController else {
-                        return
-                    }
-                    
-                    vc.modalPresentationStyle = .fullScreen
-                    //mainViewController.modalTransitionStyle = .
-                    self?.present(vc, animated: false)
+        if currentStage != .login {
+            changeStage(stage: .login)
+            return
+        }
+        let signInSuccessHandler = { [weak self] (data: Data) throws in
+            let responseObject = try JSONDecoder().decode(LoginSuccess.self, from: data)
+            print(responseObject)
+            KeychainHelper.standard.save(
+                Data(responseObject.access.utf8),
+                serice: "access-token",
+                account: "backend-auth"
+            )
+            KeychainHelper.standard.save(
+                Data(responseObject.refresh.utf8),
+                serice: "refresh-token",
+                account: "backend-auth"
+            )
+            
+            // TODO: fetch user data
+            // TODO: present main VC
+            DispatchQueue.main.async {
+                guard let vc = self?.mainViewController else {
+                    return
                 }
                 
+                vc.modalPresentationStyle = .fullScreen
+                //mainViewController.modalTransitionStyle = .
+                self?.present(vc, animated: false)
+                }
             }
+            
+            
             let signInFailureHandler = { [weak self] (data: Data) throws in
                 let responseObject = try JSONDecoder().decode(LoginError.self, from: data)
                 DispatchQueue.main.async {
@@ -601,22 +605,18 @@ class LaunchViewController: UIViewController {
                 }
             }
             
-//            let (isValid, validationResult) = Verifier().verifySingIn(
-//                username:  phoneAndPassword.phoneInput.text,
-//                password: phoneAndPassword.passwordInput.text
-//            )
-//            if !isValid {
-//                self.singInErrorHelpText.text = validationResult["error"]
-//            }
+            //            let (isValid, validationResult) = Verifier().verifySingIn(
+            //                username:  phoneAndPassword.phoneInput.text,
+            //                password: phoneAndPassword.passwordInput.text
+            //            )
+            //            if !isValid {
+            //                self.singInErrorHelpText.text = validationResult["error"]
+            //            }
             let json: [String: Any] = ["username": "admin", "password": "123456"]
             let jsonData = try? JSONSerialization.data(withJSONObject: json)
             let request = setupRequest(url: .login, method: .post, body: jsonData)
             performRequest(request: request, successHandler: signInSuccessHandler, failureHandler: signInFailureHandler)
-            
-            return
         }
-        changeStage(stage: .login)
-    }
     
     @objc func signupTapped() {
         if currentStage == .signup {
