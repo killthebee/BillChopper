@@ -5,9 +5,11 @@ class Networking {
     
 }
 
-
 func setupRequest(
-    url: Urls, method: Method, contertType: ContentType = .json, body: Data? = nil
+    url: Urls,
+    method: Method,
+    contertType: ContentType = .json,
+    body: Data? = nil
 ) -> URLRequest {
     var request = URLRequest(url: URL(string: url.rawValue)!)
     request.httpMethod = method.rawValue
@@ -20,7 +22,9 @@ func setupRequest(
 }
 
 func performRequest(
-    request: URLRequest, successHandler: @escaping (Data) throws -> (), failureHandler: @escaping (Data) throws -> ()
+    request: URLRequest,
+    successHandler: @escaping (Data) throws -> (),
+    failureHandler: @escaping (Data) throws -> () = { _ in }
 ) {
     let tast = URLSession.shared.dataTask(with: request) { data, response, error in
         guard
