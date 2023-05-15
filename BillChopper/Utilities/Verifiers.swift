@@ -106,4 +106,34 @@ class Verifier {
         
         return isValid ? (isValid, serializedData) : (isValid, errors)
     }
+    
+    func verifyUserUpdate(username: String?, gender: String?, phone: String) -> (Bool, [String: String]) {
+        guard let username = username else {
+            return (false, ["username": "username field is empty"])
+        }
+        guard let gender = gender else {
+            return (false, ["gender": "gender hasn't been chosen"])
+        }
+        var isValid = true
+        var errors: [String: String] = [:]
+        var serializedData: [String: String] = [:]
+        serializedData["is_male"] = gender == "male" ? "True" : "False"
+        // TODO: seens each class instanst used with one veirfier i might consider movind this into class atribs
+        let cleanPhone = stripPhoneNumber(phone: phone)
+        if isValidPhone(phone: cleanPhone) {
+            serializedData["username"] = cleanPhone
+        } else {
+            isValid = false
+            errors["phone"] = "phone isn't valid"
+        }
+        
+        if isValidUsername(username: username) {
+            serializedData["first_name"] = username
+        } else {
+            isValid = false
+            errors["username"] = "username isn't valid"
+        }
+        
+        return isValid ? (isValid, serializedData) : (isValid, errors)
+    }
 }

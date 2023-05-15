@@ -75,6 +75,16 @@ final class ProfileViewController: UIViewController {
         return usernameHelpTextLable
     }()
     
+    private var phoneAndGenderHelpText: UILabel = {
+        let usernameHelpTextLable = UILabel()
+        usernameHelpTextLable.font = usernameHelpTextLable.font.withSize(15)
+        usernameHelpTextLable.lineBreakMode = .byWordWrapping
+        usernameHelpTextLable.numberOfLines = 0
+        usernameHelpTextLable.textColor = .red
+        
+        return usernameHelpTextLable
+    }()
+    
     private let PhoneAndGender: PhoneAndGender = BillChopper.PhoneAndGender()
     
     private let exitButton: UIButton = {
@@ -86,6 +96,22 @@ final class ProfileViewController: UIViewController {
     
     private var isIconZoomed = false
     private var imagePicker: ImagePicker!
+    
+    private func setWarnings(erros: [String: String]) {
+        if let usernameError = erros["username"] {
+            usernameHelpText.text = usernameError
+        } else {
+            usernameHelpText.text = R.string.profileView.helpText()
+        }
+        if let genderError = erros["gender"] {
+            phoneAndGenderHelpText.text = genderError
+        } else if let phoneError = erros["phone"] {
+            phoneAndGenderHelpText.text = phoneError
+        } else {
+            phoneAndGenderHelpText.text = ""
+        }
+        
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -146,7 +172,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func addSubviews() {
-        [exitButton, uploadButton, usernameTextField, usernameHelpText, PhoneAndGender, saveButton, iconView].forEach({view.addSubview($0)})
+        [exitButton, uploadButton, usernameTextField, usernameHelpText, PhoneAndGender, saveButton, iconView, phoneAndGenderHelpText].forEach({view.addSubview($0)})
     }
     
     @objc func doneButtonTapped() {
@@ -205,8 +231,7 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        [iconView, exitButton, uploadButton, usernameTextField, usernameHelpText, PhoneAndGender,
-         saveButton].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
+        [iconView, exitButton, uploadButton, usernameTextField, usernameHelpText, PhoneAndGender,saveButton, phoneAndGenderHelpText].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         
         
         let heigthToUploadButton: CGFloat = 50 + iconViewDiameter
@@ -242,6 +267,10 @@ final class ProfileViewController: UIViewController {
             PhoneAndGender.heightAnchor.constraint(equalToConstant: 80),
             PhoneAndGender.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor),
             
+            phoneAndGenderHelpText.topAnchor.constraint(equalTo: PhoneAndGender.bottomAnchor),
+            phoneAndGenderHelpText.widthAnchor.constraint(equalTo: PhoneAndGender.widthAnchor, multiplier: 0.9),
+            phoneAndGenderHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
             saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
             saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             saveButton.heightAnchor.constraint(equalToConstant: 40),
@@ -260,8 +289,21 @@ final class ProfileViewController: UIViewController {
     
     @objc func handleSaveButtonClicked(_ sender: UIButton) {
         print("save requested")
-        let filename = "\(usernameTextField.text ?? "anon").png"
-        uploadImage(fileName: filename, image: iconView.image!)
+//        let filename = "\(usernameTextField.text ?? "anon").png"
+//        uploadImage(fileName: filename, image: iconView.image!)
+        
+        let (isValid, validationResult) = Verifier().verifyUserUpdate(
+            username: self.usernameTextField.text,
+            gender: self.PhoneAndGender.genderButton.titleLabel?.text,
+            phone: (self.PhoneAndGender.phoneInput.text ?? "") + (self.PhoneAndGender.codeInput.text ?? "")
+        )
+        if !isValid {
+            setWarnings(erros: validationResult)
+            return
+        }
+        let jsonData = try? JSONSerialization.data(withJSONObject: validationResult)
+        let request = setupRequest(url: .updateUser, method: .put)
+        
     }
     
     @objc func handleExitButtonClicked(_ sender: UIButton) {

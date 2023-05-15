@@ -22,7 +22,7 @@ final class PhoneAndGender: UIView {
     let codeInput = PhoneInput(isCode: true)
     let phoneInputDelegate = PhoneInputDelegate()
     
-    private lazy var genderButton: UIButton = {
+    lazy var genderButton: UIButton = {
         let genderButton = UIButton()
         genderButton.setTitle(R.string.profileView.gender(), for: .normal )
         genderButton.setTitleColor(.lightGray, for: .normal)
