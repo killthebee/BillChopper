@@ -2,6 +2,64 @@ import UIKit
 
 final class AddSpendViewController: UIViewController {
     
+    private lazy var spendNameTextField: CustomTextField = {
+        let eventNameTextField = CustomTextField()
+        eventNameTextField.attributedPlaceholder = NSAttributedString(
+            string: R.string.addSpend.newSpendPlaceholder(),
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray]
+        )
+        eventNameTextField.font = UIFont.boldSystemFont(ofSize: 21)
+        eventNameTextField.autocorrectionType = UITextAutocorrectionType.no
+        eventNameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
+        eventNameTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        eventNameTextField.keyboardType = UIKeyboardType.default
+        eventNameTextField.returnKeyType = UIReturnKeyType.done
+        eventNameTextField.delegate = self
+        
+        eventNameTextField.layer.borderColor = UIColor.black.cgColor
+        eventNameTextField.layer.borderWidth = 1
+        eventNameTextField.layer.cornerRadius = 15
+        eventNameTextField.backgroundColor = .white
+        
+        return eventNameTextField
+    }()
+    
+    private let spendText: UILabel = {
+        let lable = UILabel(text: R.string.addSpend.newSpendHelpText())
+        lable.textAlignment = .right
+        
+        return lable
+    }()
+    
+    private lazy var spendAmountTextField: CustomTextField = {
+        let eventNameTextField = CustomTextField()
+        eventNameTextField.attributedPlaceholder = NSAttributedString(
+            string: R.string.addSpend.spendTotalAmount(),
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray]
+        )
+        eventNameTextField.font = UIFont.boldSystemFont(ofSize: 21)
+        eventNameTextField.autocorrectionType = UITextAutocorrectionType.no
+        eventNameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
+        eventNameTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        eventNameTextField.keyboardType = UIKeyboardType.phonePad
+        eventNameTextField.returnKeyType = UIReturnKeyType.done
+        eventNameTextField.delegate = self
+        
+        eventNameTextField.layer.borderColor = UIColor.black.cgColor
+        eventNameTextField.layer.borderWidth = 1
+        eventNameTextField.layer.cornerRadius = 15
+        eventNameTextField.backgroundColor = .white
+        
+        return eventNameTextField
+    }()
+    
+    private let spendTotalText: UILabel = {
+        let lable = UILabel(text: R.string.addSpend.spendTotalText())
+        lable.textAlignment = .right
+        
+        return lable
+    }()
+    
     private let chooseEventText: UILabel = {
         let lable = UILabel()
         lable.text = R.string.addSpend.event()
@@ -60,6 +118,7 @@ final class AddSpendViewController: UIViewController {
         super.viewDidLoad()
         addSubviews()
         setupViews()
+        addToolbars()
     }
     
     private func addSubviews() {
@@ -75,22 +134,62 @@ final class AddSpendViewController: UIViewController {
         splitSelectorsView.delegate = self
     }
     
+    private func addToolbars() {
+        let spendNameKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let spendTotalKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        
+        let spendNameDownView = spendNameKeyboardDownButton.customView as? UIButton
+        let spendTotalDownView = spendTotalKeyboardDownButton.customView as? UIButton
+        
+        [spendNameDownView, spendTotalDownView].forEach(
+            {$0?.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)}
+        )
+        
+        spendNameTextField.inputAccessoryView = makeToolbar(
+            barItems: [spendNameKeyboardDownButton, flexSpace]
+        )
+        spendAmountTextField.inputAccessoryView = makeToolbar(
+            barItems: [spendTotalKeyboardDownButton, flexSpace]
+        )
+    }
+    
+    private lazy var spendNameStackView: UIStackView = {
+        let stack = UIStackView(
+            arrangedSubviews: [spendText, spendNameTextField]
+        )
+        spendNameTextField.widthAnchor.constraint(equalTo: stack.widthAnchor, multiplier: 0.7).isActive = true
+        
+        return stack
+    }()
+    
+    private lazy var spendTotalStackView: UIStackView = {
+        let stack = UIStackView(
+            arrangedSubviews: [spendTotalText, spendAmountTextField]
+        )
+        spendAmountTextField.widthAnchor.constraint(equalTo: stack.widthAnchor, multiplier: 0.7).isActive = true
+        
+        return stack
+    }()
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         let eventStackView = UIStackView(arrangedSubviews: [chooseEventText, chooseEventView])
         let payeerStackView = UIStackView(arrangedSubviews: [choosePayerText, chooseUserView])
-        [payeerStackView, eventStackView].forEach({ stackView in
+        [payeerStackView, eventStackView, spendNameStackView, spendTotalStackView
+        ].forEach({ stackView in
             stackView.distribution = .fill
             stackView.spacing = 10
             eventPayeerContainerView.addSubview(stackView)
         })
         
-        [exitButton, eventPayeerContainerView, chooseEventText, chooseEventView, eventStackView, payeerStackView, selectSplitText, splitSelectorsView, saveButton
+        [exitButton, eventPayeerContainerView, chooseEventText, chooseEventView, eventStackView,
+         payeerStackView, selectSplitText, splitSelectorsView, saveButton, spendNameStackView,
+         spendNameTextField, spendAmountTextField, spendTotalStackView
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
-        
+        // TODO: make extra container for stacks so they'll be centered
         let constraints: [NSLayoutConstraint] = [
-            
+        
             chooseUserView.widthAnchor.constraint(equalTo: payeerStackView.widthAnchor, multiplier: 0.7),
             chooseEventView.widthAnchor.constraint(equalTo: eventStackView.widthAnchor, multiplier: 0.7),
             
@@ -99,20 +198,32 @@ final class AddSpendViewController: UIViewController {
             exitButton.widthAnchor.constraint(equalToConstant: 41),
             exitButton.heightAnchor.constraint(equalToConstant: 41),
             
-            eventPayeerContainerView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
-            eventPayeerContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            eventPayeerContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            eventPayeerContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.3),
+            eventPayeerContainerView.topAnchor.constraint(equalTo: view.topAnchor, constant: 90),
+            eventPayeerContainerView.widthAnchor.constraint(equalToConstant: 300),
+            eventPayeerContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            eventPayeerContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4),
+            
+            
+            spendNameStackView.leadingAnchor.constraint(equalTo: eventPayeerContainerView.leadingAnchor),
+            spendNameStackView.trailingAnchor.constraint(equalTo: eventPayeerContainerView.trailingAnchor),
+            spendNameStackView.heightAnchor.constraint(equalToConstant: 40),
+            spendNameStackView.topAnchor.constraint(equalTo: eventPayeerContainerView.topAnchor),
             
             eventStackView.widthAnchor.constraint(equalToConstant: 300),
             eventStackView.heightAnchor.constraint(equalToConstant: 40),
-            eventStackView.centerYAnchor.constraint(equalTo: eventPayeerContainerView.centerYAnchor, constant:  -30),
+            eventStackView.topAnchor.constraint(equalTo: spendNameStackView.bottomAnchor, constant: 30),
             eventStackView.centerXAnchor.constraint(equalTo: eventPayeerContainerView.centerXAnchor),
-            
+
             payeerStackView.widthAnchor.constraint(equalToConstant: 300),
             payeerStackView.heightAnchor.constraint(equalToConstant: 40),
             payeerStackView.centerXAnchor.constraint(equalTo: eventPayeerContainerView.centerXAnchor),
             payeerStackView.topAnchor.constraint(equalTo: eventStackView.bottomAnchor, constant: 30),
+            
+            
+            spendTotalStackView.leadingAnchor.constraint(equalTo: eventPayeerContainerView.leadingAnchor),
+            spendTotalStackView.trailingAnchor.constraint(equalTo: eventPayeerContainerView.trailingAnchor),
+            spendTotalStackView.heightAnchor.constraint(equalToConstant: 40),
+            spendTotalStackView.topAnchor.constraint(equalTo: payeerStackView.bottomAnchor, constant: 30),
             
             selectSplitText.topAnchor.constraint(equalTo: eventPayeerContainerView.bottomAnchor, constant: 20),
             selectSplitText.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -140,6 +251,10 @@ final class AddSpendViewController: UIViewController {
     @objc func handleExitButtonClicked(_ sender: UIButton) {
         dismiss(animated: true)
     }
+    
+    @objc func doneButtonTapped() {
+            view.endEditing(true)
+    }
 }
 
 
@@ -159,4 +274,20 @@ extension AddSpendViewController: UITableViewDelegate, UITableViewDataSource {
         return 40
     }
     
+}
+
+extension AddSpendViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        view.endEditing(true)
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if range.length == 0 {
+            guard let newNum = Int(string) else {
+                return false
+            }
+        }
+        return true
+    }
 }

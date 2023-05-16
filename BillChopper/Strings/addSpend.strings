@@ -1,3 +1,7 @@
 "event" = "event";
 "payedBy" = "payed by";
 "selectSplit" = "select split";
+"newSpendPlaceholder" = "spend name";
+"newSpendHelpText" = "name";
+"spendTotalAmount" = "spend total amount";
+"spendTotalText" = "Total";
