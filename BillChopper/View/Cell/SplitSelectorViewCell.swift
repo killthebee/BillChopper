@@ -4,7 +4,7 @@ import UIKit
 class SplitSelectorViewCell: UITableViewCell {
     static let identifier = "SplitSelectorViewCell"
     
-    private let slider = CustomSlider()
+    let slider = CustomSlider()
     
     private let userNameLable: UILabel = {
         let lable = UILabel()

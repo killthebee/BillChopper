@@ -261,7 +261,9 @@ final class AddSpendViewController: UIViewController {
 extension AddSpendViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SplitSelectorViewCell.identifier) as? SplitSelectorViewCell else { return UITableViewCell() }
-        cell.percent.text = String(100 / tableView.numberOfRows(inSection: 0))
+        let startingSplit = 100 / tableView.numberOfRows(inSection: 0)
+        cell.percent.text = String(startingSplit)
+        cell.slider.setValue(Float(startingSplit), animated: true)
         
         return cell 
     }

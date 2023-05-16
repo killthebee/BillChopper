@@ -7,7 +7,7 @@ class CustomSlider: UISlider {
     
     @IBInspectable var thumbWidth: CGFloat = 20
     
-    unowned var selectSplitView: SplitSelectorViewCell?
+    weak var selectSplitView: SplitSelectorViewCell?
     
     private lazy var thumbView: UIView = {
         let thumb = UIView()
