@@ -305,23 +305,23 @@ final class ProfileViewController: UIViewController {
 //        let jsonData = try? JSONSerialization.data(withJSONObject: validationResult)
 //        let request = setupRequest(url: .updateUser, method: .put)
         // download image
-        let setupImage = { [unowned self] (imageData: Data) in
-            DispatchQueue.main.async {
-                self.iconView.removeFromSuperview()
-                self.iconView = ProfileIcon().setUpIconView(UIImage(data: imageData)!)
-                self.setupIconView(iconView: self.iconView)
-                
-                let tapOnIconGestureRecognizer = UITapGestureRecognizer(
-                    target: self, action: #selector(self.handleTapOnIcon)
-                )
-                self.iconView.isUserInteractionEnabled = true
-                self.iconView.addGestureRecognizer(tapOnIconGestureRecognizer)
-                self.view.addSubview(self.iconView)
-            }
-        }
-        let imageUrl = URL(string: "http://127.0.0.1:8000/media/images/user/2/20230515063803897.png")!
-        let request = URLRequest(url: imageUrl)
-        performRequest(request: request, successHandler: setupImage)
+//        let setupImage = { [unowned self] (imageData: Data) in
+//            DispatchQueue.main.async {
+//                self.iconView.removeFromSuperview()
+//                self.iconView = ProfileIcon().setUpIconView(UIImage(data: imageData)!)
+//                self.setupIconView(iconView: self.iconView)
+//
+//                let tapOnIconGestureRecognizer = UITapGestureRecognizer(
+//                    target: self, action: #selector(self.handleTapOnIcon)
+//                )
+//                self.iconView.isUserInteractionEnabled = true
+//                self.iconView.addGestureRecognizer(tapOnIconGestureRecognizer)
+//                self.view.addSubview(self.iconView)
+//            }
+//        }
+//        let imageUrl = URL(string: "http://127.0.0.1:8000/media/images/user/2/20230515063803897.png")!
+//        let request = URLRequest(url: imageUrl)
+//        performRequest(request: request, successHandler: setupImage)
     }
     
     @objc func handleExitButtonClicked(_ sender: UIButton) {
