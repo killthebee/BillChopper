@@ -599,7 +599,7 @@ class LaunchViewController: UIViewController {
             
             
             let signInFailureHandler = { [weak self] (data: Data) throws in
-                let responseObject = try JSONDecoder().decode(LoginError.self, from: data)
+                let responseObject = try JSONDecoder().decode(userFetchError.self, from: data)
                 DispatchQueue.main.async {
                     self?.singInErrorHelpText.text = responseObject.detail
                 }
