@@ -1,6 +1,5 @@
 import UIKit
 
-
 class SplitSelectorViewCell: UITableViewCell {
     static let identifier = "SplitSelectorViewCell"
     
@@ -9,7 +8,7 @@ class SplitSelectorViewCell: UITableViewCell {
     private let userNameLable: UILabel = {
         let lable = UILabel()
         // that's a placeholder
-        lable.text = "Maximillian"
+        //lable.text = "Maximillian"
         lable.textAlignment = .center
         lable.textColor = .black
         
@@ -31,7 +30,7 @@ class SplitSelectorViewCell: UITableViewCell {
     private let userIcon: ProfileIcon = {
         let icon = ProfileIcon()
         // just a placeholder ( move to a configurator in the future )
-        icon.image = UIImage(named: "HombreDefault1")
+        //icon.image = UIImage(named: "HombreDefault1")
         
         return icon
     }()
@@ -78,5 +77,12 @@ class SplitSelectorViewCell: UITableViewCell {
         ]
         NSLayoutConstraint.activate(constraints)
     }
-
+    
+    func configure(_ eventUser: EventUserProtocol) {
+        guard let userPercent = eventUser.percent else { return }
+        percent.text = String(userPercent)
+        slider.setValue(Float(userPercent), animated: true)
+        userIcon.image = UIImage(named: eventUser.imageName ?? "HombreDefault1")
+        userNameLable.text = eventUser.username
+    }
 }

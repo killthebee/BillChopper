@@ -2,6 +2,12 @@ import UIKit
 
 final class AddSpendViewController: UIViewController {
     
+    private var eventUsers: [EventUserProtocol] = [
+        EventUser(username: "Ilya", imageName: "HombreDefault1"),
+        EventUser(username: "Dmitriy", imageName: "HombreDefault1.1"),
+        EventUser(username: "Kiril"),
+    ]
+    
     private lazy var spendNameTextField: CustomTextField = {
         let eventNameTextField = CustomTextField()
         eventNameTextField.attributedPlaceholder = NSAttributedString(
@@ -260,16 +266,21 @@ final class AddSpendViewController: UIViewController {
 
 extension AddSpendViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        var eventUser = eventUsers[indexPath.row]
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SplitSelectorViewCell.identifier) as? SplitSelectorViewCell else { return UITableViewCell() }
-        let startingSplit = 100 / tableView.numberOfRows(inSection: 0)
-        cell.percent.text = String(startingSplit)
-        cell.slider.setValue(Float(startingSplit), animated: true)
+        if eventUser.percent == nil {
+            let startingSplit = 100 / tableView.numberOfRows(inSection: 0)
+            eventUser.percent = startingSplit
+        }
+        cell.configure(eventUser)
+//        cell.percent.text = String(startingSplit)
+//        cell.slider.setValue(Float(startingSplit), animated: true)
         
         return cell 
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return eventUsers.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
