@@ -5,12 +5,12 @@ final class UserTableViewCell: UITableViewCell {
     
     private lazy var userIconView =  ProfileIcon().setUpIconView()
     
-    private let userPhoneLable: UILabel = UILabel(text: "8(800)5353535")
+    private let userPhoneLable: UILabel = UILabel()
     
-    private let userNameLable: UILabel = UILabel(text: "John")
+    private let usernameLable: UILabel = UILabel(text: "New user")
     
     lazy private var cellStack = UIStackView(
-        //arrangedSubviews: [userIconView, userNameLable, userPhoneLable]
+        //arrangedSubviews: [userIconView, usernameLable, userPhoneLable]
     )
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -46,8 +46,8 @@ final class UserTableViewCell: UITableViewCell {
         cellStack.addArrangedSubview(userIconView)
         cellStack.setCustomSpacing(5, after: cellStack.arrangedSubviews[0])
         
-        userNameLable.translatesAutoresizingMaskIntoConstraints = false
-        cellStack.addArrangedSubview(userNameLable)
+        usernameLable.translatesAutoresizingMaskIntoConstraints = false
+        cellStack.addArrangedSubview(usernameLable)
         
         userPhoneLable.translatesAutoresizingMaskIntoConstraints = false
         userPhoneLable.textAlignment = .center
@@ -55,4 +55,13 @@ final class UserTableViewCell: UITableViewCell {
         userPhoneLable.widthAnchor.constraint(equalTo: cellStack.widthAnchor, multiplier: 0.6).isActive = true
     }
     
+    func configure(_ userData: newEvenUserProtocol) {
+        userPhoneLable.text = userData.phone
+        if let username = userData.username {
+            usernameLable.text = username
+        }
+        if let image = userData.imageName {
+            userIconView.image = UIImage(named: image)
+        }
+    }
 }

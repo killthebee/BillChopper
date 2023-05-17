@@ -6,3 +6,5 @@
 "purchaseEventType" = "purchase";
 "partyEventType" = "party";
 "otherEventType" = "other";
+"notProvided" = "phone or code isn't provided";
+"phoneNotValid" = "phonenumber isn't valid";

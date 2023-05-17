@@ -32,6 +32,17 @@ final class AddEventViewController: UIViewController {
     
     private let eventTypeHelpLable = UILabel(text: R.string.addEvent.eventTypeHelpText())
     
+    private let invalidPhoneWarningLable: UILabel = {
+        let invalidPhoneWarningLable = UILabel()
+        //invalidPhoneWarningLable.text = "Phone is not valid!"
+        invalidPhoneWarningLable.font = invalidPhoneWarningLable.font.withSize(15)
+        invalidPhoneWarningLable.lineBreakMode = .byWordWrapping
+        invalidPhoneWarningLable.numberOfLines = 0
+        invalidPhoneWarningLable.textColor = .red
+        
+        return invalidPhoneWarningLable
+    }()
+    
     private let addUserText = UILabel(text: R.string.addEvent.addUser())
     
     private let carouselTableView: UITableView = {
@@ -159,7 +170,7 @@ final class AddEventViewController: UIViewController {
     
     private func addSubviews() {
         [topContainerView, carouselTableView, eventTypeHelpLable, splitSelectorStack, addUserSplitStack,
-         exitButton, userTableView, saveButton
+         exitButton, userTableView, saveButton, invalidPhoneWarningLable
         ].forEach({view.addSubview($0)})
         [iconView, eventNameTextField, eventNameHelpLable].forEach({topContainerView.addSubview($0)})
     }
@@ -185,7 +196,8 @@ final class AddEventViewController: UIViewController {
         super.viewDidLayoutSubviews()
         
         [exitButton, topContainerView, iconView, eventNameTextField, eventNameHelpLable, carouselTableView,
-         eventTypeHelpLable, saveButton, splitSelectorStack, addUserSplitStack, userTableView
+         eventTypeHelpLable, saveButton, splitSelectorStack, addUserSplitStack, userTableView,
+         invalidPhoneWarningLable,
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         
         splitSelectorStack.spacing = 10
@@ -235,6 +247,10 @@ final class AddEventViewController: UIViewController {
             addUserSplitStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             addUserSplitStack.heightAnchor.constraint(equalToConstant: 40),
             
+            invalidPhoneWarningLable.topAnchor.constraint(equalTo: addUserSplitStack.bottomAnchor, constant: 10),
+            invalidPhoneWarningLable.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            invalidPhoneWarningLable.widthAnchor.constraint(equalTo: addUserSplitStack.widthAnchor, multiplier: 0.9),
+            
             userTableView.topAnchor.constraint(equalTo: eventTypeHelpLable.bottomAnchor, constant: 90),
             userTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             userTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
@@ -266,7 +282,47 @@ final class AddEventViewController: UIViewController {
     }
     
     @objc func handleAddUser(_ sender: UIButton) {
-        print("add user pls")
+        let fetchUserSuccessHandler = { [unowned self] (data: Data) throws in
+            let responsObject = try JSONDecoder().decode(UserFetch.self, from: data)
+            DispatchQueue.main.async {
+                // wounder whether it'll create retain cycle xd
+                guard var delegate = self.userTableView.delegate as? UserTableDelegateAndDataSource else {
+                    return
+                }
+                let newEventUser = newEventUser(
+                    username: responsObject.first_name,
+                    phone: responsObject.username
+                )
+                delegate.newEventUsers.append(newEventUser)
+                self.userTableView.reloadData()
+            }
+        }
+        
+        guard let phone = self.phoneInput.text,
+              let code = self.codeInput.text
+        else {
+            self.invalidPhoneWarningLable.text = R.string.addEvent.notProvided()
+            return
+        }
+        let verifier = Verifier()
+        let cleanPhoneNumber = verifier.stripPhoneNumber(phone: code + phone)
+        let isValidPhone = verifier.isValidPhone(phone: cleanPhoneNumber)
+        guard isValidPhone else {
+            self.invalidPhoneWarningLable.text = R.string.addEvent.phoneNotValid()
+            return
+        }
+        let json: [String: Any] = ["username": cleanPhoneNumber]
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        var request = setupRequest(url: .fetchUserData, method: .post, body: jsonData)
+        let tokenData = KeychainHelper.standard.read(
+            service: "access-token", account: "backend-auth"
+        )!
+        let accessToken = String(data: tokenData, encoding: .utf8)!
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        performRequest(request: request, successHandler: fetchUserSuccessHandler)
+        
+        // TODO: Request more info on user on backend!
+        
     }
     
     @objc func handleSaveEvent(_ sender: UIButton) {
@@ -323,20 +379,24 @@ extension AddEventViewController: UITextFieldDelegate { }
 
 class UserTableDelegateAndDataSource: NSObject {
     // TODO: fetch array with user models here
+    var newEventUsers: [newEvenUserProtocol] = []
 }
 
 extension UserTableDelegateAndDataSource: UITableViewDataSource, UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return newEventUsers.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        var newEventUser = newEventUsers[indexPath.row]
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: UserTableViewCell.identifier,
             for: indexPath
         ) as? UserTableViewCell else {
             fatalError()
         }
+        cell.configure(newEventUser)
+        
         return cell
     }
     

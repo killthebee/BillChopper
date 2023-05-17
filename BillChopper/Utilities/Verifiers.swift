@@ -22,7 +22,7 @@ class Verifier {
         return errors
     }
     
-    private func stripPhoneNumber(phone: String) -> String {
+    func stripPhoneNumber(phone: String) -> String {
         var phone = phone
         let chars: Set<Character> = ["+", "(", ")", " "]
         phone.removeAll(where: { chars.contains($0) })
@@ -30,7 +30,7 @@ class Verifier {
         return phone
     }
     
-    private func isValidPhone(phone: String) -> Bool {
+    func isValidPhone(phone: String) -> Bool {
         let phoneRegex = "^[0-9+]{0,1}+[0-9]{5,16}$"
         let phoneTest = NSPredicate(format: "SELF MATCHES %@", phoneRegex)
         return phoneTest.evaluate(with: phone)

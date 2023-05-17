@@ -14,13 +14,22 @@ struct RegisterError: Decodable {
     let password: [String]?
 }
 
-
 struct LoginSuccess: Decodable {
     let access: String
     let refresh: String
 }
 
-
-struct LoginError: Decodable {
+struct userFetchError: Decodable {
     let detail: String
+}
+
+struct Profile: Decodable {
+    let is_male: Bool
+    let profile_image: String?
+}
+
+struct UserFetch: Decodable {
+    let first_name: String
+    let username: String
+    let profile: Profile
 }

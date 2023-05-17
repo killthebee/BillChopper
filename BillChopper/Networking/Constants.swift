@@ -4,13 +4,14 @@ enum Urls: String {
     case login = "http://127.0.0.1:8000/api/token/"
     case image = "http://127.0.0.1:8000/api/user/update_image/"
     case updateUser = "http://127.0.0.1:8000/api/user/update_user/"
+    case fetchUserData = "http://127.0.0.1:8000/api/user/fetch_user_info/"
 }
 
 enum Method: String {
+    case get = "GET"
     case post = "POST"
     case put = "PUT"
 }
-
 
 enum ContentType: String {
     case json = "application/json"
