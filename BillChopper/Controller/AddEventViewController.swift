@@ -132,12 +132,17 @@ final class AddEventViewController: UIViewController {
         let continueButton = UIBarButtonItem(
             title: "Continue", style: .plain,target: self, action: nil
         )
+        let clearButton = UIBarButtonItem(
+            title: "Clear", style: .plain,target: self, action: nil
+        )
         
         let codeKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
         let phoneKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
         
         continueButton.tintColor = .systemGray
+        clearButton.tintColor = .systemGray
         continueButton.action = #selector(continueTapped)
+        clearButton.action = #selector(clearTapped)
         
         let CodeKeyboardDownView = codeKeyboardDownButton.customView as? UIButton
         let PhoneKeyboardDownView = phoneKeyboardDownButton.customView as? UIButton
@@ -149,10 +154,11 @@ final class AddEventViewController: UIViewController {
             barItems: [codeKeyboardDownButton, flexSpace, continueButton]
         )
         phoneInput.inputAccessoryView = makeToolbar(
-            barItems: [phoneKeyboardDownButton, flexSpace]
+            barItems: [phoneKeyboardDownButton, flexSpace, clearButton]
         )
         
         phoneNumDelegate.continueButton = continueButton
+        phoneNumDelegate.clearButton = clearButton
     }
     
     private func setupViews() {
@@ -314,7 +320,6 @@ final class AddEventViewController: UIViewController {
                     }
                     delegate.newEventUsers.append(newEventUser(phone: code + phone))
                     self.userTableView.reloadData()
-                    
                     return
                 }
                 self.invalidPhoneWarningLable.text = responseObject.detail
@@ -356,6 +361,18 @@ final class AddEventViewController: UIViewController {
     
     @objc func continueTapped() {
         phoneInput.becomeFirstResponder()
+    }
+    
+    @objc func clearTapped() {
+        let phoneDelegate = phoneInput.delegate as? PhoneInputDelegate
+        let codeDelegate = codeInput.delegate as? PhoneInputDelegate
+        phoneDelegate?.rawNumber = ""
+        codeDelegate?.rawNumber = ""
+        phoneDelegate?.clearButton?.tintColor = .systemGray
+        codeDelegate?.continueButton?.tintColor = .systemGray
+        codeInput.text = nil
+        phoneInput.text = nil
+        codeInput.becomeFirstResponder()
     }
     
     @objc func doneButtonTapped() {

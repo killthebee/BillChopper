@@ -5,6 +5,7 @@ class PhoneInputDelegate: NSObject {
     
     var rawNumber = ""
     var continueButton: UIBarButtonItem? = nil
+    var clearButton: UIBarButtonItem? = nil
 }
 
 extension PhoneInputDelegate: UITextFieldDelegate {
@@ -21,11 +22,13 @@ extension PhoneInputDelegate: UITextFieldDelegate {
             }
             if range.length != 0 && textField.text!.count - 1 == range.length{
                 textField.text = nil
+                clearButton?.tintColor = .systemGray
                 continueButton?.tintColor = .systemGray
                 return false
             }
             return true
         case 1:
+            clearButton?.tintColor = customGreen
             if range.lowerBound == 15{
                 return false
             }
