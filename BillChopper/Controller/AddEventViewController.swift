@@ -282,6 +282,13 @@ final class AddEventViewController: UIViewController {
     }
     
     @objc func handleAddUser(_ sender: UIButton) {
+        guard let phone = self.phoneInput.text,
+              let code = self.codeInput.text
+        else {
+            self.invalidPhoneWarningLable.text = R.string.addEvent.notProvided()
+            return
+        }
+        
         let fetchUserSuccessHandler = { [unowned self] (data: Data) throws in
             let responsObject = try JSONDecoder().decode(UserFetch.self, from: data)
             DispatchQueue.main.async {
@@ -291,19 +298,29 @@ final class AddEventViewController: UIViewController {
                 }
                 let newEventUser = newEventUser(
                     username: responsObject.first_name,
-                    phone: responsObject.username
+                    phone: code + phone
                 )
                 delegate.newEventUsers.append(newEventUser)
                 self.userTableView.reloadData()
             }
         }
         
-        guard let phone = self.phoneInput.text,
-              let code = self.codeInput.text
-        else {
-            self.invalidPhoneWarningLable.text = R.string.addEvent.notProvided()
-            return
+        let fetchFailureHandler = { [unowned self] (data: Data) throws in
+            let responseObject = try JSONDecoder().decode(userFetchError.self, from: data)
+            DispatchQueue.main.async {
+                if responseObject.detail == "Not found." {
+                    guard var delegate = self.userTableView.delegate as? UserTableDelegateAndDataSource else {
+                        return
+                    }
+                    delegate.newEventUsers.append(newEventUser(phone: code + phone))
+                    self.userTableView.reloadData()
+                    
+                    return
+                }
+                self.invalidPhoneWarningLable.text = responseObject.detail
+            }
         }
+        
         let verifier = Verifier()
         let cleanPhoneNumber = verifier.stripPhoneNumber(phone: code + phone)
         let isValidPhone = verifier.isValidPhone(phone: cleanPhoneNumber)
@@ -319,9 +336,13 @@ final class AddEventViewController: UIViewController {
         )!
         let accessToken = String(data: tokenData, encoding: .utf8)!
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-        performRequest(request: request, successHandler: fetchUserSuccessHandler)
+        performRequest(
+            request: request,
+            successHandler: fetchUserSuccessHandler,
+            failureHandler: fetchFailureHandler
+        )
         
-        // TODO: Request more info on user on backend!
+        // TODO: Figure out what to do with img urls
         
     }
     
