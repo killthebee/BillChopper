@@ -115,6 +115,8 @@ final class AddEventViewController: UIViewController {
         ])
     ]
     
+    private var currentEventType = "other"
+    
     private var rawNumber = ""
     
     private let phoneNumDelegate = PhoneInputDelegate()
@@ -138,6 +140,7 @@ final class AddEventViewController: UIViewController {
         
         let codeKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
         let phoneKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let eventNameKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
         
         continueButton.tintColor = .systemGray
         clearButton.tintColor = .systemGray
@@ -146,7 +149,8 @@ final class AddEventViewController: UIViewController {
         
         let CodeKeyboardDownView = codeKeyboardDownButton.customView as? UIButton
         let PhoneKeyboardDownView = phoneKeyboardDownButton.customView as? UIButton
-        [CodeKeyboardDownView, PhoneKeyboardDownView
+        let eventNameKeyboardVied = eventNameKeyboardDownButton.customView as? UIButton
+        [CodeKeyboardDownView, PhoneKeyboardDownView, eventNameKeyboardVied
         ].forEach(
             {$0?.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)}
         )
@@ -155,6 +159,9 @@ final class AddEventViewController: UIViewController {
         )
         phoneInput.inputAccessoryView = makeToolbar(
             barItems: [phoneKeyboardDownButton, flexSpace, clearButton]
+        )
+        eventNameTextField.inputAccessoryView = makeToolbar(
+            barItems: [eventNameKeyboardDownButton, flexSpace]
         )
         
         phoneNumDelegate.continueButton = continueButton
@@ -308,6 +315,7 @@ final class AddEventViewController: UIViewController {
                 )
                 delegate.newEventUsers.append(newEventUser)
                 self.userTableView.reloadData()
+                self.invalidPhoneWarningLable.text = nil
             }
         }
         
@@ -320,6 +328,7 @@ final class AddEventViewController: UIViewController {
                     }
                     delegate.newEventUsers.append(newEventUser(phone: code + phone))
                     self.userTableView.reloadData()
+                    self.invalidPhoneWarningLable.text = nil
                     return
                 }
                 self.invalidPhoneWarningLable.text = responseObject.detail
@@ -352,7 +361,50 @@ final class AddEventViewController: UIViewController {
     }
     
     @objc func handleSaveEvent(_ sender: UIButton) {
-        print("save event pls")
+        guard let eventName = eventNameTextField.text,
+              Verifier().isValidEventName(eventName: eventName) else {
+            self.eventNameHelpLable.textColor = .red
+            self.eventNameHelpLable.text = "Event name isn't valid"
+            return
+        }
+        
+        guard let delegate = self.userTableView.delegate as? UserTableDelegateAndDataSource else {
+            return
+        }
+        
+        guard delegate.newEventUsers.count > 0 else {
+            self.invalidPhoneWarningLable.text = "no user were added!"
+            return
+        }
+        let usernames = delegate.newEventUsers.map {
+            ["username": Verifier().stripPhoneNumber(phone: $0.phone)]
+        }
+        
+        let json: [String: Any] = [
+            "participants": usernames,
+            "name": eventName,
+            "event_type": convertEventTypes(type:currentEventType)
+        ]
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        var request = setupRequest(url: .createEvent, method: .post, body: jsonData)
+        let tokenData = KeychainHelper.standard.read(
+            service: "access-token", account: "backend-auth"
+        )!
+        let accessToken = String(data: tokenData, encoding: .utf8)!
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        
+        let successHanlder = { [unowned self] (data: Data) throws in
+            // TODO: make a success notification bar
+            DispatchQueue.main.async {
+                dismiss(animated: true)
+            }
+        }
+        performRequest(request: request, successHandler: successHanlder)
+//        print(usernames)
+        
+//        print(currentEventType)
+        
+//        print(eventNameTextField.text)
     }
     
     @objc func handleExitButtonClicked(_ sender: UIButton) {
@@ -407,6 +459,7 @@ extension AddEventViewController: UITableViewDataSource, UITableViewDelegate {
 
 extension AddEventViewController: CollectionTableViewCellDelegate {
     func collectionViewDidTapItem(with viewModel: TileCollectionViewModel) {
+        currentEventType = viewModel.eventTypeName
         iconView.removeFromSuperview()
         iconView = ProfileIcon().setUpIconView(viewModel.eventTypeIcon)
         view.addSubview(iconView)

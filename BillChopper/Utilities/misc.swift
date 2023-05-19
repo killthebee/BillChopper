@@ -41,3 +41,20 @@ let flexSpace = UIBarButtonItem(
 //    }
 //    return nil
 //}
+
+
+func convertEventTypes(type: String) -> Int {
+    // hardcode is the right way to write ones code!
+    switch type {
+    case "trip":
+        return 1
+    case "purchase":
+        return 2
+    case "party":
+        return 3
+    case "other":
+        return 4
+    default:
+        return 4
+    }
+}

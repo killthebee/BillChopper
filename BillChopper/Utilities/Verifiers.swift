@@ -42,6 +42,12 @@ class Verifier {
         return usernameTest.evaluate(with:username)
     }
     
+    func isValidEventName(eventName: String) -> Bool {
+        let eventNameRegex = "^.{3,50}$"
+        let eventNameTest = NSPredicate(format: "SELF MATCHES %@", eventNameRegex)
+        return eventNameTest.evaluate(with:eventName)
+    }
+    
     func verifyUserSignUpData (
         username: String, password: String, secondPassword: String, phone: String
     ) -> (Bool, [String: String]) {
