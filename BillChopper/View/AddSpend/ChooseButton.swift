@@ -22,7 +22,7 @@ class ChooseButtonView: UIView {
         return button
     }()
     
-    convenience init(frame: CGRect = .zero, text: String, image: UIImage) {
+    convenience init(frame: CGRect = .zero, text: String, image: UIImage, menu: UIMenu? = nil) {
         self.init(frame: frame)
         self.layer.borderWidth = 1
         self.layer.borderColor = UIColor.black.cgColor
@@ -31,7 +31,12 @@ class ChooseButtonView: UIView {
         self.addSubview(chooseEventLable)
         self.addSubview(chooseEventImage)
         
-        chooseButton.menu = getChooseMenu()
+        //TODO: guess i'm gonna comment it out soon
+        if let menu = menu {
+            chooseButton.menu = menu
+        } else {
+            chooseButton.menu = getChooseMenu()
+        }
         chooseEventLable.text = text
         chooseEventImage.image = image
     }

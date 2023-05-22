@@ -2,10 +2,18 @@ import UIKit
 
 final class AddSpendViewController: UIViewController {
     
-    private var eventUsers: [EventUserProtocol] = [
-        EventUser(username: "Ilya", imageName: "HombreDefault1"),
-        EventUser(username: "Dmitriy", imageName: "HombreDefault1.1"),
-        EventUser(username: "Kiril"),
+    private var eventUsers: [EventUserProtocol] = []
+    
+    private var spendEvents: [EventProtocol] = [
+        spendEvent(eventType: "other", name: "hmm1", users: [
+            EventUser(username: "Ilya", imageName: "HombreDefault1"),
+            EventUser(username: "Dmitriy", imageName: "HombreDefault1.1"),
+            EventUser(username: "Kiril"),
+        ]),
+        spendEvent(eventType: "party", name: "hmm2", users: [
+            EventUser(username: "Dmitriy", imageName: "HombreDefault1.1"),
+            EventUser(username: "Kiril"),
+        ]),
     ]
     
     private lazy var spendNameTextField: CustomTextField = {
@@ -75,8 +83,55 @@ final class AddSpendViewController: UIViewController {
         return lable
     }()
     
-    private let chooseEventView = ChooseButtonView(text: "dummy event", image: UIImage(named: "saveIcon")!)
-    private let chooseUserView = ChooseButtonView(text: "dummy user", image: UIImage(named: "HombreDefault1")!)
+    private lazy var chooseEventView: ChooseButtonView = {
+        var events = Array<UIAction>()
+        for event in spendEvents {
+            events.append(UIAction(
+                title: event.name,
+                image: UIImage(named: "\(event.eventType)Icon")
+            ){
+                (action) in
+                self.eventUsers = event.users
+                self.splitSelectorsView.reloadData()
+                self.chooseEventView.chooseEventLable.text = event.name
+                
+                var userButtons = Array<UIAction>()
+                for user in event.users {
+                    let userButton = UIAction(
+                        title: user.username,
+                        image: UIImage(named: user.imageName ?? "HombreDefault1")
+                    ) { (action) in
+                        self.chooseUserView.chooseEventLable.text = user.username
+                        self.chooseUserView.chooseEventImage.image = UIImage(named:  user.imageName ?? "HombreDefault1")
+                    }
+                    userButtons.append(userButton)
+                }
+                let menu = UIMenu(
+                    title: "choose user",
+                    options: .displayInline,
+                    children: userButtons
+                )
+                
+                self.chooseUserView.removeFromSuperview()
+                self.chooseUserView = ChooseButtonView(
+                    text: "choose user",
+                    image: UIImage(named: "HombreDefault1")!,
+                    menu: menu
+                )
+                self.view.addSubview(self.chooseUserView)
+            })
+        }
+        let menu = UIMenu(title: "spendEvents", options: .displayInline, children: events)
+        let button =  ChooseButtonView(
+            text: "choose event",
+            image: UIImage(named: "saveIcon")!,
+            menu: menu
+        )
+        
+        return button
+    }()
+
+    private var chooseUserView = ChooseButtonView(text: "dummy user", image: UIImage(named: "HombreDefault1")!)
     
     private  let choosePayerText: UILabel = {
         let lable = UILabel()
@@ -96,6 +151,7 @@ final class AddSpendViewController: UIViewController {
         return lable
     }()
     
+    // name lowkey suck...
     private let splitSelectorsView: UITableView  = {
         let tableView = UITableView()
         tableView.register(SplitSelectorViewCell.self, forCellReuseIdentifier: SplitSelectorViewCell.identifier)

@@ -11,6 +11,11 @@ protocol newEvenUserProtocol {
     var imageName: String? { get set }
 }
 
+protocol EventProtocol {
+    var eventType: String { get }
+    var name: String { get }
+    var users: [EventUser] { get }
+}
 
 struct EventUser: EventUserProtocol {
     let username: String
@@ -24,4 +29,9 @@ struct newEventUser: newEvenUserProtocol {
     var imageName: String?
 }
 
+struct spendEvent: EventProtocol {
+    let eventType: String
+    let name: String
+    let users: [EventUser]
+}
 
