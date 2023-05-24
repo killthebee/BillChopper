@@ -85,7 +85,6 @@ class LaunchViewController: UIViewController {
     
     private lazy var signUpLable: UILabel = {
         let lable = UILabel()
-        lable.text = ifNewUserText
         lable.font = lable.font.withSize(15)
         lable.textColor = .black
         
