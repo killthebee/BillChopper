@@ -1,6 +1,5 @@
 import UIKit
 
-
 class CustomSlider: UISlider {
     
     @IBInspectable var trackHeight: CGFloat = 3
@@ -50,6 +49,7 @@ class CustomSlider: UISlider {
     
     override var isTracking: Bool {
         selectSplitView?.percent.text = String(format: "%.0f", self.value)
+        selectSplitView?.vcDelegate?.recalculatePercents()
         return true
     }
 }
