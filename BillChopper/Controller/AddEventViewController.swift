@@ -376,6 +376,7 @@ final class AddEventViewController: UIViewController {
             self.invalidPhoneWarningLable.text = "no user were added!"
             return
         }
+        // TODO: add current user, make shure at least two users in event
         let usernames = delegate.newEventUsers.map {
             ["username": Verifier().stripPhoneNumber(phone: $0.phone)]
         }
