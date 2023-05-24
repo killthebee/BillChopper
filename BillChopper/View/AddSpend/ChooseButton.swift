@@ -1,6 +1,7 @@
 import UIKit
 
 class ChooseButtonView: UIView {
+    // TODO: rename pls!
     let chooseEventLable: UILabel = {
         let lable = UILabel()
         lable.textColor = .black
@@ -34,8 +35,6 @@ class ChooseButtonView: UIView {
         //TODO: guess i'm gonna comment it out soon
         if let menu = menu {
             chooseButton.menu = menu
-        } else {
-            chooseButton.menu = getChooseMenu()
         }
         chooseEventLable.text = text
         chooseEventImage.image = image

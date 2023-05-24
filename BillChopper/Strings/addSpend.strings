@@ -5,3 +5,7 @@
 "newSpendHelpText" = "name";
 "spendTotalAmount" = "spend total amount";
 "spendTotalText" = "Total";
+"percentMore" = "percents >> 100% reload";
+"percentLess" = "percents << 100% reload";
+"reloadRange" = " reload";
+"ok" = "ok :)";

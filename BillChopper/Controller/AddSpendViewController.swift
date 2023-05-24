@@ -1,5 +1,9 @@
 import UIKit
 
+protocol AddSpendDelegate: AnyObject {
+    func recalculatePercents()
+}
+
 final class AddSpendViewController: UIViewController {
     
     private var eventUsers: [EventUserProtocol] = []
@@ -17,25 +21,26 @@ final class AddSpendViewController: UIViewController {
     ]
     
     private lazy var spendNameTextField: CustomTextField = {
-        let eventNameTextField = CustomTextField()
-        eventNameTextField.attributedPlaceholder = NSAttributedString(
+        let spendNameTextField = CustomTextField()
+        spendNameTextField.attributedPlaceholder = NSAttributedString(
             string: R.string.addSpend.newSpendPlaceholder(),
             attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray]
         )
-        eventNameTextField.font = UIFont.boldSystemFont(ofSize: 21)
-        eventNameTextField.autocorrectionType = UITextAutocorrectionType.no
-        eventNameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
-        eventNameTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-        eventNameTextField.keyboardType = UIKeyboardType.default
-        eventNameTextField.returnKeyType = UIReturnKeyType.done
-        eventNameTextField.delegate = self
+        spendNameTextField.font = UIFont.boldSystemFont(ofSize: 21)
+        spendNameTextField.autocorrectionType = UITextAutocorrectionType.no
+        spendNameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
+        spendNameTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        spendNameTextField.keyboardType = UIKeyboardType.default
+        spendNameTextField.returnKeyType = UIReturnKeyType.done
+        spendNameTextField.delegate = self
         
-        eventNameTextField.layer.borderColor = UIColor.black.cgColor
-        eventNameTextField.layer.borderWidth = 1
-        eventNameTextField.layer.cornerRadius = 15
-        eventNameTextField.backgroundColor = .white
+        spendNameTextField.layer.borderColor = UIColor.black.cgColor
+        spendNameTextField.layer.borderWidth = 1
+        spendNameTextField.layer.cornerRadius = 15
+        spendNameTextField.backgroundColor = .white
+        spendNameTextField.tag = 0
         
-        return eventNameTextField
+        return spendNameTextField
     }()
     
     private let spendText: UILabel = {
@@ -46,25 +51,26 @@ final class AddSpendViewController: UIViewController {
     }()
     
     private lazy var spendAmountTextField: CustomTextField = {
-        let eventNameTextField = CustomTextField()
-        eventNameTextField.attributedPlaceholder = NSAttributedString(
+        let spendAmountTextField = CustomTextField()
+        spendAmountTextField.attributedPlaceholder = NSAttributedString(
             string: R.string.addSpend.spendTotalAmount(),
             attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray]
         )
-        eventNameTextField.font = UIFont.boldSystemFont(ofSize: 21)
-        eventNameTextField.autocorrectionType = UITextAutocorrectionType.no
-        eventNameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
-        eventNameTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-        eventNameTextField.keyboardType = UIKeyboardType.phonePad
-        eventNameTextField.returnKeyType = UIReturnKeyType.done
-        eventNameTextField.delegate = self
+        spendAmountTextField.font = UIFont.boldSystemFont(ofSize: 21)
+        spendAmountTextField.autocorrectionType = UITextAutocorrectionType.no
+        spendAmountTextField.clearButtonMode = UITextField.ViewMode.whileEditing
+        spendAmountTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        spendAmountTextField.keyboardType = UIKeyboardType.phonePad
+        spendAmountTextField.returnKeyType = UIReturnKeyType.done
+        spendAmountTextField.delegate = self
         
-        eventNameTextField.layer.borderColor = UIColor.black.cgColor
-        eventNameTextField.layer.borderWidth = 1
-        eventNameTextField.layer.cornerRadius = 15
-        eventNameTextField.backgroundColor = .white
+        spendAmountTextField.layer.borderColor = UIColor.black.cgColor
+        spendAmountTextField.layer.borderWidth = 1
+        spendAmountTextField.layer.cornerRadius = 15
+        spendAmountTextField.backgroundColor = .white
+        spendAmountTextField.tag = 1
         
-        return eventNameTextField
+        return spendAmountTextField
     }()
     
     private let spendTotalText: UILabel = {
@@ -96,6 +102,8 @@ final class AddSpendViewController: UIViewController {
                 self.chooseEventView.chooseEventLable.text = event.name
                 
                 var userButtons = Array<UIAction>()
+                self.selectSplitText.text = R.string.addSpend.selectSplit()
+                self.selectSplitText.textColor = .black
                 for user in event.users {
                     let userButton = UIAction(
                         title: user.username,
@@ -131,7 +139,12 @@ final class AddSpendViewController: UIViewController {
         return button
     }()
 
-    private var chooseUserView = ChooseButtonView(text: "dummy user", image: UIImage(named: "HombreDefault1")!)
+    private var chooseUserView: ChooseButtonView = {
+        let button = ChooseButtonView(text: "choose user", image: UIImage(named: "HombreDefault1")!)
+        button.chooseButton.addTarget(self, action: #selector(unselectedTap), for: .touchUpInside)
+        
+        return button
+    }()
     
     private  let choosePayerText: UILabel = {
         let lable = UILabel()
@@ -147,6 +160,7 @@ final class AddSpendViewController: UIViewController {
         lable.text = R.string.addSpend.selectSplit()
         lable.textAlignment = .center
         lable.textColor = .black
+        lable.isUserInteractionEnabled = true
         
         return lable
     }()
@@ -235,6 +249,7 @@ final class AddSpendViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        super.viewDidLayoutSubviews()
         
         let eventStackView = UIStackView(arrangedSubviews: [chooseEventText, chooseEventView])
         let payeerStackView = UIStackView(arrangedSubviews: [choosePayerText, chooseUserView])
@@ -306,8 +321,67 @@ final class AddSpendViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
     }
     
+    func recalculatePercents() {
+        var currentSum = 0
+        for i in 0 ..< eventUsers.count {
+            let indexPath = IndexPath(row: i, section: 0)
+            guard let cell = splitSelectorsView.cellForRow(at: indexPath) as? SplitSelectorViewCell else {
+                break
+            }
+            currentSum += Int(cell.percent.text ?? "0") ?? 0
+        }
+        var underlineAttriString: NSMutableAttributedString
+        
+        if currentSum > 100 {
+            underlineAttriString = NSMutableAttributedString(
+                string: R.string.addSpend.percentMore()
+            )
+            let range1 = (
+                R.string.addSpend.percentMore() as NSString).range(of: R.string.addSpend.reloadRange())
+            
+            underlineAttriString.addAttribute(
+                NSAttributedString.Key.foregroundColor, value: customGreen, range: range1
+            )
+        } else if currentSum < 99 {
+            underlineAttriString = NSMutableAttributedString(
+                string: R.string.addSpend.percentLess()
+            )
+            let range1 = (
+                R.string.addSpend.percentMore() as NSString).range(of: R.string.addSpend.reloadRange())
+            
+            underlineAttriString.addAttribute(
+                NSAttributedString.Key.foregroundColor, value: customGreen, range: range1
+            )
+        } else {
+            underlineAttriString = NSMutableAttributedString(
+                string: R.string.addSpend.ok()
+            )
+        }
+        self.selectSplitText.text = nil
+        self.selectSplitText.attributedText = underlineAttriString
+        self.selectSplitText.addGestureRecognizer(
+            UITapGestureRecognizer(target: self, action: #selector(reloadSplit))
+        )
+    }
+    
     @objc func handleSaveEvent(_ sender: UIButton) {
-        print("save spend pls")
+        // gathering data
+        // spend name
+//        print(spendNameTextField.text)
+        // spend amount
+//        print(spendAmountTextField.text)
+        // current event
+//        print(chooseEventView.chooseEventLable.text)
+        // current user
+//        print(self.chooseUserView.chooseEventLable.text)
+//        current split
+        for i in 0 ... 15 {
+            let indexPath = IndexPath(row: i, section: 0)
+            guard let cell = splitSelectorsView.cellForRow(at: indexPath) as? SplitSelectorViewCell else {
+                break
+            }
+            print(cell.percent.text)
+        }
     }
     
     @objc func handleExitButtonClicked(_ sender: UIButton) {
@@ -317,20 +391,27 @@ final class AddSpendViewController: UIViewController {
     @objc func doneButtonTapped() {
             view.endEditing(true)
     }
+    
+    @objc func unselectedTap() {
+        self.chooseUserView.chooseEventLable.text = "event is empty"
+        self.chooseUserView.chooseEventLable.textColor = .red
+    }
+    
+    @objc func reloadSplit() {
+        self.splitSelectorsView.reloadData()
+        self.selectSplitText.text = R.string.addSpend.selectSplit()
+    }
 }
-
 
 extension AddSpendViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var eventUser = eventUsers[indexPath.row]
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SplitSelectorViewCell.identifier) as? SplitSelectorViewCell else { return UITableViewCell() }
-        if eventUser.percent == nil {
+        if eventUsers[indexPath.row].percent == nil {
             let startingSplit = 100 / tableView.numberOfRows(inSection: 0)
-            eventUser.percent = startingSplit
+            eventUsers[indexPath.row].percent = startingSplit
         }
-        cell.configure(eventUser)
-//        cell.percent.text = String(startingSplit)
-//        cell.slider.setValue(Float(startingSplit), animated: true)
+        cell.configure(eventUsers[indexPath.row], self)
         
         return cell 
     }
@@ -352,7 +433,7 @@ extension AddSpendViewController: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if range.length == 0 {
+        if string != "" && textField.tag == 1{
             guard let newNum = Int(string) else {
                 return false
             }
@@ -360,3 +441,6 @@ extension AddSpendViewController: UITextFieldDelegate {
         return true
     }
 }
+
+
+extension AddSpendViewController: AddSpendDelegate {}

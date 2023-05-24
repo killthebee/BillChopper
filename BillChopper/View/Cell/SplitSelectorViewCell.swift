@@ -3,9 +3,11 @@ import UIKit
 class SplitSelectorViewCell: UITableViewCell {
     static let identifier = "SplitSelectorViewCell"
     
+    weak var vcDelegate: AddSpendDelegate?
+    
     let slider = CustomSlider()
     
-    private let userNameLable: UILabel = {
+    let userNameLable: UILabel = {
         let lable = UILabel()
         // that's a placeholder
         //lable.text = "Maximillian"
@@ -78,11 +80,12 @@ class SplitSelectorViewCell: UITableViewCell {
         NSLayoutConstraint.activate(constraints)
     }
     
-    func configure(_ eventUser: EventUserProtocol) {
+    func configure(_ eventUser: EventUserProtocol, _ delegate: AddSpendDelegate) {
         guard let userPercent = eventUser.percent else { return }
         percent.text = String(userPercent)
         slider.setValue(Float(userPercent), animated: true)
         userIcon.image = UIImage(named: eventUser.imageName ?? "HombreDefault1")
         userNameLable.text = eventUser.username
+        vcDelegate = delegate
     }
 }
