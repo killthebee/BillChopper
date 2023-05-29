@@ -11,3 +11,4 @@
 "ok" = "ok :)";
 "nameWorning" = "name isn't valid";
 "amountWorning" = "spend amount isn't valid";
+"date" = "date";

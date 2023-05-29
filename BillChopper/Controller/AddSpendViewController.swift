@@ -191,6 +191,21 @@ final class AddSpendViewController: UIViewController {
         return button
     }()
     
+    private let spendDateText: UILabel = {
+        let lable = UILabel(text: R.string.addSpend.date())
+        lable.textAlignment = .right
+        
+        return lable
+    }()
+    
+    private let datePicker: UIDatePicker = {
+        // TODO: kinda what to make it widther
+        let picker = UIDatePicker()
+        picker.datePickerMode = .date
+        
+        return picker
+    }()
+    
     private var nameHelpText: UILabel = {
         let nameHelpText = UILabel()
 //        nameHelpText.text = R.string.addSpend.nameWorning()
@@ -278,10 +293,41 @@ final class AddSpendViewController: UIViewController {
     private lazy var eventStackView = UIStackView(arrangedSubviews: [chooseEventText, chooseEventView])
     private lazy var payeerStackView = UIStackView(arrangedSubviews: [choosePayerText, chooseUserView])
     
+    private lazy var spendDateStackView: UIStackView = {
+//        let spacer1 = UIView()
+//        let spacer2 = UIView()
+//        spacer1.translatesAutoresizingMaskIntoConstraints = false
+//        spacer2.translatesAutoresizingMaskIntoConstraints = false
+//        spacer1.backgroundColor = .red
+//        spacer2.backgroundColor = .green
+//        let dateStackView = UIStackView(arrangedSubviews: [spacer1, datePicker, spacer2])
+//        spacer1.widthAnchor.constraint(equalTo: dateStackView.widthAnchor, multiplier: 0.2).isActive = true
+//        spacer2.widthAnchor.constraint(equalTo: dateStackView.widthAnchor, multiplier: 0.2).isActive = true
+//        dateStackView.spacing = 10
+//        dateStackView.alignment = .fill
+//        dateStackView.layer.borderColor = UIColor.black.cgColor
+//        dateStackView.translatesAutoresizingMaskIntoConstraints = false
+        let wrap = UIView()
+        wrap.translatesAutoresizingMaskIntoConstraints = false
+        wrap.addSubview(datePicker)
+        wrap.layer.borderColor = UIColor.black.cgColor
+        wrap.layer.cornerRadius = 15
+        wrap.layer.borderWidth = 1
+        datePicker.centerXAnchor.constraint(equalTo: wrap.centerXAnchor).isActive = true
+        datePicker.centerYAnchor.constraint(equalTo: wrap.centerYAnchor).isActive = true
+        let stack = UIStackView(
+            arrangedSubviews: [spendDateText, wrap]
+        )
+        wrap.widthAnchor.constraint(equalTo: stack.widthAnchor, multiplier: 0.7).isActive = true
+        
+        return stack
+    }()
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        [payeerStackView, eventStackView, spendNameStackView, spendTotalStackView
+        [payeerStackView, eventStackView, spendNameStackView, spendTotalStackView,
+         spendDateStackView,
         ].forEach({ stackView in
             stackView.distribution = .fill
             stackView.spacing = 10
@@ -291,6 +337,7 @@ final class AddSpendViewController: UIViewController {
         [exitButton, eventPayeerContainerView, chooseEventText, chooseEventView, eventStackView,
          payeerStackView, selectSplitText, splitSelectorsView, saveButton, spendNameStackView,
          spendNameTextField, spendAmountTextField, spendTotalStackView, nameHelpText, amountHelpText,
+         datePicker, spendDateStackView, spendDateText,
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         // TODO: make extra container for stacks so they'll be centered
         let constraints: [NSLayoutConstraint] = [
@@ -331,6 +378,11 @@ final class AddSpendViewController: UIViewController {
             spendTotalStackView.trailingAnchor.constraint(equalTo: eventPayeerContainerView.trailingAnchor),
             spendTotalStackView.heightAnchor.constraint(equalToConstant: 40),
             spendTotalStackView.topAnchor.constraint(equalTo: payeerStackView.bottomAnchor, constant: 30),
+            
+            spendDateStackView.leadingAnchor.constraint(equalTo: eventPayeerContainerView.leadingAnchor),
+            spendDateStackView.trailingAnchor.constraint(equalTo: eventPayeerContainerView.trailingAnchor),
+            spendDateStackView.heightAnchor.constraint(equalToConstant: 40),
+            spendDateStackView.topAnchor.constraint(equalTo: spendTotalStackView.bottomAnchor, constant: 30),
     
             amountHelpText.topAnchor.constraint(equalTo: spendTotalStackView.bottomAnchor),
             amountHelpText.widthAnchor.constraint(equalTo: spendTotalStackView.widthAnchor, multiplier: 0.9),
@@ -401,18 +453,18 @@ final class AddSpendViewController: UIViewController {
         // TODO: Erase warnings!@
         // gathering data
 //         spend name
-        let verifier = Verifier()
-        guard let spendName = spendNameTextField.text,
-              verifier.isValidEventName(eventName: spendName) else {
-            nameHelpText.text = R.string.addSpend.nameWorning()
-            return
-        }
-//         spend amount
-        guard let spendAmount = spendAmountTextField.text,
-              verifier.isAmountValid(amount: spendAmount) else {
-            amountHelpText.text = R.string.addSpend.amountWorning()
-            return
-        }
+//        let verifier = Verifier()
+//        guard let spendName = spendNameTextField.text,
+//              verifier.isValidEventName(eventName: spendName) else {
+//            nameHelpText.text = R.string.addSpend.nameWorning()
+//            return
+//        }
+////         spend amount
+//        guard let spendAmount = spendAmountTextField.text,
+//              verifier.isAmountValid(amount: spendAmount) else {
+//            amountHelpText.text = R.string.addSpend.amountWorning()
+//            return
+//        }
         // TODO: After implementing COREDATA make request
         // current event
 //        print(chooseEventView.chooseEventLable.text)
@@ -428,6 +480,34 @@ final class AddSpendViewController: UIViewController {
 //            spilt[cell.userNameLable.text ?? "unknown"] = Int(cell.percent.text ?? "0") ?? 0
 //        }
 //        print(spilt)
+        print(type(of: datePicker.date))
+        
+        let split: [String: String] = ["1000": "50", "2000": "50"]
+        let splitJson = try! JSONSerialization.data(withJSONObject: split)
+        let dateFormatter = DateFormatter()
+        let userLocale = Locale(identifier: Locale.current.languageCode ?? "ru_RU")
+        dateFormatter.locale = userLocale
+        dateFormatter.dateFormat = "YYYY-MM-dd"
+        let createdDate = dateFormatter.string(from: datePicker.date)
+        let spendData: [String: Any] = [
+            "split": split,
+            "name": "randomSpend",
+            "payeer": ["username": "2000"],
+            "event": ["id": "24", "name": "test4"],
+            "date": createdDate
+        ]
+        let jsonData = try? JSONSerialization.data(withJSONObject: spendData)
+        var request = setupRequest(url: .createSpend, method: .post, body: jsonData)
+        let tokenData = KeychainHelper.standard.read(
+            service: "access-token", account: "backend-auth"
+        )!
+        let accessToken = String(data: tokenData, encoding: .utf8)!
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        let successHanlder = { [unowned self] (data: Data) throws in
+            // TODO: make a success notification bar
+            print(data)
+        }
+        performRequest(request: request, successHandler: successHanlder)
     }
     
     @objc func handleExitButtonClicked(_ sender: UIButton) {

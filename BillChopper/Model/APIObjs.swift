@@ -33,3 +33,7 @@ struct UserFetch: Decodable {
     let username: String
     let profile: Profile
 }
+
+struct CreateSpendResponse: Decodable {
+    let success: Bool
+}

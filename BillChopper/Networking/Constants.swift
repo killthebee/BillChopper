@@ -6,6 +6,7 @@ enum Urls: String {
     case updateUser = "http://127.0.0.1:8000/api/user/update_user/"
     case fetchUserData = "http://127.0.0.1:8000/api/user/fetch_user_info/"
     case createEvent = "http://127.0.0.1:8000/api/user/create_event/"
+    case createSpend = "http://127.0.0.1:8000/api/user/create_spend/"
 }
 
 enum Method: String {
