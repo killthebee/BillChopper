@@ -43,7 +43,7 @@ class Verifier {
     }
     
     func isValidEventName(eventName: String) -> Bool {
-        let eventNameRegex = "^.{3,50}$"
+        let eventNameRegex = "^.{3,30}$"
         let eventNameTest = NSPredicate(format: "SELF MATCHES %@", eventNameRegex)
         return eventNameTest.evaluate(with:eventName)
     }
