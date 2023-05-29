@@ -9,3 +9,5 @@
 "percentLess" = "percents << 100% reload";
 "reloadRange" = " reload";
 "ok" = "ok :)";
+"nameWorning" = "name isn't valid";
+"amountWorning" = "spend amount isn't valid";

@@ -2,6 +2,7 @@ protocol EventUserProtocol {
     var username: String { get }
     var percent: Int? { get set }
     var imageName: String? { get set }
+    var phone: String { get }
 }
 // probably i'm gonna need event parrent for the spend
 
@@ -14,13 +15,14 @@ protocol newEvenUserProtocol {
 protocol EventProtocol {
     var eventType: String { get }
     var name: String { get }
-    var users: [EventUser] { get }
+    var users: [EventUserProtocol] { get }
 }
 
 struct EventUser: EventUserProtocol {
     let username: String
     var percent: Int?
     var imageName: String?
+    let phone: String
 }
 
 struct newEventUser: newEvenUserProtocol {
@@ -32,6 +34,6 @@ struct newEventUser: newEvenUserProtocol {
 struct spendEvent: EventProtocol {
     let eventType: String
     let name: String
-    let users: [EventUser]
+    let users: [EventUserProtocol]
 }
 

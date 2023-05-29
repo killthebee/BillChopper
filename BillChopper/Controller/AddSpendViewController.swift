@@ -10,13 +10,13 @@ final class AddSpendViewController: UIViewController {
     
     private var spendEvents: [EventProtocol] = [
         spendEvent(eventType: "other", name: "hmm1", users: [
-            EventUser(username: "Ilya", imageName: "HombreDefault1"),
-            EventUser(username: "Dmitriy", imageName: "HombreDefault1.1"),
-            EventUser(username: "Kiril"),
+            EventUser(username: "Ilya", imageName: "HombreDefault1", phone: "44444444445"),
+            EventUser(username: "Dmitriy", imageName: "HombreDefault1.1", phone: "123456"),
+            EventUser(username: "Kiril", phone: "33333333333"),
         ]),
         spendEvent(eventType: "party", name: "hmm2", users: [
-            EventUser(username: "Dmitriy", imageName: "HombreDefault1.1"),
-            EventUser(username: "Kiril"),
+            EventUser(username: "Dmitriy", imageName: "HombreDefault1.1", phone: "123456"),
+            EventUser(username: "Kiril", phone: "33333333333"),
         ]),
     ]
     
@@ -187,6 +187,30 @@ final class AddSpendViewController: UIViewController {
         return button
     }()
     
+    private var nameHelpText: UILabel = {
+        let nameHelpText = UILabel()
+//        nameHelpText.text = R.string.addSpend.nameWorning()
+        nameHelpText.font = nameHelpText.font.withSize(15)
+        nameHelpText.textAlignment = .center
+        nameHelpText.lineBreakMode = .byWordWrapping
+        nameHelpText.numberOfLines = 0
+        nameHelpText.textColor = .red
+        
+        return nameHelpText
+    }()
+    
+    private var amountHelpText: UILabel = {
+        let amountHelpText = UILabel()
+//        amountHelpText.text = R.string.addSpend.amountWorning()
+        amountHelpText.font = amountHelpText.font.withSize(15)
+        amountHelpText.textAlignment = .center
+        amountHelpText.lineBreakMode = .byWordWrapping
+        amountHelpText.numberOfLines = 0
+        amountHelpText.textColor = .red
+        
+        return amountHelpText
+    }()
+    
     private let eventPayeerContainerView = UIView()
     
     
@@ -259,10 +283,11 @@ final class AddSpendViewController: UIViewController {
             stackView.spacing = 10
             eventPayeerContainerView.addSubview(stackView)
         })
+        [nameHelpText, amountHelpText].forEach({eventPayeerContainerView.addSubview($0)})
         
         [exitButton, eventPayeerContainerView, chooseEventText, chooseEventView, eventStackView,
          payeerStackView, selectSplitText, splitSelectorsView, saveButton, spendNameStackView,
-         spendNameTextField, spendAmountTextField, spendTotalStackView
+         spendNameTextField, spendAmountTextField, spendTotalStackView, nameHelpText, amountHelpText,
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         // TODO: make extra container for stacks so they'll be centered
         let constraints: [NSLayoutConstraint] = [
@@ -286,6 +311,10 @@ final class AddSpendViewController: UIViewController {
             spendNameStackView.heightAnchor.constraint(equalToConstant: 40),
             spendNameStackView.topAnchor.constraint(equalTo: eventPayeerContainerView.topAnchor),
             
+            nameHelpText.topAnchor.constraint(equalTo: spendNameStackView.bottomAnchor),
+            nameHelpText.widthAnchor.constraint(equalTo: spendNameStackView.widthAnchor, multiplier: 0.9),
+            nameHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
             eventStackView.widthAnchor.constraint(equalToConstant: 300),
             eventStackView.heightAnchor.constraint(equalToConstant: 40),
             eventStackView.topAnchor.constraint(equalTo: spendNameStackView.bottomAnchor, constant: 30),
@@ -302,7 +331,12 @@ final class AddSpendViewController: UIViewController {
             spendTotalStackView.heightAnchor.constraint(equalToConstant: 40),
             spendTotalStackView.topAnchor.constraint(equalTo: payeerStackView.bottomAnchor, constant: 30),
             
-            selectSplitText.topAnchor.constraint(equalTo: eventPayeerContainerView.bottomAnchor, constant: 20),
+            
+            amountHelpText.topAnchor.constraint(equalTo: spendTotalStackView.bottomAnchor),
+            amountHelpText.widthAnchor.constraint(equalTo: spendTotalStackView.widthAnchor, multiplier: 0.9),
+            amountHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            selectSplitText.topAnchor.constraint(equalTo: spendTotalStackView.bottomAnchor, constant: 20),
             selectSplitText.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             selectSplitText.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             selectSplitText.heightAnchor.constraint(equalToConstant: 30),
@@ -365,23 +399,35 @@ final class AddSpendViewController: UIViewController {
     }
     
     @objc func handleSaveEvent(_ sender: UIButton) {
+        // TODO: Erase warnings!@
         // gathering data
-        // spend name
-//        print(spendNameTextField.text)
-        // spend amount
-//        print(spendAmountTextField.text)
+//         spend name
+        let verifier = Verifier()
+        guard let spendName = spendNameTextField.text,
+              verifier.isValidEventName(eventName: spendName) else {
+            nameHelpText.text = R.string.addSpend.nameWorning()
+            return
+        }
+//         spend amount
+        guard let spendAmount = spendAmountTextField.text else {
+            amountHelpText.text = R.string.addSpend.amountWorning()
+            return
+        }
+        // TODO: After implementing COREDATA make request
         // current event
 //        print(chooseEventView.chooseEventLable.text)
         // current user
 //        print(self.chooseUserView.chooseEventLable.text)
 //        current split
-        for i in 0 ... 15 {
-            let indexPath = IndexPath(row: i, section: 0)
-            guard let cell = splitSelectorsView.cellForRow(at: indexPath) as? SplitSelectorViewCell else {
-                break
-            }
-            print(cell.percent.text)
-        }
+//        var spilt: [String: Int] = [:]
+//        for i in 0 ..< eventUsers.count {
+//            let indexPath = IndexPath(row: i, section: 0)
+//            guard let cell = splitSelectorsView.cellForRow(at: indexPath) as? SplitSelectorViewCell else {
+//                break
+//            }
+//            spilt[cell.userNameLable.text ?? "unknown"] = Int(cell.percent.text ?? "0") ?? 0
+//        }
+//        print(spilt)
     }
     
     @objc func handleExitButtonClicked(_ sender: UIButton) {
