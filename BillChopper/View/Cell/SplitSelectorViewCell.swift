@@ -29,7 +29,7 @@ class SplitSelectorViewCell: UITableViewCell {
         return lable
     }()
     
-    private let userIcon: ProfileIcon = {
+    private var userIcon: ProfileIcon = {
         let icon = ProfileIcon()
         // just a placeholder ( move to a configurator in the future )
         //icon.image = UIImage(named: "HombreDefault1")
@@ -84,7 +84,9 @@ class SplitSelectorViewCell: UITableViewCell {
         guard let userPercent = eventUser.percent else { return }
         percent.text = String(userPercent)
         slider.setValue(Float(userPercent), animated: true)
-        userIcon.image = UIImage(named: eventUser.imageName ?? "HombreDefault1")
+        userIcon.removeFromSuperview()
+        userIcon = ProfileIcon(profileImage: UIImage(named: eventUser.imageName ?? "HombreDefault1"))
+        contentView.addSubview(userIcon)
         userNameLable.text = eventUser.username
         vcDelegate = delegate
     }

@@ -96,7 +96,7 @@ final class AddSpendViewController: UIViewController {
                 title: event.name,
                 image: UIImage(named: "\(event.eventType)Icon")
             ){
-                (action) in
+                [unowned self] (action) in
                 self.eventUsers = event.users
                 self.splitSelectorsView.reloadData()
                 self.chooseEventView.chooseEventLable.text = event.name
@@ -120,13 +120,17 @@ final class AddSpendViewController: UIViewController {
                     children: userButtons
                 )
                 
-                self.chooseUserView.removeFromSuperview()
+                self.payeerStackView.removeFromSuperview()
                 self.chooseUserView = ChooseButtonView(
                     text: "choose user",
                     image: UIImage(named: "HombreDefault1")!,
                     menu: menu
                 )
-                self.view.addSubview(self.chooseUserView)
+                payeerStackView = UIStackView(arrangedSubviews: [choosePayerText, chooseUserView])
+                payeerStackView.distribution = .fill
+                payeerStackView.spacing = 10
+                eventPayeerContainerView.addSubview(payeerStackView)
+//                self.view.addSubview(self.chooseUserView)
             })
         }
         let menu = UIMenu(title: "spendEvents", options: .displayInline, children: events)
@@ -207,6 +211,8 @@ final class AddSpendViewController: UIViewController {
         amountHelpText.lineBreakMode = .byWordWrapping
         amountHelpText.numberOfLines = 0
         amountHelpText.textColor = .red
+        amountHelpText.resignFirstResponder()
+        amountHelpText.backgroundColor = .blue
         
         return amountHelpText
     }()
@@ -271,23 +277,22 @@ final class AddSpendViewController: UIViewController {
         return stack
     }()
     
+    private lazy var eventStackView = UIStackView(arrangedSubviews: [chooseEventText, chooseEventView])
+    private lazy var payeerStackView = UIStackView(arrangedSubviews: [choosePayerText, chooseUserView])
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        super.viewDidLayoutSubviews()
         
-        let eventStackView = UIStackView(arrangedSubviews: [chooseEventText, chooseEventView])
-        let payeerStackView = UIStackView(arrangedSubviews: [choosePayerText, chooseUserView])
         [payeerStackView, eventStackView, spendNameStackView, spendTotalStackView
         ].forEach({ stackView in
             stackView.distribution = .fill
             stackView.spacing = 10
             eventPayeerContainerView.addSubview(stackView)
         })
-        [nameHelpText, amountHelpText].forEach({eventPayeerContainerView.addSubview($0)})
-        
+//        [nameHelpText, amountHelpText].forEach({eventPayeerContainerView.addSubview($0)})
         [exitButton, eventPayeerContainerView, chooseEventText, chooseEventView, eventStackView,
          payeerStackView, selectSplitText, splitSelectorsView, saveButton, spendNameStackView,
-         spendNameTextField, spendAmountTextField, spendTotalStackView, nameHelpText, amountHelpText,
+         spendNameTextField, spendAmountTextField, spendTotalStackView, nameHelpText,
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         // TODO: make extra container for stacks so they'll be centered
         let constraints: [NSLayoutConstraint] = [
@@ -311,9 +316,9 @@ final class AddSpendViewController: UIViewController {
             spendNameStackView.heightAnchor.constraint(equalToConstant: 40),
             spendNameStackView.topAnchor.constraint(equalTo: eventPayeerContainerView.topAnchor),
             
-            nameHelpText.topAnchor.constraint(equalTo: spendNameStackView.bottomAnchor),
-            nameHelpText.widthAnchor.constraint(equalTo: spendNameStackView.widthAnchor, multiplier: 0.9),
-            nameHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+//            nameHelpText.topAnchor.constraint(equalTo: spendNameStackView.bottomAnchor),
+//            nameHelpText.widthAnchor.constraint(equalTo: spendNameStackView.widthAnchor, multiplier: 0.9),
+//            nameHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
             eventStackView.widthAnchor.constraint(equalToConstant: 300),
             eventStackView.heightAnchor.constraint(equalToConstant: 40),
@@ -332,11 +337,11 @@ final class AddSpendViewController: UIViewController {
             spendTotalStackView.topAnchor.constraint(equalTo: payeerStackView.bottomAnchor, constant: 30),
             
             
-            amountHelpText.topAnchor.constraint(equalTo: spendTotalStackView.bottomAnchor),
-            amountHelpText.widthAnchor.constraint(equalTo: spendTotalStackView.widthAnchor, multiplier: 0.9),
-            amountHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+//            amountHelpText.topAnchor.constraint(equalTo: spendTotalStackView.bottomAnchor),
+//            amountHelpText.widthAnchor.constraint(equalTo: spendTotalStackView.widthAnchor, multiplier: 0.9),
+//            amountHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            selectSplitText.topAnchor.constraint(equalTo: spendTotalStackView.bottomAnchor, constant: 20),
+            selectSplitText.topAnchor.constraint(equalTo: eventPayeerContainerView.bottomAnchor, constant: 20),
             selectSplitText.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             selectSplitText.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             selectSplitText.heightAnchor.constraint(equalToConstant: 30),
@@ -458,6 +463,7 @@ extension AddSpendViewController: UITableViewDelegate, UITableViewDataSource {
             eventUsers[indexPath.row].percent = startingSplit
         }
         cell.configure(eventUsers[indexPath.row], self)
+//        cell.becomeFirstResponder()
         
         return cell 
     }
