@@ -211,8 +211,6 @@ final class AddSpendViewController: UIViewController {
         amountHelpText.lineBreakMode = .byWordWrapping
         amountHelpText.numberOfLines = 0
         amountHelpText.textColor = .red
-        amountHelpText.resignFirstResponder()
-        amountHelpText.backgroundColor = .blue
         
         return amountHelpText
     }()
@@ -289,10 +287,10 @@ final class AddSpendViewController: UIViewController {
             stackView.spacing = 10
             eventPayeerContainerView.addSubview(stackView)
         })
-//        [nameHelpText, amountHelpText].forEach({eventPayeerContainerView.addSubview($0)})
+        [nameHelpText, amountHelpText].forEach({eventPayeerContainerView.addSubview($0)})
         [exitButton, eventPayeerContainerView, chooseEventText, chooseEventView, eventStackView,
          payeerStackView, selectSplitText, splitSelectorsView, saveButton, spendNameStackView,
-         spendNameTextField, spendAmountTextField, spendTotalStackView, nameHelpText,
+         spendNameTextField, spendAmountTextField, spendTotalStackView, nameHelpText, amountHelpText,
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         // TODO: make extra container for stacks so they'll be centered
         let constraints: [NSLayoutConstraint] = [
@@ -310,15 +308,14 @@ final class AddSpendViewController: UIViewController {
             eventPayeerContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             eventPayeerContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4),
             
-            
             spendNameStackView.leadingAnchor.constraint(equalTo: eventPayeerContainerView.leadingAnchor),
             spendNameStackView.trailingAnchor.constraint(equalTo: eventPayeerContainerView.trailingAnchor),
             spendNameStackView.heightAnchor.constraint(equalToConstant: 40),
             spendNameStackView.topAnchor.constraint(equalTo: eventPayeerContainerView.topAnchor),
             
-//            nameHelpText.topAnchor.constraint(equalTo: spendNameStackView.bottomAnchor),
-//            nameHelpText.widthAnchor.constraint(equalTo: spendNameStackView.widthAnchor, multiplier: 0.9),
-//            nameHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            nameHelpText.topAnchor.constraint(equalTo: spendNameStackView.bottomAnchor),
+            nameHelpText.widthAnchor.constraint(equalTo: spendNameStackView.widthAnchor, multiplier: 0.9),
+            nameHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
             eventStackView.widthAnchor.constraint(equalToConstant: 300),
             eventStackView.heightAnchor.constraint(equalToConstant: 40),
@@ -330,16 +327,14 @@ final class AddSpendViewController: UIViewController {
             payeerStackView.centerXAnchor.constraint(equalTo: eventPayeerContainerView.centerXAnchor),
             payeerStackView.topAnchor.constraint(equalTo: eventStackView.bottomAnchor, constant: 30),
             
-            
             spendTotalStackView.leadingAnchor.constraint(equalTo: eventPayeerContainerView.leadingAnchor),
             spendTotalStackView.trailingAnchor.constraint(equalTo: eventPayeerContainerView.trailingAnchor),
             spendTotalStackView.heightAnchor.constraint(equalToConstant: 40),
             spendTotalStackView.topAnchor.constraint(equalTo: payeerStackView.bottomAnchor, constant: 30),
-            
-            
-//            amountHelpText.topAnchor.constraint(equalTo: spendTotalStackView.bottomAnchor),
-//            amountHelpText.widthAnchor.constraint(equalTo: spendTotalStackView.widthAnchor, multiplier: 0.9),
-//            amountHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+    
+            amountHelpText.topAnchor.constraint(equalTo: spendTotalStackView.bottomAnchor),
+            amountHelpText.widthAnchor.constraint(equalTo: spendTotalStackView.widthAnchor, multiplier: 0.9),
+            amountHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
             selectSplitText.topAnchor.constraint(equalTo: eventPayeerContainerView.bottomAnchor, constant: 20),
             selectSplitText.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -355,7 +350,6 @@ final class AddSpendViewController: UIViewController {
             splitSelectorsView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             splitSelectorsView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             splitSelectorsView.bottomAnchor.constraint(equalTo: saveButton.topAnchor, constant: -20)
-            
         ]
         NSLayoutConstraint.activate(constraints)
     }
@@ -414,7 +408,8 @@ final class AddSpendViewController: UIViewController {
             return
         }
 //         spend amount
-        guard let spendAmount = spendAmountTextField.text else {
+        guard let spendAmount = spendAmountTextField.text,
+              verifier.isAmountValid(amount: spendAmount) else {
             amountHelpText.text = R.string.addSpend.amountWorning()
             return
         }

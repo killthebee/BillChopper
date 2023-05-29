@@ -48,6 +48,12 @@ class Verifier {
         return eventNameTest.evaluate(with:eventName)
     }
     
+    func isAmountValid(amount: String) -> Bool {
+        let amountRegex = "^[0-9]{1,7}$"
+        let amountTest = NSPredicate(format: "SELF MATCHES %@", amountRegex)
+        return amountTest.evaluate(with:amount)
+    }
+    
     func verifyUserSignUpData (
         username: String, password: String, secondPassword: String, phone: String
     ) -> (Bool, [String: String]) {
