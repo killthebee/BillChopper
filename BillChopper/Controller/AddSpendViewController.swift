@@ -200,6 +200,7 @@ final class AddSpendViewController: UIViewController {
     
     private let datePicker: UIDatePicker = {
         // TODO: kinda what to make it widther
+        // TODO: make inputs sliding, so it'll fit on small screens!
         let picker = UIDatePicker()
         picker.datePickerMode = .date
         
@@ -294,19 +295,6 @@ final class AddSpendViewController: UIViewController {
     private lazy var payeerStackView = UIStackView(arrangedSubviews: [choosePayerText, chooseUserView])
     
     private lazy var spendDateStackView: UIStackView = {
-//        let spacer1 = UIView()
-//        let spacer2 = UIView()
-//        spacer1.translatesAutoresizingMaskIntoConstraints = false
-//        spacer2.translatesAutoresizingMaskIntoConstraints = false
-//        spacer1.backgroundColor = .red
-//        spacer2.backgroundColor = .green
-//        let dateStackView = UIStackView(arrangedSubviews: [spacer1, datePicker, spacer2])
-//        spacer1.widthAnchor.constraint(equalTo: dateStackView.widthAnchor, multiplier: 0.2).isActive = true
-//        spacer2.widthAnchor.constraint(equalTo: dateStackView.widthAnchor, multiplier: 0.2).isActive = true
-//        dateStackView.spacing = 10
-//        dateStackView.alignment = .fill
-//        dateStackView.layer.borderColor = UIColor.black.cgColor
-//        dateStackView.translatesAutoresizingMaskIntoConstraints = false
         let wrap = UIView()
         wrap.translatesAutoresizingMaskIntoConstraints = false
         wrap.addSubview(datePicker)
@@ -453,18 +441,18 @@ final class AddSpendViewController: UIViewController {
         // TODO: Erase warnings!@
         // gathering data
 //         spend name
-//        let verifier = Verifier()
+        let verifier = Verifier()
 //        guard let spendName = spendNameTextField.text,
 //              verifier.isValidEventName(eventName: spendName) else {
 //            nameHelpText.text = R.string.addSpend.nameWorning()
 //            return
 //        }
 ////         spend amount
-//        guard let spendAmount = spendAmountTextField.text,
-//              verifier.isAmountValid(amount: spendAmount) else {
-//            amountHelpText.text = R.string.addSpend.amountWorning()
-//            return
-//        }
+        guard let spendAmount = spendAmountTextField.text,
+              verifier.isAmountValid(amount: spendAmount) else {
+            amountHelpText.text = R.string.addSpend.amountWorning()
+            return
+        }
         // TODO: After implementing COREDATA make request
         // current event
 //        print(chooseEventView.chooseEventLable.text)
@@ -482,19 +470,25 @@ final class AddSpendViewController: UIViewController {
 //        print(spilt)
         print(type(of: datePicker.date))
         
-        let split: [String: String] = ["1000": "50", "2000": "50"]
+        let split: [String: Any] = [
+            "admin": 33,
+            "123456": 33,
+            "23456677": 33,
+        ]
         let splitJson = try! JSONSerialization.data(withJSONObject: split)
+        let splitString = String(data: splitJson, encoding: .utf8)!
         let dateFormatter = DateFormatter()
         let userLocale = Locale(identifier: Locale.current.languageCode ?? "ru_RU")
         dateFormatter.locale = userLocale
         dateFormatter.dateFormat = "YYYY-MM-dd"
         let createdDate = dateFormatter.string(from: datePicker.date)
         let spendData: [String: Any] = [
-            "split": split,
-            "name": "randomSpend",
-            "payeer": ["username": "2000"],
-            "event": ["id": "24", "name": "test4"],
-            "date": createdDate
+            "split": splitString,
+            "name": "8Spend",
+            "payeer": ["username": "admin"],
+            "event": ["id": "28", "name": "test10"],
+            "date": createdDate,
+            "amount": spendAmount
         ]
         let jsonData = try? JSONSerialization.data(withJSONObject: spendData)
         var request = setupRequest(url: .createSpend, method: .post, body: jsonData)
