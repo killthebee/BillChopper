@@ -3,12 +3,32 @@ import CoreData
 
 final class MainViewController: UIViewController {
     
+    // TODO: perform fetch current user and set current user in app with right data type
+    private let currentUsername = "admin"
+    
     private var viewContext: NSManagedObjectContext!
     
+    // TODO: Probably it'll be best to make sets, if it's possible to make 'em hashable
+    private var eventButtonData: [EventButtonDataProtocol] = [] {
+        didSet {
+            self.eventButton.menu = getEventMenu()
+        }
+    }
+    
+    private var usersButtonData: [UsersButtonDataProtocol] = [] {
+        didSet {
+            self.balanceButton.menu = getBalanceMenu()
+        }
+    }
+    
+    private var spendsData: [SpendDataProtocol] = []
+    
+    // unowned??
     private lazy var profileViewController = ProfileViewController()
     private lazy var addEventViewController = AddEventViewController()
     private lazy var addSpendViewController = AddSpendViewController()
     
+    // TODO: make buttons area shorter
     private let eventButton = TopMainButton(color: UIColor.systemGray, title: R.string.main.eventButtonText())
 
     private let balanceButton = TopMainButton(color: customGreen, title: R.string.main.balanceButtonText())
@@ -29,12 +49,94 @@ final class MainViewController: UIViewController {
     let coverPlusIconView: UIButton = {
         let coverView = UIButton()
         coverView.showsMenuAsPrimaryAction = true
-        
         return coverView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        var request = setupRequest(url: .fetchEventsSpends, method: .get)
+        let tokenData = KeychainHelper.standard.read(
+            service: "access-token", account: "backend-auth"
+        )!
+        let accessToken = String(data: tokenData, encoding: .utf8)!
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        let successHanlder = { [unowned self] (data: Data) throws in
+            var eventsData: [EventButtonData] = []
+            var participants: [UsersButtonData] = []
+            var spendsData: [SpendDataProtocol] = []
+            let responseObject = try JSONDecoder().decode([EventsSpends].self, from: data)
+            for event in responseObject {
+                let eventButtonData = EventButtonData(
+                    id: event.id,
+                    name: event.name,
+                    eventType: event.event_type
+                )
+                eventsData.append(eventButtonData)
+                // TODO: perform save users to db
+                for participant in event.participants {
+                    let newBalanceWithUser = UsersButtonData(
+                        username: participant.first_name, imageName: "HombreDefault1"
+                    )
+                    participants.append(newBalanceWithUser)
+                }
+                
+                for spend in event.spends {
+                    print("----")
+                    print(spend.payeer.first_name == self.currentUsername)
+                    print(spend.amount)
+                    print(spend.split)
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "YYYY-MM-dd"
+                    guard let date = dateFormatter.date(from: spend.date) else {
+                        return
+                    }
+                    if spend.payeer.first_name == self.currentUsername {
+                        let percent = 100 - (spend.split[self.currentUsername] ?? 0)
+                        // wtf is this amount?!
+                        spendsData.append(SpendData(
+                            spendName: spend.name,
+                            payeerName: self.currentUsername,
+                            amount: Int16(Float(spend.amount) * ((Float(percent) / Float(100)))),
+                            isBorrowed: false,
+                            totalAmount: spend.amount,
+                            date: date
+                        ))
+                        print(spend.amount * (Int16(percent) / 100))
+                        continue
+                    }
+                    spendsData.append(SpendData(
+                        spendName: spend.name,
+                        payeerName: spend.payeer.first_name,
+                        amount: spend.amount * Int16(spend.split[self.currentUsername] ?? 0) / 100,
+                        isBorrowed: true,
+                        totalAmount: spend.amount,
+                        date: date
+                    ))
+                    print(spend.amount * Int16(spend.split[self.currentUsername] ?? 0) / 100)
+                }
+            }
+            DispatchQueue.main.async {
+                self.eventButtonData = eventsData
+                self.usersButtonData = participants
+                
+                self.spendsData = spendsData
+                self.tableView.reloadData()
+                
+                let total = self.calculateTotal()
+                self.footer.balance.text = "\(total) usd"
+                if total > 0 {
+                    self.footer.balanceTypeLabel.text = R.string.mainCell.youLent()
+                    self.footer.balanceTypeLabel.textColor = customGreen
+                    self.footer.balance.textColor = customGreen
+                } else {
+                    self.footer.balanceTypeLabel.text = R.string.mainCell.youBorrowed()
+                    self.footer.balanceTypeLabel.textColor = .red
+                    self.footer.balance.textColor = .red
+                }
+            }
+        }
+        // TODO: make a failure handler!
+        performRequest(request: request, successHandler: successHanlder)
         view.backgroundColor = .white
         setupViews()
         addSubviews()
@@ -64,37 +166,54 @@ final class MainViewController: UIViewController {
     }
     
     private func getEventMenu() -> UIMenu {
-        let dummyEvent1 = UIAction(title: "event1", image: UIImage(named: "LentActionIcon")) { (action) in
-            print("dummy event1")
-        }
-        let dummyEvent2 = UIAction(title: "event2", image: UIImage(named: "BorrowActionIcon")) { (action) in
-            print("dummy event2")
+        var buttons: [UIAction] = []
+        for eventData in eventButtonData {
+            let eventName = eventData.name
+            let imageName = reverseConvertEventTypes(type: eventData.eventType)
+            let eventButton = UIAction(title: eventName, image: UIImage(named: imageName)) { (action) in
+                print("event named: \(eventName)")
+            }
+            buttons.append(eventButton)
         }
         
         let menu = UIMenu(
             title: R.string.main.eventMenuText(),
             options: .displayInline,
-            children: [dummyEvent1, dummyEvent2]
+            children: buttons
         )
         
         return menu
     }
     
     private func getBalanceMenu() -> UIMenu {
-        let dummyBalance1 = UIAction(title: "balance1", image: UIImage(named: "HombreDefault1.1")) { (action) in
-            print("dummy balance1")
-        }
-        let dummyBalance2 = UIAction(title: "balance2", image: UIImage(named: "HombreDefault1.1")) { (action) in
-            print("dummy balance2")
+        var buttons: [UIAction] = []
+        for usersData in usersButtonData {
+            let eventButton = UIAction(title: usersData.username, image: UIImage(named: usersData.imageName)) { (action) in
+                print("event named: \(usersData.username)")
+            }
+            buttons.append(eventButton)
         }
         
         let menu = UIMenu(
             title: R.string.main.getBalanceMenuText(),
             options: .displayInline,
-            children: [dummyBalance1, dummyBalance2]
+            children: buttons
         )
         
         return menu
+    }
+    
+    private func calculateTotal() -> Int16 {
+        var total: Int16 = 0
+        for spendData in spendsData {
+            if spendData.isBorrowed {
+                total -= spendData.amount
+                continue
+            }
+            total += spendData.amount
+        }
+        
+        return total
     }
     
     private func getCoverPlusIconMenu() -> UIMenu {
@@ -201,29 +320,30 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         return 1
     }
     
-    
     func numberOfSections(in tableView: UITableView) -> Int {
-            return 13
+        return spendsData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // do I even need background color?
+        let cellData = spendsData[indexPath.section]
         let backgroundView = UIView()
         backgroundView.backgroundColor = .white
         
-        if indexPath.section != 3 {
+        if cellData.isBorrowed {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: SpendTableViewCell.identifier) as? SpendTableViewCell else { return UITableViewCell() }
             cell.backgroundColor = .white
             cell.selectedBackgroundView = backgroundView
             
-            return cell
-        } else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: LentCell.newIdentifier) as? LentCell else { return UITableViewCell() }
-            cell.backgroundColor = .white
-            cell.selectedBackgroundView = backgroundView
+            cell.configure(cellData)
             
             return cell
         }
-        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: LentCell.newIdentifier) as? LentCell else { return UITableViewCell() }
+        cell.backgroundColor = .white
+        cell.selectedBackgroundView = backgroundView
+        cell.configure(cellData)
+        return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

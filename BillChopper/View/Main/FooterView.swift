@@ -36,7 +36,7 @@ class FooterView: UIView {
         return balanceWithLabal
     }()
     
-    private let balanceTypeLabel: UILabel = {
+    let balanceTypeLabel: UILabel = {
         let balanceTypeLabel = UILabel()
         balanceTypeLabel.text = R.string.mainCell.youBorrowed()
         balanceTypeLabel.font = balanceTypeLabel.font.withSize(11)
@@ -46,7 +46,7 @@ class FooterView: UIView {
         return balanceTypeLabel
     }()
     
-    private let balance: UILabel = {
+    let balance: UILabel = {
         let balance = UILabel()
         balance.text = "3222 usd"
         balance.font = balance.font.withSize(23)
