@@ -468,7 +468,6 @@ final class AddSpendViewController: UIViewController {
 //            spilt[cell.userNameLable.text ?? "unknown"] = Int(cell.percent.text ?? "0") ?? 0
 //        }
 //        print(spilt)
-        print(type(of: datePicker.date))
         
         let split: [String: Any] = [
             "admin": 33,
