@@ -73,6 +73,19 @@ final class AddSpendViewController: UIViewController {
         return spendAmountTextField
     }()
     
+    private lazy var dateTextField: UITextField = {
+        let field = UITextField()
+        field.layer.borderColor = UIColor.black.cgColor
+        field.layer.borderWidth = 1
+        field.layer.cornerRadius = 15
+        field.backgroundColor = .white
+        field.tag = 1
+        field.inputView = datePicker
+        field.textAlignment = .center
+        
+        return field
+    }()
+    
     private let spendTotalText: UILabel = {
         let lable = UILabel(text: R.string.addSpend.spendTotalText())
         lable.textAlignment = .right
@@ -199,10 +212,10 @@ final class AddSpendViewController: UIViewController {
     }()
     
     private let datePicker: UIDatePicker = {
-        // TODO: kinda what to make it widther
         // TODO: make inputs sliding, so it'll fit on small screens!
         let picker = UIDatePicker()
         picker.datePickerMode = .date
+        picker.preferredDatePickerStyle = .wheels
         
         return picker
     }()
@@ -257,19 +270,25 @@ final class AddSpendViewController: UIViewController {
     private func addToolbars() {
         let spendNameKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
         let spendTotalKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
+        let spendDateKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
         
         let spendNameDownView = spendNameKeyboardDownButton.customView as? UIButton
         let spendTotalDownView = spendTotalKeyboardDownButton.customView as? UIButton
+        let spendDateDownView = spendDateKeyboardDownButton.customView as? UIButton
         
         [spendNameDownView, spendTotalDownView].forEach(
             {$0?.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)}
         )
+        spendDateDownView?.addTarget(self, action: #selector(dateDoneButtonTapped), for: .touchUpInside)
         
         spendNameTextField.inputAccessoryView = makeToolbar(
             barItems: [spendNameKeyboardDownButton, flexSpace]
         )
         spendAmountTextField.inputAccessoryView = makeToolbar(
             barItems: [spendTotalKeyboardDownButton, flexSpace]
+        )
+        dateTextField.inputAccessoryView = makeToolbar(
+            barItems: [spendDateKeyboardDownButton, flexSpace]
         )
     }
     
@@ -295,20 +314,26 @@ final class AddSpendViewController: UIViewController {
     private lazy var payeerStackView = UIStackView(arrangedSubviews: [choosePayerText, chooseUserView])
     
     private lazy var spendDateStackView: UIStackView = {
-        let wrap = UIView()
-        wrap.translatesAutoresizingMaskIntoConstraints = false
-        wrap.addSubview(datePicker)
-        wrap.layer.borderColor = UIColor.black.cgColor
-        wrap.layer.cornerRadius = 15
-        wrap.layer.borderWidth = 1
-        datePicker.centerXAnchor.constraint(equalTo: wrap.centerXAnchor).isActive = true
-        datePicker.centerYAnchor.constraint(equalTo: wrap.centerYAnchor).isActive = true
         let stack = UIStackView(
-            arrangedSubviews: [spendDateText, wrap]
+            arrangedSubviews: [spendDateText, dateTextField]
         )
-        wrap.widthAnchor.constraint(equalTo: stack.widthAnchor, multiplier: 0.7).isActive = true
+        dateTextField.widthAnchor.constraint(equalTo: stack.widthAnchor, multiplier: 0.7).isActive = true
         
         return stack
+//        let wrap = UIView()
+//        wrap.translatesAutoresizingMaskIntoConstraints = false
+//        wrap.addSubview(datePicker)
+//        wrap.layer.borderColor = UIColor.black.cgColor
+//        wrap.layer.cornerRadius = 15
+//        wrap.layer.borderWidth = 1
+//        datePicker.centerXAnchor.constraint(equalTo: wrap.centerXAnchor).isActive = true
+//        datePicker.centerYAnchor.constraint(equalTo: wrap.centerYAnchor).isActive = true
+//        let stack = UIStackView(
+//            arrangedSubviews: [spendDateText, wrap]
+//        )
+//        wrap.widthAnchor.constraint(equalTo: stack.widthAnchor, multiplier: 0.7).isActive = true
+//
+//        return stack
     }()
     
     override func viewDidLayoutSubviews() {
@@ -509,6 +534,15 @@ final class AddSpendViewController: UIViewController {
     
     @objc func doneButtonTapped() {
             view.endEditing(true)
+    }
+    
+    @objc func dateDoneButtonTapped() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+        
+        self.dateTextField.text = dateFormatter.string(from: datePicker.date)
+        view.endEditing(true)
     }
     
     @objc func unselectedTap() {
