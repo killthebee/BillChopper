@@ -287,14 +287,14 @@ final class MainViewController: UIViewController {
     }
     
     @objc func fetchStuff(_ sender: UIButton) {
-        let request = AppUser.createFetchRequest()
-        do {
-            let appUsers = try viewContext.fetch(request)
-            print(appUsers.count)
-            print(appUsers[0].name)
-        } catch {
-            print("fetch failed")
-        }
+//        let request = AppUser.createFetchRequest()
+//        do {
+//            let appUsers = try viewContext.fetch(request)
+//            print(appUsers.count)
+//            print(appUsers[0].name)
+//        } catch {
+//            print("fetch failed")
+//        }
     }
     
     @objc func handleTapOnProfileIcon(sender: UITapGestureRecognizer) {
