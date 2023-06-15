@@ -59,6 +59,7 @@
 		30E55E772A05358C00BDF49E /* Verifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E55E762A05358C00BDF49E /* Verifiers.swift */; };
 		30F80BAC29BA1A16003C7272 /* PasswordAndPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F80BAB29BA1A16003C7272 /* PasswordAndPassword.swift */; };
 		844B035E2A30AE3000AAFB9B /* Date + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844B035D2A30AE3000AAFB9B /* Date + ext.swift */; };
+		84B175182A3B002C00324600 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B175172A3B002C00324600 /* CoreDataManager.swift */; };
 		84C56F562A0AAA3C00EC0EBF /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C56F552A0AAA3C00EC0EBF /* KeychainHelper.swift */; };
 		84C56F582A13A79A00EC0EBF /* DataProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C56F572A13A79A00EC0EBF /* DataProtocols.swift */; };
 /* End PBXBuildFile section */
@@ -117,6 +118,7 @@
 		30E55E762A05358C00BDF49E /* Verifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Verifiers.swift; sourceTree = "<group>"; };
 		30F80BAB29BA1A16003C7272 /* PasswordAndPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordAndPassword.swift; sourceTree = "<group>"; };
 		844B035D2A30AE3000AAFB9B /* Date + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date + ext.swift"; sourceTree = "<group>"; };
+		84B175172A3B002C00324600 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		84C56F552A0AAA3C00EC0EBF /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		84C56F572A13A79A00EC0EBF /* DataProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProtocols.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -237,6 +239,7 @@
 				307849A428EC860500AEFECA /* Persistance.swift */,
 				30E55E6A2A02B59D00BDF49E /* APIObjs.swift */,
 				84C56F572A13A79A00EC0EBF /* DataProtocols.swift */,
+				84B175172A3B002C00324600 /* CoreDataManager.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -422,6 +425,7 @@
 				304FDCEB293E15BC00737B7B /* CarouselTableCell.swift in Sources */,
 				304FDCE22934E11B00737B7B /* UIView + ext.swift in Sources */,
 				30E55E712A03989200BDF49E /* Networking.swift in Sources */,
+				84B175182A3B002C00324600 /* CoreDataManager.swift in Sources */,
 				3078498A28EB349D00AEFECA /* AppDelegate.swift in Sources */,
 				305A0D4929546D63004CCA23 /* PhoneInput.swift in Sources */,
 				30DBDCD0294A134A00D44D9C /* UserTableViewCell.swift in Sources */,

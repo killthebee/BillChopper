@@ -569,9 +569,40 @@ class LaunchViewController: UIViewController {
             changeStage(stage: .login)
             return
         }
+        
+        guard let phone = self.phoneInput.text,
+              let code = self.codeInput.text
+        else {
+            self.singInErrorHelpText.text = R.string.addEvent.notProvided()
+            return
+        }
+        
+        let verifier = Verifier()
+        let cleanPhoneNumber = verifier.stripPhoneNumber(phone: code + phone)
+        let isValidPhone = verifier.isValidPhone(phone: cleanPhoneNumber)
+//        guard isValidPhone else {
+//            self.singInErrorHelpText.text = R.string.addEvent.phoneNotValid()
+//            return
+//        }
+        
+        let userFetchSuccessHandler = { [unowned self] (data: Data) throws in
+            let responseObject = try JSONDecoder().decode(UserFetch.self, from: data)
+            
+            DispatchQueue.main.async {
+                guard let appUser = CoreDataManager.shared.createAppUser(
+                    username: responseObject.first_name,
+                    phone: responseObject.username,
+                    isMale: responseObject.profile.is_male
+                ) else { return }
+                self.mainViewController.appUser = appUser
+                
+                self.mainViewController.modalPresentationStyle = .fullScreen
+                //mainViewController.modalTransitionStyle = .
+                self.present(self.mainViewController, animated: false)
+            }
+        }
         let signInSuccessHandler = { [weak self] (data: Data) throws in
             let responseObject = try JSONDecoder().decode(LoginSuccess.self, from: data)
-            print(responseObject)
             KeychainHelper.standard.save(
                 Data(responseObject.access.utf8),
                 serice: "access-token",
@@ -586,23 +617,25 @@ class LaunchViewController: UIViewController {
             // TODO: fetch user data
             // TODO: present main VC
             DispatchQueue.main.async {
-                guard let vc = self?.mainViewController else {
-                    return
-                }
-                
-                vc.modalPresentationStyle = .fullScreen
-                //mainViewController.modalTransitionStyle = .
-                self?.present(vc, animated: false)
-                }
+//                let json: [String: Any] = ["username": cleanPhoneNumber]
+                let json: [String: Any] = ["username": "admin"]
+                let jsonData = try? JSONSerialization.data(withJSONObject: json)
+                var request = setupRequest(url: .fetchUserData, method: .post, body: jsonData)
+                request.setValue("Bearer \(responseObject.access)", forHTTPHeaderField: "Authorization")
+                performRequest(
+                    request: request,
+                    successHandler: userFetchSuccessHandler
+                )
             }
+        }
             
             
-            let signInFailureHandler = { [weak self] (data: Data) throws in
-                let responseObject = try JSONDecoder().decode(userFetchError.self, from: data)
-                DispatchQueue.main.async {
-                    self?.singInErrorHelpText.text = responseObject.detail
-                }
+        let signInFailureHandler = { [weak self] (data: Data) throws in
+            let responseObject = try JSONDecoder().decode(userFetchError.self, from: data)
+            DispatchQueue.main.async {
+                self?.singInErrorHelpText.text = responseObject.detail
             }
+        }
             
             //            let (isValid, validationResult) = Verifier().verifySingIn(
             //                username:  phoneAndPassword.phoneInput.text,
@@ -611,10 +644,10 @@ class LaunchViewController: UIViewController {
             //            if !isValid {
             //                self.singInErrorHelpText.text = validationResult["error"]
             //            }
-            let json: [String: Any] = ["username": "admin", "password": "123456"]
-            let jsonData = try? JSONSerialization.data(withJSONObject: json)
-            let request = setupRequest(url: .login, method: .post, body: jsonData)
-            performRequest(request: request, successHandler: signInSuccessHandler, failureHandler: signInFailureHandler)
+        let json: [String: Any] = ["username": "admin", "password": "123456"]
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        let request = setupRequest(url: .login, method: .post, body: jsonData)
+        performRequest(request: request, successHandler: signInSuccessHandler, failureHandler: signInFailureHandler)
         }
     
     @objc func signupTapped() {

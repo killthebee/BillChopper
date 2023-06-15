@@ -5,6 +5,7 @@ final class MainViewController: UIViewController {
     
     // TODO: perform fetch current user and set current user in app with right data type
     private let currentUsername = "admin"
+    var appUser: AppUser? = nil
     
     private var viewContext: NSManagedObjectContext!
     
@@ -81,10 +82,6 @@ final class MainViewController: UIViewController {
                 }
                 
                 for spend in event.spends {
-                    print("----")
-                    print(spend.payeer.first_name == self.currentUsername)
-                    print(spend.amount)
-                    print(spend.split)
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "YYYY-MM-dd"
                     guard let date = dateFormatter.date(from: spend.date) else {
