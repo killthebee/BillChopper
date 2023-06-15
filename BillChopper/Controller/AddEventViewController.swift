@@ -302,7 +302,7 @@ final class AddEventViewController: UIViewController {
             return
         }
         
-        let fetchUserSuccessHandler = { [unowned self] (data: Data) throws in
+        let userFetchSuccessHandler = { [unowned self] (data: Data) throws in
             let responsObject = try JSONDecoder().decode(UserFetch.self, from: data)
             DispatchQueue.main.async {
                 // wounder whether it'll create retain cycle xd
@@ -352,7 +352,7 @@ final class AddEventViewController: UIViewController {
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         performRequest(
             request: request,
-            successHandler: fetchUserSuccessHandler,
+            successHandler: userFetchSuccessHandler,
             failureHandler: fetchFailureHandler
         )
         
