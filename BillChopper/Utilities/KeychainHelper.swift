@@ -60,10 +60,11 @@ final class KeychainHelper {
         return (result as? Data)
     }
     
-    func readToken(service: String, account: String) -> String {
-        // TODO: mb make it a bit more optional?
-        let data = read(service: service, account: account)!
-        let accessToken = String(data: data, encoding: .utf8)!
+    func readToken(service: String, account: String) -> String? {
+        guard let data = read(service: service, account: account) else {
+            return nil
+        }
+        let accessToken = String(data: data, encoding: .utf8)
         return accessToken
     }
 }

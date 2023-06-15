@@ -56,11 +56,13 @@ final class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         var request = setupRequest(url: .fetchEventsSpends, method: .get)
-        let tokenData = KeychainHelper.standard.read(
+        guard let accessToken = KeychainHelper.standard.read(
             service: "access-token", account: "backend-auth"
-        )!
-        let accessToken = String(data: tokenData, encoding: .utf8)!
-        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        ) else {
+            // it'll probably be present
+            return
+        }
+         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         let successHanlder = { [unowned self] (data: Data) throws in
             var eventsData: [EventButtonData] = []
             var participants: [UsersButtonData] = []

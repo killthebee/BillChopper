@@ -67,9 +67,11 @@ func performRequest(
 
 func uploadImage(fileName: String, image: UIImage) {
     let url = URL(string: Urls.image.rawValue)
-    let tokenData = KeychainHelper.standard.read(service: "access-token", account: "backend-auth")!
-    let accessToken = String(data: tokenData, encoding: .utf8)!
-
+    guard let accessToken = KeychainHelper.standard.readToken(service: "access-token", account: "backend-auth")
+    else {
+        // TODO: make an alert or some thing!
+        return
+    }
     let boundary = UUID().uuidString
 
     let session = URLSession.shared

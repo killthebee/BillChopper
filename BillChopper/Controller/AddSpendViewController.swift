@@ -516,10 +516,9 @@ final class AddSpendViewController: UIViewController {
         ]
         let jsonData = try? JSONSerialization.data(withJSONObject: spendData)
         var request = setupRequest(url: .createSpend, method: .post, body: jsonData)
-        let tokenData = KeychainHelper.standard.read(
+        guard let accessToken = KeychainHelper.standard.readToken(
             service: "access-token", account: "backend-auth"
-        )!
-        let accessToken = String(data: tokenData, encoding: .utf8)!
+        ) else { return }
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         let successHanlder = { [unowned self] (data: Data) throws in
             // TODO: make a success notification bar

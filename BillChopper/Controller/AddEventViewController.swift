@@ -345,10 +345,9 @@ final class AddEventViewController: UIViewController {
         let json: [String: Any] = ["username": cleanPhoneNumber]
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         var request = setupRequest(url: .fetchUserData, method: .post, body: jsonData)
-        let tokenData = KeychainHelper.standard.read(
+        guard let accessToken = KeychainHelper.standard.readToken(
             service: "access-token", account: "backend-auth"
-        )!
-        let accessToken = String(data: tokenData, encoding: .utf8)!
+        ) else { return }
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         performRequest(
             request: request,
@@ -388,10 +387,11 @@ final class AddEventViewController: UIViewController {
         ]
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         var request = setupRequest(url: .createEvent, method: .post, body: jsonData)
-        let tokenData = KeychainHelper.standard.read(
+        guard let accessToken = KeychainHelper.standard.readToken(
             service: "access-token", account: "backend-auth"
-        )!
-        let accessToken = String(data: tokenData, encoding: .utf8)!
+        ) else {
+            return
+        }
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
         let successHanlder = { [unowned self] (data: Data) throws in
