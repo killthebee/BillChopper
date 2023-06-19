@@ -34,20 +34,21 @@ struct CoreDataManager {
         return nil
     }
 
-//    func fetchEmployees() -> [Employee]? {
-//        let context = persistentContainer.viewContext
-//
-//        let fetchRequest = NSFetchRequest<Employee>(entityName: "Employee")
-//
-//        do {
-//            let employees = try context.fetch(fetchRequest)
-//            return employees
-//        } catch let error {
-//            print("Failed to fetch companies: \(error)")
-//        }
-//
-//        return nil
-//    }
+    func fetchAppUser() -> AppUser? {
+        let context = persistentContainer.viewContext
+
+        let fetchRequest = NSFetchRequest<AppUser>(entityName: "AppUser")
+
+        do {
+            let appUser = try context.fetch(fetchRequest)
+            if appUser.count != 1 { return nil }
+            return appUser[0]
+        } catch let error {
+            print("Failed to fetch companies: \(error)")
+        }
+
+        return nil
+    }
 //
 //    func fetchEmployee(withName name: String) -> Employee? {
 //        let context = persistentContainer.viewContext

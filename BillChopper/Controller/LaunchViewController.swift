@@ -342,7 +342,7 @@ class LaunchViewController: UIViewController {
             [signUpButton, signInButton].forEach({authButtonsContainer.addSubview($0)})
             
             NSLayoutConstraint.activate(stage1Constraints)
-        case .login:
+        case .login where currentStage == .chooseMethod:
             currentStage = .login
             [signUpButton, signInButton, authButtonsContainer].forEach({$0.removeFromSuperview()})
             NSLayoutConstraint.deactivate(stage1Constraints)
@@ -354,7 +354,7 @@ class LaunchViewController: UIViewController {
             NSLayoutConstraint.activate(stage2Constaints)
         case .signup where currentStage == .login:
             currentStage = .signup
-            [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer
+            [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer, singInErrorHelpText
             ].forEach({$0.removeFromSuperview()})
             NSLayoutConstraint.deactivate(stage2Constaints)
             
@@ -390,6 +390,24 @@ class LaunchViewController: UIViewController {
             singUpHeaderContainer.addSubview(signUpHeader)
             
             NSLayoutConstraint.activate(stage3Constraints)
+        case .login where currentStage == .signup:
+            currentStage = .login
+            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField,
+             phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer,
+             passwordHelpText].forEach({$0.removeFromSuperview()})
+            NSLayoutConstraint.deactivate(stage3Constraints)
+            
+            authContainerThreeStageHeightConstrain?.isActive = false
+            authContainerOneTwoStageHeightConstrain?.isActive = true
+            UIView.animate(withDuration: 0.5, animations: {
+                self.view.layoutIfNeeded()
+            })
+            
+            [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer, singInErrorHelpText
+            ].forEach({authCoverView.addSubview($0)})
+            authButtonsContainer.addSubview(signInButton)
+            
+            NSLayoutConstraint.activate(stage2Constaints)
         default:
             break
         }
@@ -398,17 +416,107 @@ class LaunchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil);
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil);
-        
         setupViews()
         addSubviews()
-        addToolbars()
+        self.addToolbars()
         initialLayoutSetUp(logoContainer: logoContainer)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(sender:)),
+            name: UIResponder.keyboardWillShowNotification, object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(sender:)),
+            name: UIResponder.keyboardWillHideNotification, object: nil
+        )
+//        KeychainHelper.standard.save(
+//            Data("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4ODAyOTU2MCwianRpIjoiZGYwYzViNTEwOTNiNDQxMzg5OGUwMzkwYTc4YjdjODYiLCJ1c2VyX2lkIjoyfQ.t7OjKs1w9F3tv9ffjyyLah65afa5c_NO_XqluZhos0s".utf8),
+//            serice: "refresh-token",
+//            account: "backend-auth"
+//        )
         
-        let tap = UITapGestureRecognizer(target: self, action: #selector(rotateTopConrenr))
-        logoContainer.addGestureRecognizer(tap)
+        let refreshSuccessHandler = { [unowned self] (data: Data) throws in
+            // TODO: mb catch and launch .chooseMethod stage on main queue
+            let responseObject = try JSONDecoder().decode(RefreshSuccess.self, from: data)
+            KeychainHelper.standard.save(
+                Data(responseObject.access.utf8),
+                serice: "access-token",
+                account: "backend-auth"
+            )
+            if let appUser = CoreDataManager.shared.fetchAppUser() {
+                DispatchQueue.main.async {
+                    self.mainViewController.appUser = appUser
+                    self.mainViewController.modalPresentationStyle = .fullScreen
+                    self.present(self.mainViewController, animated: false)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.changeStage(stage: .chooseMethod)
+                    UIView.animate(withDuration: 0.67, animations: {
+                        self.view.layoutIfNeeded()
+                    })
+                }
+            }
+        }
+        
+        let refreshFailureHandler = { [unowned self] (data: Data) throws in
+            DispatchQueue.main.async {
+                self.changeStage(stage: .chooseMethod)
+                UIView.animate(withDuration: 0.67, animations: {
+                    self.view.layoutIfNeeded()
+                })
+            }
+        }
+        if let refreshToken = KeychainHelper.standard.readToken(
+            service: "refresh-token", account: "backend-auth"
+        ) {
+            UIView.animateKeyframes(withDuration: 1, delay: 0, animations: {
+                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5, animations: {
+                    self.topCornerCircleView.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 0.5)
+                })
+                UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5, animations: {
+                    self.bottomCornerCircleView.transform = CGAffineTransform(rotationAngle: -CGFloat.pi * 0.5)
+                })
+            })
+            let json: [String: Any] = ["refresh": refreshToken]
+            let jsonData = try? JSONSerialization.data(withJSONObject: json)
+            let request = setupRequest(url: .refresh, method: .post, body: jsonData)
+            performRequest(request: request, successHandler: refreshSuccessHandler, failureHandler: refreshFailureHandler)
+        } else {
+            UIView.animateKeyframes(withDuration: 1, delay: 0, animations: {
+                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5, animations: {
+                    self.topCornerCircleView.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 0.5)
+                })
+                UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5, animations: {
+                    self.bottomCornerCircleView.transform = CGAffineTransform(rotationAngle: -CGFloat.pi * 0.5)
+                })
+            }, completion: { _ in
+                self.changeStage(stage: .chooseMethod)
+                UIView.animate(withDuration: 0.67, animations: {
+                    self.view.layoutIfNeeded()
+                })
+                
+            })
+//            setupViews()
+//            addSubviews()
+//            self.addToolbars()
+//            initialLayoutSetUp(logoContainer: logoContainer)
+////            self.changeStage(stage: .chooseMethod)
+//            let tap = UITapGestureRecognizer(target: self, action: #selector(rotateTopCorner))
+//            logoContainer.addGestureRecognizer(tap)
+//            return
+        }
+        
+//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil);
+//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil);
+//
+//        setupViews()
+//        addSubviews()
+////        addToolbars()
+//        initialLayoutSetUp(logoContainer: logoContainer)
+//        let tap = UITapGestureRecognizer(target: self, action: #selector(rotateTopCorner))
+//        logoContainer.addGestureRecognizer(tap)
     }
     
     private func setupViews() {
@@ -548,8 +656,8 @@ class LaunchViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
     }
     
-    @objc func rotateTopConrenr() {
-        changeStage(stage: .chooseMethod)
+    @objc func rotateTopCorner() {
+//        changeStage(stage: .chooseMethod)
 
         UIView.animateKeyframes(withDuration: 1, delay: 0, animations: {
             UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.33, animations: {
@@ -580,7 +688,7 @@ class LaunchViewController: UIViewController {
         let verifier = Verifier()
         let cleanPhoneNumber = verifier.stripPhoneNumber(phone: code + phone)
         let isValidPhone = verifier.isValidPhone(phone: cleanPhoneNumber)
-//        guard isValidPhone else {
+//        guard isValidfPhone else {
 //            self.singInErrorHelpText.text = R.string.addEvent.phoneNotValid()
 //            return
 //        }
@@ -597,7 +705,6 @@ class LaunchViewController: UIViewController {
                 self.mainViewController.appUser = appUser
                 
                 self.mainViewController.modalPresentationStyle = .fullScreen
-                //mainViewController.modalTransitionStyle = .
                 self.present(self.mainViewController, animated: false)
             }
         }
@@ -652,9 +759,13 @@ class LaunchViewController: UIViewController {
     
     @objc func signupTapped() {
         if currentStage == .signup {
-            let signUpSuccessHandler = { [weak self] (data: Data) throws in
+            let signUpSuccessHandler = { [unowned self] (data: Data) throws in
                 let responseObject = try JSONDecoder().decode(RegisterationSuccess.self, from: data)
-                // TODO: Present login view
+                DispatchQueue.main.async {
+                    self.welcomeBackHeaderLable.text = "Time to Login!"
+                    self.changeStage(stage: .login)
+                    return
+                }
             }
             let signUpFailureHandler = { [weak self] (data: Data) throws in
                 let responseObject = try JSONDecoder().decode(RegisterError.self, from: data)
@@ -669,14 +780,14 @@ class LaunchViewController: UIViewController {
                     self?.setWarrings(erros: errors)
                 }
             }
-            // Un270193
+            //Un123456
             let (isValid, validationResult) = Verifier().verifyUserSignUpData(
                 username: self.usernameTextField.text ?? "",
                 password: self.passwordAndPassword.passwordInput.text ?? "",
                 secondPassword: self.passwordAndPassword.repeatPasswordInput.text ?? "",
                 phone: (self.phoneInput.text ?? "") + (self.codeInput.text ?? "")
             )
-            
+
             if !isValid {
                 setWarrings(erros: validationResult)
                 return
@@ -687,7 +798,6 @@ class LaunchViewController: UIViewController {
                 let request = setupRequest(url: .register, method: .post, body: jsonData)
                 performRequest(request: request, successHandler: signUpSuccessHandler, failureHandler: signUpFailureHandler)
             }
-            print("it's time to sing user up!")
             return
         }
         print("print is working, like ok")

@@ -21,6 +21,10 @@ struct LoginSuccess: Decodable {
     let refresh: String
 }
 
+struct RefreshSuccess: Decodable {
+    let access: String
+}
+
 struct userFetchError: Decodable {
     let detail: String
 }
