@@ -780,7 +780,6 @@ class LaunchViewController: UIViewController {
                     self?.setWarrings(erros: errors)
                 }
             }
-            //Un123456
             let (isValid, validationResult) = Verifier().verifyUserSignUpData(
                 username: self.usernameTextField.text ?? "",
                 password: self.passwordAndPassword.passwordInput.text ?? "",
@@ -793,7 +792,6 @@ class LaunchViewController: UIViewController {
                 return
             } else {
                 let json: [String: Any] = validationResult
-//                let json: [String: Any] = ["lol": 123]
                 let jsonData = try? JSONSerialization.data(withJSONObject: json)
                 let request = setupRequest(url: .register, method: .post, body: jsonData)
                 performRequest(request: request, successHandler: signUpSuccessHandler, failureHandler: signUpFailureHandler)
