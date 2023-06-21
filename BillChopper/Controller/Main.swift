@@ -32,7 +32,12 @@ final class MainViewController: UIViewController {
 
     private let balanceButton = TopMainButton(color: customGreen, title: R.string.main.balanceButtonText())
     
-    private let profileIcon = ProfileIcon(profileImage: R.image.hombreDefault1())
+    private let profileIcon: ProfileIcon = {
+        if let appUserImage = loadImageFromDiskWith(fileName: "appUser") {
+            return ProfileIcon(profileImage: appUserImage)
+        }
+        return ProfileIcon(profileImage: R.image.hombreDefault1())
+    }()
 
     private let footer = FooterView()
     
