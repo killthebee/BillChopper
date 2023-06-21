@@ -703,7 +703,12 @@ class LaunchViewController: UIViewController {
         
         let userFetchSuccessHandler = { [unowned self] (data: Data) throws in
             let responseObject = try JSONDecoder().decode(UserFetch.self, from: data)
-            
+            if let imageURLString = responseObject.profile.profile_image {
+                let imageURL = URL(string: imageURLString)!
+                if let data = try? Data(contentsOf: imageURL) {
+                    saveImage(fileName: "appUser", image: UIImage(data: data)!)
+                }
+            }
             DispatchQueue.main.async {
                 guard let appUser = CoreDataManager.shared.createAppUser(
                     username: responseObject.first_name,
@@ -711,7 +716,10 @@ class LaunchViewController: UIViewController {
                     isMale: responseObject.profile.is_male
                 ) else { return }
                 self.mainViewController.appUser = appUser
+                print("111!")
                 
+                //Optional( /127.0.0.1:8000/media/images/user/18/20230621100700342.png")
+                print(responseObject.profile.profile_image)
                 self.mainViewController.modalPresentationStyle = .fullScreen
                 self.present(self.mainViewController, animated: false)
             }
