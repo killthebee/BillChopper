@@ -31,7 +31,7 @@ class Verifier {
     }
     
     func isValidPhone(phone: String) -> Bool {
-        let phoneRegex = "^[0-9+]{0,1}+[0-9]{5,16}$"
+        let phoneRegex = "^[0-9+]{1,3}+[0-9]{8,16}$"
         let phoneTest = NSPredicate(format: "SELF MATCHES %@", phoneRegex)
         return phoneTest.evaluate(with: phone)
     }
