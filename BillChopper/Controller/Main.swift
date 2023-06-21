@@ -4,10 +4,8 @@ import CoreData
 final class MainViewController: UIViewController {
     
     // TODO: perform fetch current user and set current user in app with right data type
-    private let currentUsername = "admin"
+    // TODO: balance for empty user!
     var appUser: AppUser? = nil
-    
-    private var viewContext: NSManagedObjectContext!
     
     // TODO: Probably it'll be best to make sets, if it's possible to make 'em hashable
     private var eventButtonData: [EventButtonDataProtocol] = [] {
@@ -56,7 +54,7 @@ final class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         var request = setupRequest(url: .fetchEventsSpends, method: .get)
-        guard let accessToken = KeychainHelper.standard.read(
+        guard let accessToken = KeychainHelper.standard.readToken(
             service: "access-token", account: "backend-auth"
         ) else {
             // it'll probably be present
@@ -67,6 +65,7 @@ final class MainViewController: UIViewController {
             var eventsData: [EventButtonData] = []
             var participants: [UsersButtonData] = []
             var spendsData: [SpendDataProtocol] = []
+            guard let appUserPhone = self.appUser?.phone else { return }
             let responseObject = try JSONDecoder().decode([EventsSpends].self, from: data)
             for event in responseObject {
                 let eventButtonData = EventButtonData(
@@ -89,29 +88,27 @@ final class MainViewController: UIViewController {
                     guard let date = dateFormatter.date(from: spend.date) else {
                         return
                     }
-                    if spend.payeer.first_name == self.currentUsername {
-                        let percent = 100 - (spend.split[self.currentUsername] ?? 0)
+                    if spend.payeer.username == appUserPhone {
+                        let percent = 100 - (spend.split[appUserPhone] ?? 0)
                         // wtf is this amount?!
                         spendsData.append(SpendData(
                             spendName: spend.name,
-                            payeerName: self.currentUsername,
+                            payeerName: appUserPhone,
                             amount: Int16(Float(spend.amount) * ((Float(percent) / Float(100)))),
                             isBorrowed: false,
                             totalAmount: spend.amount,
                             date: date
                         ))
-                        print(spend.amount * (Int16(percent) / 100))
                         continue
                     }
                     spendsData.append(SpendData(
                         spendName: spend.name,
                         payeerName: spend.payeer.first_name,
-                        amount: spend.amount * Int16(spend.split[self.currentUsername] ?? 0) / 100,
+                        amount: spend.amount * Int16(spend.split[appUserPhone] ?? 0) / 100,
                         isBorrowed: true,
                         totalAmount: spend.amount,
                         date: date
                     ))
-                    print(spend.amount * Int16(spend.split[self.currentUsername] ?? 0) / 100)
                 }
             }
             DispatchQueue.main.async {
@@ -142,8 +139,6 @@ final class MainViewController: UIViewController {
     }
     
     private func setupViews() {
-        viewContext = PersistanceController.shared.container.viewContext
-        
         tableView.dataSource = self
         tableView.delegate = self
         
@@ -285,20 +280,10 @@ final class MainViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
     }
     
-    @objc func fetchStuff(_ sender: UIButton) {
-//        let request = AppUser.createFetchRequest()
-//        do {
-//            let appUsers = try viewContext.fetch(request)
-//            print(appUsers.count)
-//            print(appUsers[0].name)
-//        } catch {
-//            print("fetch failed")
-//        }
-    }
-    
     @objc func handleTapOnProfileIcon(sender: UITapGestureRecognizer) {
         // NOTE: https://developer.apple.com/documentation/uikit/uiviewcontroller/1621505-dismiss
         profileViewController.modalPresentationStyle = .pageSheet
+        profileViewController.appUser = self.appUser
         profileViewController.modalTransitionStyle = .coverVertical
         present(profileViewController, animated: true)
     }
