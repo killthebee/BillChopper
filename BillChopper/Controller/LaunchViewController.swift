@@ -1,7 +1,6 @@
 import UIKit
 
 class LaunchViewController: UIViewController {
-    
     private lazy var mainViewController = MainViewController()
 
     enum AuthStages {
@@ -673,6 +672,7 @@ class LaunchViewController: UIViewController {
     }
     
     @objc func loginTapped() {
+        print(currentStage)
         if currentStage != .login {
             changeStage(stage: .login)
             return
@@ -692,6 +692,14 @@ class LaunchViewController: UIViewController {
 //            self.singInErrorHelpText.text = R.string.addEvent.phoneNotValid()
 //            return
 //        }
+        let (isValid, validationResult) = Verifier().verifySingIn(
+            username:  (phoneAndPassword.codeInput.text ?? "") +  (phoneAndPassword.phoneInput.text ?? ""),
+            password: phoneAndPassword.passwordInput.text
+        )
+        if !isValid {
+            self.singInErrorHelpText.text = validationResult["error"]
+            return
+        }
         
         let userFetchSuccessHandler = { [unowned self] (data: Data) throws in
             let responseObject = try JSONDecoder().decode(UserFetch.self, from: data)
@@ -725,7 +733,7 @@ class LaunchViewController: UIViewController {
             // TODO: present main VC
             DispatchQueue.main.async {
 //                let json: [String: Any] = ["username": cleanPhoneNumber]
-                let json: [String: Any] = ["username": "admin"]
+                let json: [String: Any] = ["username": validationResult["username"] ?? ""]
                 let jsonData = try? JSONSerialization.data(withJSONObject: json)
                 var request = setupRequest(url: .fetchUserData, method: .post, body: jsonData)
                 request.setValue("Bearer \(responseObject.access)", forHTTPHeaderField: "Authorization")
@@ -743,15 +751,10 @@ class LaunchViewController: UIViewController {
                 self?.singInErrorHelpText.text = responseObject.detail
             }
         }
-            
-            //            let (isValid, validationResult) = Verifier().verifySingIn(
-            //                username:  phoneAndPassword.phoneInput.text,
-            //                password: phoneAndPassword.passwordInput.text
-            //            )
-            //            if !isValid {
-            //                self.singInErrorHelpText.text = validationResult["error"]
-            //            }
-        let json: [String: Any] = ["username": "admin", "password": "123456"]
+        print(validationResult)
+        let json: [String: Any] = validationResult
+        // Un123456
+//        let json: [String: Any] = ["username": "admin", "password": "123456"]
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         let request = setupRequest(url: .login, method: .post, body: jsonData)
         performRequest(request: request, successHandler: signInSuccessHandler, failureHandler: signInFailureHandler)
@@ -784,28 +787,27 @@ class LaunchViewController: UIViewController {
                 username: self.usernameTextField.text ?? "",
                 password: self.passwordAndPassword.passwordInput.text ?? "",
                 secondPassword: self.passwordAndPassword.repeatPasswordInput.text ?? "",
-                phone: (self.phoneInput.text ?? "") + (self.codeInput.text ?? "")
+                phone: (self.codeInput.text ?? "") + (self.phoneInput.text ?? "")
             )
 
             if !isValid {
                 setWarrings(erros: validationResult)
                 return
-            } else {
-                let json: [String: Any] = validationResult
-                let jsonData = try? JSONSerialization.data(withJSONObject: json)
-                let request = setupRequest(url: .register, method: .post, body: jsonData)
-                performRequest(request: request, successHandler: signUpSuccessHandler, failureHandler: signUpFailureHandler)
             }
+            print(validationResult)
+            let json: [String: Any] = validationResult
+            let jsonData = try? JSONSerialization.data(withJSONObject: json)
+            let request = setupRequest(url: .register, method: .post, body: jsonData)
+            performRequest(request: request, successHandler: signUpSuccessHandler, failureHandler: signUpFailureHandler)
             return
         }
-        print("print is working, like ok")
         changeStage(stage: .signup)
     }
     
     @objc func keyboardWillShow(sender: NSNotification) {
         // keypad for buttom password is covering field
-        self.view.frame.origin.y = view.frame.maxY > 845 ? -170 : -220
-        
+//        self.view.frame.origin.y = view.frame.maxY > 845 ? -170 : -220
+        self.view.frame.origin.y = -220
     }
     
     @objc func keyboardWillHide(sender: NSNotification) {
