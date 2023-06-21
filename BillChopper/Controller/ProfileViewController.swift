@@ -2,6 +2,8 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
+    var appUser: AppUser? = nil
+    
     private var iconView = ProfileIcon().setUpIconView()
     
     var isPhoneInput = true
@@ -42,10 +44,11 @@ final class ProfileViewController: UIViewController {
         return saveButton
     }()
     
-    private var usernameTextField: CustomTextField = {
+    private lazy var usernameTextField: CustomTextField = {
         let usernameTextField = CustomTextField()
-        usernameTextField.text = "John Dhoe"
+        usernameTextField.text = appUser?.username
         usernameTextField.textColor = .black
+        usernameTextField.textAlignment = .center
         usernameTextField.placeholder = "username"
         usernameTextField.font = UIFont.boldSystemFont(ofSize: 21)
         usernameTextField.autocorrectionType = UITextAutocorrectionType.no
@@ -123,6 +126,8 @@ final class ProfileViewController: UIViewController {
         addToolbars()
         setupViews()
         addSubviews()
+        setUpPhoneField()
+        setUpGender()
     }
     
     private func addToolbars() {
@@ -161,6 +166,9 @@ final class ProfileViewController: UIViewController {
     private func setupViews() {
         view.backgroundColor = .white
         self.imagePicker = ImagePicker(presentationController: self, delegate: self)
+//        if let phoneNum = appUser?.phone {
+//            self.rawNumber =
+//        }
         usernameTextField.delegate = self
         
         
@@ -169,6 +177,31 @@ final class ProfileViewController: UIViewController {
         )
         iconView.isUserInteractionEnabled = true
         iconView.addGestureRecognizer(tapOnIconGestureRecognizer)
+    }
+    
+    private func setUpPhoneField() {
+        guard let phoneNumber = appUser?.phone,
+        let phoneSplit = stripCodeAndPhone(number: phoneNumber) else {
+            phoneAndGenderHelpText.text = "feiled to load phone number"
+            return
+        }
+        let code = "+" + phoneSplit.code
+        let phone = phoneSplit.phone
+        let phoneDelegate = PhoneAndGender.phoneInput.delegate as? PhoneInputDelegate
+        
+        PhoneAndGender.codeInput.text = code
+        phoneDelegate?.insertNumber(num: phone)
+        PhoneAndGender.phoneInput.text = formatRawNumber(newRawNumber: phone)
+    }
+    
+    private func setUpGender() {
+        guard let isMale = appUser?.isMale else { return }
+        PhoneAndGender.genderButton.setTitleColor(.black, for: .normal)
+        if isMale {
+            PhoneAndGender.genderButton.setTitle(R.string.profileView.male(), for: .normal)
+            return
+        }
+        PhoneAndGender.genderButton.setTitle(R.string.profileView.female(), for: .normal)
     }
     
     private func addSubviews() {
@@ -288,7 +321,21 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc func handleSaveButtonClicked(_ sender: UIButton) {
-        print("save requested")
+        let verifier = Verifier()
+        
+//        let codeDelegate = PhoneAndGender.codeInput.delegate as? PhoneInputDelegate
+        let phone = "4449992111101"
+        print(stripCodeAndPhone(number: phone))
+//        let phoneDelegate = PhoneAndGender.phoneInput.delegate as? PhoneInputDelegate
+////        print(codeDelegate?.rawNumber)
+//        PhoneAndGender.codeInput.text = "+333"
+//        phoneDelegate?.insertNumber(num: "2345671122")
+//        PhoneAndGender.phoneInput.text = formatRawNumber(newRawNumber: "2345671122")
+//        print(
+        print("taped")
+//        print(codeDelegate?.rawNumber)
+//        print(phoneDelegate?.rawNumber)
+        
         // upload image
 //        let filename = "\(usernameTextField.text ?? "anon").png"
 //        uploadImage(fileName: filename, image: iconView.image!)

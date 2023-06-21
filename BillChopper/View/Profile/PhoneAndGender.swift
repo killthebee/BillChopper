@@ -24,7 +24,7 @@ final class PhoneAndGender: UIView {
     
     lazy var genderButton: UIButton = {
         let genderButton = UIButton()
-        genderButton.setTitle(R.string.profileView.gender(), for: .normal )
+        genderButton.setTitle(R.string.profileView.male(), for: .normal)
         genderButton.setTitleColor(.lightGray, for: .normal)
         genderButton.menu = getGenderMenu()
         genderButton.showsMenuAsPrimaryAction = true

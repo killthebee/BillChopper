@@ -26,6 +26,7 @@ extension PhoneInputDelegate: UITextFieldDelegate {
                 continueButton?.tintColor = .systemGray
                 return false
             }
+            print(textField.text)
             return true
         case 1:
             clearButton?.tintColor = customGreen
@@ -39,5 +40,10 @@ extension PhoneInputDelegate: UITextFieldDelegate {
             break
         }
         return false
+    }
+    
+    func insertNumber(num: String) {
+        clearButton?.tintColor = customGreen
+        rawNumber = num
     }
 }
