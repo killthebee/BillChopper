@@ -104,3 +104,9 @@ func convertNumToMonth(_ num: Int) -> String {
         return "jan"
     }
 }
+
+
+func isImageDefault(image: UIImage?) -> Bool {
+    // TODO: increase list of default images
+    return image == UIImage(named: "HombreDefault1")
+}

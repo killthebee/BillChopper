@@ -7,6 +7,7 @@ final class ProfileViewController: UIViewController {
     private var iconView = ProfileIcon().setUpIconView()
     
     var isPhoneInput = true
+    var isImageChanged = false
     
     private lazy var coverView: UIView = {
         let coverView = UIView()
@@ -128,6 +129,9 @@ final class ProfileViewController: UIViewController {
         addSubviews()
         setUpPhoneField()
         setUpGender()
+        if let appUserImage = loadImageFromDiskWith(fileName: "appUser") {
+            iconView.image = appUserImage
+        }
     }
     
     private func addToolbars() {
@@ -321,54 +325,46 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc func handleSaveButtonClicked(_ sender: UIButton) {
+        // verify
         let verifier = Verifier()
-        
-//        let codeDelegate = PhoneAndGender.codeInput.delegate as? PhoneInputDelegate
-        let phone = "4449992111101"
-        print(stripCodeAndPhone(number: phone))
-//        let phoneDelegate = PhoneAndGender.phoneInput.delegate as? PhoneInputDelegate
-////        print(codeDelegate?.rawNumber)
-//        PhoneAndGender.codeInput.text = "+333"
-//        phoneDelegate?.insertNumber(num: "2345671122")
-//        PhoneAndGender.phoneInput.text = formatRawNumber(newRawNumber: "2345671122")
-//        print(
-        print("taped")
-//        print(codeDelegate?.rawNumber)
-//        print(phoneDelegate?.rawNumber)
-        
+        let (isValid, validationResult) = Verifier().verifyUserUpdate(
+            username: self.usernameTextField.text,
+            gender: self.PhoneAndGender.genderButton.titleLabel?.text,
+            phone: (self.PhoneAndGender.codeInput.text ?? "") + (self.PhoneAndGender.phoneInput.text ?? "")
+        )
+        if !isValid {
+            setWarnings(erros: validationResult)
+            return
+        }
+        // save to db
+        guard let appUser = appUser else { return }//warning?
+        appUser.phone = validationResult["username"] ?? appUser.phone
+        appUser.username = self.usernameTextField.text
+        if validationResult["is_male"] == "True" {
+            appUser.isMale = true
+        } else {
+            appUser.isMale = false
+        }
+        CoreDataManager.shared.updateAppUser(user: appUser)
         // upload image
-//        let filename = "\(usernameTextField.text ?? "anon").png"
-//        uploadImage(fileName: filename, image: iconView.image!)
+        if isImageChanged {
+            let filename = "appUser.png"
+            uploadImage(fileName: filename, image: iconView.image!)
+            saveImage(fileName: "appUser", image: iconView.image!)
+        }
         // upload profile updates
-//        let (isValid, validationResult) = Verifier().verifyUserUpdate(
-//            username: self.usernameTextField.text,
-//            gender: self.PhoneAndGender.genderButton.titleLabel?.text,
-//            phone: (self.PhoneAndGender.phoneInput.text ?? "") + (self.PhoneAndGender.codeInput.text ?? "")
-//        )
-//        if !isValid {
-//            setWarnings(erros: validationResult)
-//            return
-//        }
-//        let jsonData = try? JSONSerialization.data(withJSONObject: validationResult)
-//        let request = setupRequest(url: .updateUser, method: .put)
-        // download image
-//        let setupImage = { [unowned self] (imageData: Data) in
-//            DispatchQueue.main.async {
-//                self.iconView.removeFromSuperview()
-//                self.iconView = ProfileIcon().setUpIconView(UIImage(data: imageData)!)
-//                self.setupIconView(iconView: self.iconView)
-//
-//                let tapOnIconGestureRecognizer = UITapGestureRecognizer(
-//                    target: self, action: #selector(self.handleTapOnIcon)
-//                )
-//                self.iconView.isUserInteractionEnabled = true
-//                self.iconView.addGestureRecognizer(tapOnIconGestureRecognizer)
-//                self.view.addSubview(self.iconView)
-//            }
-//        }
-//        let imageUrl = URL(string: "http://127.0.0.1:8000/media/images/user/2/20230515063803897.png")!
-//        let request = URLRequest(url: imageUrl)
-//        performRequest(request: request, successHandler: setupImage)
+        let jsonData = try? JSONSerialization.data(withJSONObject: validationResult)
+        var request = setupRequest(url: .updateUser, method: .put, body: jsonData)
+        guard let accessToken = KeychainHelper.standard.readToken(
+            service: "access-token", account: "backend-auth"
+        ) else { return }
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        let successHandler = { [unowned self] (data: Data) throws in
+            DispatchQueue.main.async {
+                self.dismiss(animated: true)
+            }
+        }
+        performRequest(request: request, successHandler: successHandler)
     }
     
     @objc func handleExitButtonClicked(_ sender: UIButton) {
@@ -386,6 +382,7 @@ extension ProfileViewController: ImagePickerDelegate, UITextFieldDelegate {
         iconView.removeFromSuperview()
         iconView = ProfileIcon().setUpIconView(image)
         setupIconView(iconView: iconView)
+        isImageChanged = true
         
         let tapOnIconGestureRecognizer = UITapGestureRecognizer(
             target: self, action: #selector(handleTapOnIcon)

@@ -284,6 +284,7 @@ final class MainViewController: UIViewController {
         // NOTE: https://developer.apple.com/documentation/uikit/uiviewcontroller/1621505-dismiss
         profileViewController.modalPresentationStyle = .pageSheet
         profileViewController.appUser = self.appUser
+        profileViewController.isImageChanged = false
         profileViewController.modalTransitionStyle = .coverVertical
         present(profileViewController, animated: true)
     }

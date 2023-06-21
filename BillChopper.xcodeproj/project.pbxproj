@@ -60,6 +60,7 @@
 		30F80BAC29BA1A16003C7272 /* PasswordAndPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F80BAB29BA1A16003C7272 /* PasswordAndPassword.swift */; };
 		844B035E2A30AE3000AAFB9B /* Date + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844B035D2A30AE3000AAFB9B /* Date + ext.swift */; };
 		84B175182A3B002C00324600 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B175172A3B002C00324600 /* CoreDataManager.swift */; };
+		84B1751C2A42FFF600324600 /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B1751B2A42FFF600324600 /* ImageSaver.swift */; };
 		84C56F562A0AAA3C00EC0EBF /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C56F552A0AAA3C00EC0EBF /* KeychainHelper.swift */; };
 		84C56F582A13A79A00EC0EBF /* DataProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C56F572A13A79A00EC0EBF /* DataProtocols.swift */; };
 /* End PBXBuildFile section */
@@ -119,6 +120,7 @@
 		30F80BAB29BA1A16003C7272 /* PasswordAndPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordAndPassword.swift; sourceTree = "<group>"; };
 		844B035D2A30AE3000AAFB9B /* Date + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date + ext.swift"; sourceTree = "<group>"; };
 		84B175172A3B002C00324600 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		84B1751B2A42FFF600324600 /* ImageSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSaver.swift; sourceTree = "<group>"; };
 		84C56F552A0AAA3C00EC0EBF /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		84C56F572A13A79A00EC0EBF /* DataProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProtocols.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -190,6 +192,7 @@
 				305A0D5029548FA0004CCA23 /* misc.swift */,
 				30E55E762A05358C00BDF49E /* Verifiers.swift */,
 				84C56F552A0AAA3C00EC0EBF /* KeychainHelper.swift */,
+				84B1751B2A42FFF600324600 /* ImageSaver.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -410,6 +413,7 @@
 				30F80BAC29BA1A16003C7272 /* PasswordAndPassword.swift in Sources */,
 				302C845729892D1D00D8C6E5 /* FooterView.swift in Sources */,
 				30DA407D2926793600E2DC17 /* ProfileViewController.swift in Sources */,
+				84B1751C2A42FFF600324600 /* ImageSaver.swift in Sources */,
 				305A0D4F29548F7F004CCA23 /* CustomTextField.swift in Sources */,
 				30DF1A23299E9181007B6476 /* LaunchViewController.swift in Sources */,
 				84C56F562A0AAA3C00EC0EBF /* KeychainHelper.swift in Sources */,
