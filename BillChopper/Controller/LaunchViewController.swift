@@ -716,10 +716,6 @@ class LaunchViewController: UIViewController {
                     isMale: responseObject.profile.is_male
                 ) else { return }
                 self.mainViewController.appUser = appUser
-                print("111!")
-                
-                //Optional( /127.0.0.1:8000/media/images/user/18/20230621100700342.png")
-                print(responseObject.profile.profile_image)
                 self.mainViewController.modalPresentationStyle = .fullScreen
                 self.present(self.mainViewController, animated: false)
             }
