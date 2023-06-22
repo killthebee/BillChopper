@@ -51,14 +51,17 @@ struct CoreDataManager {
     }
     
     func updateAppUser(user: AppUser) {
-           let context = persistentContainer.viewContext
-   
-           do {
-               try context.save()
-           } catch let error {
-               print("Failed to update: \(error)")
-           }
-       }
+        let context = persistentContainer.viewContext
+        
+        persistentContainer.performBackgroundTask{ (context) in
+            do {
+                try context.save()
+            } catch let error {
+                print("Failed to update: \(error)")
+            }
+        }
+        
+   }
 //
 //    func fetchEmployee(withName name: String) -> Employee? {
 //        let context = persistentContainer.viewContext
