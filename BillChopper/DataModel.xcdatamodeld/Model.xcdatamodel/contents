@@ -9,10 +9,16 @@
         <attribute name="eventType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="participants" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Participant" inverseName="events" inverseEntity="Participant"/>
+        <relationship name="spends" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Spend" inverseName="event" inverseEntity="Spend"/>
     </entity>
     <entity name="Participant" representedClassName="Participant" syncable="YES" codeGenerationType="class">
         <attribute name="imageName" optional="YES" attributeType="String"/>
+        <attribute name="imageUrl" optional="YES" attributeType="String"/>
         <attribute name="username" optional="YES" attributeType="String"/>
+        <relationship name="events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Event" inverseName="participants" inverseEntity="Event"/>
+        <relationship name="spends" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Spend" inverseName="payeer" inverseEntity="Spend"/>
+        <relationship name="splitUnits" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SplitUnit" inverseName="participant" inverseEntity="SplitUnit"/>
     </entity>
     <entity name="Spend" representedClassName="Spend" syncable="YES" codeGenerationType="class">
         <attribute name="amount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -20,5 +26,13 @@
         <attribute name="isBorrowed" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="totalAmount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="event" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Event" inverseName="spends" inverseEntity="Event"/>
+        <relationship name="payeer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Participant" inverseName="spends" inverseEntity="Participant"/>
+        <relationship name="splitUnits" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SplitUnit" inverseName="spend" inverseEntity="SplitUnit"/>
+    </entity>
+    <entity name="SplitUnit" representedClassName="SplitUnit" syncable="YES" codeGenerationType="class">
+        <attribute name="percent" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="participant" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Participant" inverseName="splitUnits" inverseEntity="Participant"/>
+        <relationship name="spend" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Spend" inverseName="splitUnits" inverseEntity="Spend"/>
     </entity>
 </model>

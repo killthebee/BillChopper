@@ -38,11 +38,12 @@ struct CoreDataManager {
         let context = persistentContainer.viewContext
 
         let fetchRequest = NSFetchRequest<AppUser>(entityName: "AppUser")
+        fetchRequest.fetchLimit = 1
 
         do {
             let appUser = try context.fetch(fetchRequest)
             if appUser.count != 1 { return nil }
-            return appUser[0]
+            return appUser.first
         } catch let error {
             print("Failed to fetch companies: \(error)")
         }
@@ -60,8 +61,78 @@ struct CoreDataManager {
                 print("Failed to update: \(error)")
             }
         }
-        
    }
+    
+    func saveEventsSpends(data: [EventsSpends], appUserPhone: String) {
+        let context = persistentContainer.viewContext
+        
+        // TODO: check if it's on main thread ones I'll figure out where to fire this method
+        // I'll keep participants in memory for a monent
+        var participantsTempStorage: [String: Participant] = [:]
+        for event in data{
+            let eventData = Event(context: context)
+            eventData.id = event.id
+            eventData.eventType = Int16(event.event_type)
+            eventData.name = event.name
+            for participant in event.participants {
+                if let existingParticipant = participantsTempStorage[participant.username] {
+                    eventData.addToParticipants(existingParticipant)
+                    continue
+                }
+                let participantData = Participant(context: context)
+                participantData.imageName = participant.username
+                participantData.imageUrl = participant.profile.profile_image
+                participantData.username = participant.first_name
+                
+                eventData.addToParticipants(participantData)
+                participantsTempStorage[participant.username] = participantData
+            }
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "YYYY-MM-dd"
+            for spend in event.spends {
+                let spendData = Spend(context: context)
+                guard let date = dateFormatter.date(from: spend.date),
+                      let payeer = participantsTempStorage[spend.payeer.username] else {
+                    continue
+                }
+                let spendAmount: Int16!
+                let isBorrowed: Bool!
+                // I'm calculating the amount of money that will be shown on main tables cells
+                if spend.payeer.username == appUserPhone {
+                    isBorrowed = false
+                    let percent = 100 - (spend.split[appUserPhone] ?? 0)
+                    spendAmount = Int16(Float(spend.amount) * ((Float(percent) / Float(100))))
+                } else {
+                    spendAmount = spend.amount * Int16(spend.split[appUserPhone] ?? 0) / 100
+                    isBorrowed = true
+                }
+                spendData.amount = spendAmount
+                spendData.totalAmount = spend.amount
+                spendData.name = spend.name
+                spendData.isBorrowed = isBorrowed
+                spendData.date = date
+                spendData.payeer = payeer
+                
+                for (phone, percent) in spend.split{
+                    guard let participant = participantsTempStorage[phone] else {
+                        continue
+                    }
+                    let spendUnitData = SplitUnit(context: context)
+                    spendUnitData.percent = Int16(percent)
+                    spendUnitData.participant = participant
+                    spendUnitData.spend = spendData
+                }
+            }
+                
+            do {
+                try context.save()
+            } catch let error {
+                print("Failed to create event: \(error)")
+            }
+        }
+        
+    }
 //
 //    func fetchEmployee(withName name: String) -> Employee? {
 //        let context = persistentContainer.viewContext
