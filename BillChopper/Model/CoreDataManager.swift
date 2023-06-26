@@ -96,18 +96,13 @@ struct CoreDataManager {
                       let payeer = participantsTempStorage[spend.payeer.username] else {
                     continue
                 }
-                let spendAmount: Int16!
-                let isBorrowed: Bool!
-                // I'm calculating the amount of money that will be shown on main tables cells
-                if spend.payeer.username == appUserPhone {
-                    isBorrowed = false
-                    let percent = 100 - (spend.split[appUserPhone] ?? 0)
-                    spendAmount = Int16(Float(spend.amount) * ((Float(percent) / Float(100))))
-                } else {
-                    spendAmount = spend.amount * Int16(spend.split[appUserPhone] ?? 0) / 100
-                    isBorrowed = true
-                }
-                spendData.amount = spendAmount
+                let isBorrowed = spend.payeer.username != appUserPhone
+                spendData.amount = calculateSpendAmount(
+                    isBorrowed: isBorrowed,
+                    spend.amount,
+                    spend.split,
+                    phone: appUserPhone
+                )
                 spendData.totalAmount = spend.amount
                 spendData.name = spend.name
                 spendData.isBorrowed = isBorrowed
@@ -128,10 +123,23 @@ struct CoreDataManager {
             do {
                 try context.save()
             } catch let error {
-                print("Failed to create event: \(error)")
+                print("Failed to fill db: \(error)")
             }
         }
         
+    }
+    
+    func fetchSplitUnits() -> [SplitUnit]? {
+        let context = persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<SplitUnit>(entityName: "SplitUnit")
+        
+        do {
+            let units = try context.fetch(fetchRequest)
+            return units
+        } catch let error {
+            print("Failed to fetch: \(error)")
+        }
+        return nil
     }
 //
 //    func fetchEmployee(withName name: String) -> Employee? {

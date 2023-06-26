@@ -672,7 +672,6 @@ class LaunchViewController: UIViewController {
     }
     
     @objc func loginTapped() {
-        print(currentStage)
         if currentStage != .login {
             changeStage(stage: .login)
             return

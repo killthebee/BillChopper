@@ -110,3 +110,31 @@ func isImageDefault(image: UIImage?) -> Bool {
     // TODO: increase list of default images
     return image == UIImage(named: "HombreDefault1")
 }
+
+
+func calculateSpendAmount(isBorrowed: Bool, _ totalAmount: Int16, _ split: [String:Int8], phone: String) -> Int16 {
+    let percent = split[phone] ?? 0
+    var splitIsEqual = true
+    for (key, value) in split {
+        if value != percent {
+            splitIsEqual = false
+        }
+    }
+    
+    let floatResult: Float!
+    if isBorrowed {
+        if splitIsEqual {
+            floatResult = Float(totalAmount) / Float(split.count)
+        } else {
+            floatResult = Float(totalAmount) * Float(percent) / Float(100)
+        }
+    } else {
+        if splitIsEqual {
+            floatResult = Float(totalAmount) * (Float(split.count - 1) / Float(split.count))
+        } else {
+            floatResult = Float(totalAmount) * Float(100 - percent) / Float(100)
+        }
+    }
+    
+    return Int16(floatResult)
+}

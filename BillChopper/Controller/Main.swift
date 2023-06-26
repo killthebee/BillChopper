@@ -5,6 +5,7 @@ final class MainViewController: UIViewController {
     
     // TODO: perform fetch current user and set current user in app with right data type
     // TODO: balance for empty user!
+    // TODO: Add "all" to events
     var appUser: AppUser? = nil
     
     // TODO: Probably it'll be best to make sets, if it's possible to make 'em hashable
@@ -65,13 +66,15 @@ final class MainViewController: UIViewController {
             // it'll probably be present
             return
         }
-         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        
         let successHanlder = { [unowned self] (data: Data) throws in
             var eventsData: [EventButtonData] = []
             var participants: [UsersButtonData] = []
             var spendsData: [SpendDataProtocol] = []
             guard let appUserPhone = self.appUser?.phone else { return }
             let responseObject = try JSONDecoder().decode([EventsSpends].self, from: data)
+//            CoreDataManager.shared.saveEventsSpends(data: responseObject, appUserPhone: appUserPhone)
             for event in responseObject {
                 let eventButtonData = EventButtonData(
                     id: event.id,
@@ -93,24 +96,17 @@ final class MainViewController: UIViewController {
                     guard let date = dateFormatter.date(from: spend.date) else {
                         return
                     }
-                    if spend.payeer.username == appUserPhone {
-                        let percent = 100 - (spend.split[appUserPhone] ?? 0)
-                        // wtf is this amount?!
-                        spendsData.append(SpendData(
-                            spendName: spend.name,
-                            payeerName: appUserPhone,
-                            amount: Int16(Float(spend.amount) * ((Float(percent) / Float(100)))),
-                            isBorrowed: false,
-                            totalAmount: spend.amount,
-                            date: date
-                        ))
-                        continue
-                    }
+                    let isBorrowed = spend.payeer.username != appUserPhone
                     spendsData.append(SpendData(
                         spendName: spend.name,
                         payeerName: spend.payeer.first_name,
-                        amount: spend.amount * Int16(spend.split[appUserPhone] ?? 0) / 100,
-                        isBorrowed: true,
+                        amount: calculateSpendAmount(
+                            isBorrowed: isBorrowed,
+                            spend.amount,
+                            spend.split,
+                            phone: appUserPhone
+                        ),
+                        isBorrowed: isBorrowed,
                         totalAmount: spend.amount,
                         date: date
                     ))
