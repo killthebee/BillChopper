@@ -9,19 +9,19 @@ final class MainViewController: UIViewController {
     var appUser: AppUser? = nil
     
     // TODO: Probably it'll be best to make sets, if it's possible to make 'em hashable
-    private var eventButtonData: [EventButtonDataProtocol] = [] {
+    private var eventButtonData: [Event] = [] {
         didSet {
             self.eventButton.menu = getEventMenu()
         }
     }
     
-    private var usersButtonData: [UsersButtonDataProtocol] = [] {
+    private var usersButtonData: [Participant] = [] {
         didSet {
             self.balanceButton.menu = getBalanceMenu()
         }
     }
     
-    private var spendsData: [SpendDataProtocol] = []
+    private var spendsData: [Spend] = []
     
     // unowned??
     private lazy var profileViewController = ProfileViewController()
@@ -59,81 +59,16 @@ final class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        var request = setupRequest(url: .fetchEventsSpends, method: .get)
-        guard let accessToken = KeychainHelper.standard.readToken(
-            service: "access-token", account: "backend-auth"
-        ) else {
-            // it'll probably be present
-            return
-        }
-        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-        
-        let successHanlder = { [unowned self] (data: Data) throws in
-            var eventsData: [EventButtonData] = []
-            var participants: [UsersButtonData] = []
-            var spendsData: [SpendDataProtocol] = []
-            guard let appUserPhone = self.appUser?.phone else { return }
-            let responseObject = try JSONDecoder().decode([EventsSpends].self, from: data)
-//            CoreDataManager.shared.saveEventsSpends(data: responseObject, appUserPhone: appUserPhone)
-            for event in responseObject {
-                let eventButtonData = EventButtonData(
-                    id: event.id,
-                    name: event.name,
-                    eventType: event.event_type
-                )
-                eventsData.append(eventButtonData)
-                // TODO: perform save users to db
-                for participant in event.participants {
-                    let newBalanceWithUser = UsersButtonData(
-                        username: participant.first_name, imageName: "HombreDefault1"
-                    )
-                    participants.append(newBalanceWithUser)
-                }
-                
-                for spend in event.spends {
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "YYYY-MM-dd"
-                    guard let date = dateFormatter.date(from: spend.date) else {
-                        return
-                    }
-                    let isBorrowed = spend.payeer.username != appUserPhone
-                    spendsData.append(SpendData(
-                        spendName: spend.name,
-                        payeerName: spend.payeer.first_name,
-                        amount: calculateSpendAmount(
-                            isBorrowed: isBorrowed,
-                            spend.amount,
-                            spend.split,
-                            phone: appUserPhone
-                        ),
-                        isBorrowed: isBorrowed,
-                        totalAmount: spend.amount,
-                        date: date
-                    ))
-                }
-            }
-            DispatchQueue.main.async {
-                self.eventButtonData = eventsData
-                self.usersButtonData = participants
-                
-                self.spendsData = spendsData
-                self.tableView.reloadData()
-                
-                let total = self.calculateTotal()
-                self.footer.balance.text = "\(total) usd"
-                if total > 0 {
-                    self.footer.balanceTypeLabel.text = R.string.mainCell.youLent()
-                    self.footer.balanceTypeLabel.textColor = customGreen
-                    self.footer.balance.textColor = customGreen
-                } else {
-                    self.footer.balanceTypeLabel.text = R.string.mainCell.youBorrowed()
-                    self.footer.balanceTypeLabel.textColor = .red
-                    self.footer.balance.textColor = .red
-                }
-            }
-        }
-        // TODO: make a failure handler!
-        performRequest(request: request, successHandler: successHanlder)
+        print("?????")
+        eventButtonData = CoreDataManager.shared.fetchEvents() ?? []
+        usersButtonData = CoreDataManager.shared.fetchParticipants() ?? []
+        spendsData = CoreDataManager.shared.fetchSpends() ?? []
+//        print(event)
+//        let participantsSet = event?.spends
+//        print(participantsSet)
+//        let participants = participantsSet?.allObjects as? [Spend]
+            
+//        print(participants)
         view.backgroundColor = .white
         setupViews()
         addSubviews()
@@ -163,7 +98,7 @@ final class MainViewController: UIViewController {
     private func getEventMenu() -> UIMenu {
         var buttons: [UIAction] = []
         for eventData in eventButtonData {
-            let eventName = eventData.name
+            let eventName = eventData.name ?? "unnamed"
             let imageName = reverseConvertEventTypes(type: eventData.eventType)
             let eventButton = UIAction(title: eventName, image: UIImage(named: imageName)) { (action) in
                 print("event named: \(eventName)")
@@ -183,7 +118,10 @@ final class MainViewController: UIViewController {
     private func getBalanceMenu() -> UIMenu {
         var buttons: [UIAction] = []
         for usersData in usersButtonData {
-            let eventButton = UIAction(title: usersData.username, image: UIImage(named: usersData.imageName)) { (action) in
+            let username = usersData.username ?? "unnamed"
+            let imageName = usersData.imageName ?? "HombreDefault1"
+            print(imageName)
+            let eventButton = UIAction(title: username, image: UIImage(named: imageName)) { (action) in
                 print("event named: \(usersData.username)")
             }
             buttons.append(eventButton)

@@ -59,7 +59,7 @@ func convertEventTypes(type: String) -> Int {
     }
 }
 
-func reverseConvertEventTypes(type: Int8) -> String {
+func reverseConvertEventTypes(type: Int16) -> String {
     switch type {
     case 1:
         return "tripIcon"

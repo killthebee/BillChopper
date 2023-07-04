@@ -149,12 +149,12 @@ class SpendTableViewCell: UITableViewCell {
         )
     }
     
-    func configure(_ data: SpendDataProtocol) {
-        let spendDate = data.date.get(.day, .month)
+    func configure(_ data: Spend) {
+        guard let spendDate = data.date?.get(.day, .month) else { return }
         date.text = String(spendDate.day ?? 1)
         month.text = convertNumToMonth(spendDate.month ?? 1)
-        spendName.text = data.spendName
-        spendPayeer.text = "\(data.payeerName) payed \(data.totalAmount)$"
+        spendName.text = data.name ?? "unnamed"
+        spendPayeer.text = "\(data.payeer?.username ?? "unnamed") payed \(data.totalAmount)$"
         userBalanceDiff.text = String(data.amount)
     }
 }
