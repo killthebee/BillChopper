@@ -348,9 +348,8 @@ final class ProfileViewController: UIViewController {
         CoreDataManager.shared.updateAppUser(user: appUser)
         // upload image
         if isImageChanged {
-            let filename = "appUser.png"
-            uploadImage(fileName: filename, image: iconView.image!)
-            saveImage(fileName: "appUser", image: iconView.image!)
+            uploadImage(fileName: "appUser.png", image: iconView.image!)
+            saveImage(fileName: "appUser.png", image: iconView.image!)
         }
         // upload profile updates
         let jsonData = try? JSONSerialization.data(withJSONObject: validationResult)
