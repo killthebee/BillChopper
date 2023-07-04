@@ -10,14 +10,14 @@
         <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="participants" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Participant" inverseName="events" inverseEntity="Participant"/>
-        <relationship name="spends" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Spend" inverseName="event" inverseEntity="Spend"/>
+        <relationship name="spends" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Spend" inverseName="event" inverseEntity="Spend"/>
     </entity>
     <entity name="Participant" representedClassName="Participant" syncable="YES" codeGenerationType="class">
         <attribute name="imageName" optional="YES" attributeType="String"/>
         <attribute name="imageUrl" optional="YES" attributeType="String"/>
         <attribute name="username" optional="YES" attributeType="String"/>
-        <relationship name="events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Event" inverseName="participants" inverseEntity="Event"/>
-        <relationship name="spends" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Spend" inverseName="payeer" inverseEntity="Spend"/>
+        <relationship name="events" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Event" inverseName="participants" inverseEntity="Event"/>
+        <relationship name="spends" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Spend" inverseName="payeer" inverseEntity="Spend"/>
         <relationship name="splitUnits" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SplitUnit" inverseName="participant" inverseEntity="SplitUnit"/>
     </entity>
     <entity name="Spend" representedClassName="Spend" syncable="YES" codeGenerationType="class">

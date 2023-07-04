@@ -83,6 +83,7 @@ struct CoreDataManager {
                 participantData.imageName = participant.username
                 participantData.imageUrl = participant.profile.profile_image
                 participantData.username = participant.first_name
+                participantData.addToEvents(eventData)
                 
                 eventData.addToParticipants(participantData)
                 participantsTempStorage[participant.username] = participantData
@@ -108,15 +109,20 @@ struct CoreDataManager {
                 spendData.isBorrowed = isBorrowed
                 spendData.date = date
                 spendData.payeer = payeer
+                payeer.addToSpends(spendData)
+                spendData.event = eventData
+                eventData.addToSpends(spendData)
                 
                 for (phone, percent) in spend.split{
                     guard let participant = participantsTempStorage[phone] else {
                         continue
                     }
-                    let spendUnitData = SplitUnit(context: context)
-                    spendUnitData.percent = Int16(percent)
-                    spendUnitData.participant = participant
-                    spendUnitData.spend = spendData
+                    let splitUnitData = SplitUnit(context: context)
+                    splitUnitData.percent = Int16(percent)
+                    splitUnitData.participant = participant
+                    participant.addToSplitUnits(splitUnitData)
+                    splitUnitData.spend = spendData
+                    spendData.addToSplitUnits(splitUnitData)
                 }
             }
                 
@@ -140,6 +146,99 @@ struct CoreDataManager {
             print("Failed to fetch: \(error)")
         }
         return nil
+    }
+    
+    func fetchSpends() -> [Spend]? {
+        let context = persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<Spend>(entityName: "Spend")
+        
+        do {
+            let spends = try context.fetch(fetchRequest)
+            return spends
+        } catch let error {
+            print("Failed to fetch: \(error)")
+        }
+        return nil
+    }
+    
+    func fetchParticipants() -> [Participant]? {
+        let context = persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<Participant>(entityName: "Participant")
+        
+        do {
+            let participants = try context.fetch(fetchRequest)
+            return participants
+        } catch let error {
+            print("Failed to fetch: \(error)")
+        }
+        return nil
+    }
+    
+    func fetchEvents() -> [Event]? {
+        let context = persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<Event>(entityName: "Event")
+//        fetchRequest.relationshipKeyPathsForPrefetching = ["spends"]
+//        fetchRequest.returnsObjectsAsFaults = true
+        do {
+            let events = try context.fetch(fetchRequest)
+            return events
+        } catch let error {
+            print("Failed to fetch: \(error)")
+        }
+        return nil
+    }
+    
+    func clearAppData() {
+        let context = persistentContainer.viewContext
+        
+        var fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "SplitUnit")
+        var deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try persistentContainer.persistentStoreCoordinator.execute(deleteRequest, with: context)
+        } catch let error as NSError {
+            print("fieled to delete split units: \(error)")
+        }
+        
+        fetchRequest = NSFetchRequest(entityName: "Spend")
+        deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try persistentContainer.persistentStoreCoordinator.execute(deleteRequest, with: context)
+        } catch let error as NSError {
+            print("fieled to delete spends: \(error)")
+        }
+        
+        fetchRequest = NSFetchRequest(entityName: "Event")
+        deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try persistentContainer.persistentStoreCoordinator.execute(deleteRequest, with: context)
+        } catch let error as NSError {
+            print("fieled to delete participants: \(error)")
+        }
+        
+        fetchRequest = NSFetchRequest(entityName: "Participant")
+        deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try persistentContainer.persistentStoreCoordinator.execute(deleteRequest, with: context)
+        } catch let error as NSError {
+            print("fieled to delete participants: \(error)")
+        }
+    }
+    
+    func clearAppUser() {
+        let context = persistentContainer.viewContext
+        
+        var fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "AppUser")
+        var deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try persistentContainer.persistentStoreCoordinator.execute(deleteRequest, with: context)
+        } catch let error as NSError {
+            print("fieled to delete app user: \(error)")
+        }
     }
 //
 //    func fetchEmployee(withName name: String) -> Employee? {
