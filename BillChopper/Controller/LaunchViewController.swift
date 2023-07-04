@@ -419,6 +419,7 @@ class LaunchViewController: UIViewController {
         addSubviews()
         self.addToolbars()
         initialLayoutSetUp(logoContainer: logoContainer)
+        CoreDataManager.shared.clearAppData()
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(keyboardWillShow(sender:)),
@@ -429,11 +430,34 @@ class LaunchViewController: UIViewController {
             selector: #selector(keyboardWillHide(sender:)),
             name: UIResponder.keyboardWillHideNotification, object: nil
         )
-//        KeychainHelper.standard.save(
-//            Data("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4ODAyOTU2MCwianRpIjoiZGYwYzViNTEwOTNiNDQxMzg5OGUwMzkwYTc4YjdjODYiLCJ1c2VyX2lkIjoyfQ.t7OjKs1w9F3tv9ffjyyLah65afa5c_NO_XqluZhos0s".utf8),
-//            serice: "refresh-token",
-//            account: "backend-auth"
-//        )
+        
+        UIView.animateKeyframes(withDuration: 1, delay: 0, animations: {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5, animations: {
+                self.topCornerCircleView.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 0.5)
+            })
+            UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5, animations: {
+                self.bottomCornerCircleView.transform = CGAffineTransform(rotationAngle: -CGFloat.pi * 0.5)
+            })
+        }, completion: { _ in
+            //CoreDataManager.shared.clearAppData()
+            self.changeStage(stage: .chooseMethod)
+            UIView.animate(withDuration: 0.67, animations: {
+                self.view.layoutIfNeeded()
+            })
+        })
+        refreshToken()
+    }
+    
+    // MARK: Launch sequence!
+    
+    private func refreshToken(){
+        let refreshToken = KeychainHelper.standard.readToken(
+            service: "refresh-token", account: "backend-auth"
+        )
+        if refreshToken == nil {
+            CoreDataManager.shared.clearAppUser()
+            return
+        }
         
         let refreshSuccessHandler = { [unowned self] (data: Data) throws in
             // TODO: mb catch and launch .chooseMethod stage on main queue
@@ -443,79 +467,52 @@ class LaunchViewController: UIViewController {
                 serice: "access-token",
                 account: "backend-auth"
             )
-            if let appUser = CoreDataManager.shared.fetchAppUser() {
-                DispatchQueue.main.async {
-                    self.mainViewController.appUser = appUser
-                    self.mainViewController.modalPresentationStyle = .fullScreen
-                    self.present(self.mainViewController, animated: false)
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.changeStage(stage: .chooseMethod)
-                    UIView.animate(withDuration: 0.67, animations: {
-                        self.view.layoutIfNeeded()
-                    })
-                }
-            }
-        }
-        
-        let refreshFailureHandler = { [unowned self] (data: Data) throws in
+            
             DispatchQueue.main.async {
-                self.changeStage(stage: .chooseMethod)
-                UIView.animate(withDuration: 0.67, animations: {
-                    self.view.layoutIfNeeded()
-                })
+                self.fetchAppData()
             }
         }
-        if let refreshToken = KeychainHelper.standard.readToken(
-            service: "refresh-token", account: "backend-auth"
-        ) {
-            UIView.animateKeyframes(withDuration: 1, delay: 0, animations: {
-                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5, animations: {
-                    self.topCornerCircleView.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 0.5)
-                })
-                UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5, animations: {
-                    self.bottomCornerCircleView.transform = CGAffineTransform(rotationAngle: -CGFloat.pi * 0.5)
-                })
-            })
-            let json: [String: Any] = ["refresh": refreshToken]
-            let jsonData = try? JSONSerialization.data(withJSONObject: json)
-            let request = setupRequest(url: .refresh, method: .post, body: jsonData)
-            performRequest(request: request, successHandler: refreshSuccessHandler, failureHandler: refreshFailureHandler)
-        } else {
-            UIView.animateKeyframes(withDuration: 1, delay: 0, animations: {
-                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5, animations: {
-                    self.topCornerCircleView.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 0.5)
-                })
-                UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5, animations: {
-                    self.bottomCornerCircleView.transform = CGAffineTransform(rotationAngle: -CGFloat.pi * 0.5)
-                })
-            }, completion: { _ in
-                self.changeStage(stage: .chooseMethod)
-                UIView.animate(withDuration: 0.67, animations: {
-                    self.view.layoutIfNeeded()
-                })
-                
-            })
-//            setupViews()
-//            addSubviews()
-//            self.addToolbars()
-//            initialLayoutSetUp(logoContainer: logoContainer)
-////            self.changeStage(stage: .chooseMethod)
-//            let tap = UITapGestureRecognizer(target: self, action: #selector(rotateTopCorner))
-//            logoContainer.addGestureRecognizer(tap)
-//            return
+        
+        let failureHandler = { [unowned self] (data: Data) throws in
+            CoreDataManager.shared.clearAppUser()
         }
         
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil);
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil);
-//
-//        setupViews()
-//        addSubviews()
-////        addToolbars()
-//        initialLayoutSetUp(logoContainer: logoContainer)
-//        let tap = UITapGestureRecognizer(target: self, action: #selector(rotateTopCorner))
-//        logoContainer.addGestureRecognizer(tap)
+        let json: [String: Any] = ["refresh": refreshToken]
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        let request = setupRequest(url: .refresh, method: .post, body: jsonData)
+        performRequest(
+            request: request,
+            successHandler: refreshSuccessHandler,
+            failureHandler: failureHandler
+        )
+    }
+    
+    private func fetchAppData() {
+        guard let appUser = CoreDataManager.shared.fetchAppUser(),
+              let appUserPhone = appUser.phone,
+              let accessToken = KeychainHelper.standard.readToken(
+            service: "access-token", account: "backend-auth"
+        ) else {
+            CoreDataManager.shared.clearAppUser()
+            return
+        }
+        
+        var request = setupRequest(url: .fetchEventsSpends, method: .get)
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        let successHanlder = { [unowned self] (data: Data) throws in
+            let responseObject = try JSONDecoder().decode([EventsSpends].self, from: data)
+            CoreDataManager.shared.saveEventsSpends(
+                data: responseObject,
+                appUserPhone: appUserPhone
+            )
+            
+            DispatchQueue.main.async {
+                self.mainViewController.appUser = appUser
+                self.mainViewController.modalPresentationStyle = .fullScreen
+                self.present(self.mainViewController, animated: false)
+            }
+        }
+        performRequest(request: request, successHandler: successHanlder)
     }
     
     private func setupViews() {
@@ -714,11 +711,10 @@ class LaunchViewController: UIViewController {
                     phone: responseObject.username,
                     isMale: responseObject.profile.is_male
                 ) else { return }
-                self.mainViewController.appUser = appUser
-                self.mainViewController.modalPresentationStyle = .fullScreen
-                self.present(self.mainViewController, animated: false)
+                self.fetchAppData()
             }
         }
+        
         let signInSuccessHandler = { [weak self] (data: Data) throws in
             let responseObject = try JSONDecoder().decode(LoginSuccess.self, from: data)
             KeychainHelper.standard.save(
@@ -754,7 +750,6 @@ class LaunchViewController: UIViewController {
                 self?.singInErrorHelpText.text = responseObject.detail
             }
         }
-        print(validationResult)
         let json: [String: Any] = validationResult
         // Un123456
 //        let json: [String: Any] = ["username": "admin", "password": "123456"]
