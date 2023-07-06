@@ -59,7 +59,6 @@ final class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("?????")
         eventButtonData = CoreDataManager.shared.fetchEvents() ?? []
         usersButtonData = CoreDataManager.shared.fetchParticipants() ?? []
         spendsData = CoreDataManager.shared.fetchSpends() ?? []
@@ -72,6 +71,7 @@ final class MainViewController: UIViewController {
         view.backgroundColor = .white
         setupViews()
         addSubviews()
+        calculateTotal()
     }
     
     private func setupViews() {
@@ -136,7 +136,7 @@ final class MainViewController: UIViewController {
         return menu
     }
     
-    private func calculateTotal() -> Int16 {
+    private func calculateTotal() {
         var total: Int16 = 0
         for spendData in spendsData {
             if spendData.isBorrowed {
@@ -145,8 +145,17 @@ final class MainViewController: UIViewController {
             }
             total += spendData.amount
         }
-        
-        return total
+        if total >= 0 {
+            footer.balanceTypeLabel.text = R.string.mainCell.youLent()
+            footer.balanceTypeLabel.textColor = customGreen
+            footer.balance.text = String(total)
+            footer.balance.textColor = customGreen
+            return
+        }
+        footer.balanceTypeLabel.text = R.string.mainCell.youBorrowed()
+        footer.balanceTypeLabel.textColor = .red
+        footer.balance.text = String(total)
+        footer.balance.textColor = .red
     }
     
     private func getCoverPlusIconMenu() -> UIMenu {
