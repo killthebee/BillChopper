@@ -10,7 +10,7 @@ class FooterView: UIView {
         return iconView
     }()
     
-    private let eventName: UILabel = {
+    let eventName: UILabel = {
         let lable = UILabel(text: "ALL")
         lable.font = UIFont.boldSystemFont(ofSize: 25)
         lable.textAlignment = .center

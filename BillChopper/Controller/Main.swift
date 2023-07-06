@@ -97,11 +97,22 @@ final class MainViewController: UIViewController {
     
     private func getEventMenu() -> UIMenu {
         var buttons: [UIAction] = []
+        let allEventsButton = UIAction(title: "all") { (action) in
+            self.spendsData = CoreDataManager.shared.fetchSpends() ?? []
+            self.tableView.reloadData()
+            self.footer.eventName.text = "ALL"
+            self.calculateTotal()
+        }
+        buttons.append(allEventsButton)
         for eventData in eventButtonData {
             let eventName = eventData.name ?? "unnamed"
             let imageName = reverseConvertEventTypes(type: eventData.eventType)
             let eventButton = UIAction(title: eventName, image: UIImage(named: imageName)) { (action) in
                 print("event named: \(eventName)")
+                self.spendsData = CoreDataManager.shared.fetchEventSpends(eventData)
+                self.tableView.reloadData()
+                self.footer.eventName.text = eventName
+                self.calculateTotal()
             }
             buttons.append(eventButton)
         }

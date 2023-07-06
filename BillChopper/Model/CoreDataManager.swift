@@ -188,6 +188,20 @@ struct CoreDataManager {
         return nil
     }
     
+    func fetchEventSpends(_ event: Event) -> [Spend] {
+        let context = persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<Spend>(entityName: "Spend")
+        fetchRequest.predicate = NSPredicate(format: "event == %@", event)
+        
+        do {
+            let spends = try context.fetch(fetchRequest)
+            return spends
+        } catch let error {
+            print("Failed to fetch spends for event: \(error)")
+        }
+        return []
+    }
+    
     func clearAppData() {
         let context = persistentContainer.viewContext
         
