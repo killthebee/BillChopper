@@ -19,7 +19,7 @@ class FooterView: UIView {
         return lable
     }()
     
-    private let eventText: UILabel = {
+    let eventText: UILabel = {
         let lable = UILabel(text: R.string.mainFooter.events())
         lable.textAlignment = .center
         lable.textColor = .black

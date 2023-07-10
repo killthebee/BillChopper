@@ -190,6 +190,7 @@ struct CoreDataManager {
     
     func fetchEventSpends(_ event: Event) -> [Spend] {
         let context = persistentContainer.viewContext
+        
         let fetchRequest = NSFetchRequest<Spend>(entityName: "Spend")
         fetchRequest.predicate = NSPredicate(format: "event == %@", event)
         
@@ -200,6 +201,65 @@ struct CoreDataManager {
             print("Failed to fetch spends for event: \(error)")
         }
         return []
+    }
+    
+    func fetchBalanceWithUser(appUser: Participant, targetUser: Participant) -> (Set<Spend>, Int32)? {
+        let context = persistentContainer.viewContext
+        var relatedSpends = Set<Spend>()
+        
+        let fetchRequestLent = NSFetchRequest<SplitUnit>(entityName: "SplitUnit")
+        let payedByAppUserPredicate = NSPredicate(format: "spend.payeer == %@", appUser)
+        let targetUserParticipatedPredicate = NSPredicate(
+            format: "participant == %@", targetUser
+        )
+        var lentPredicate = NSCompoundPredicate(
+            andPredicateWithSubpredicates: [
+                payedByAppUserPredicate, targetUserParticipatedPredicate
+            ]
+        )
+        fetchRequestLent.relationshipKeyPathsForPrefetching = ["spend"]
+        fetchRequestLent.predicate = lentPredicate
+        let lentSplitUnits: [SplitUnit]!
+        do {
+            lentSplitUnits = try context.fetch(fetchRequestLent)
+        } catch let error {
+            print("Failed to fetch lent split units: \(error)")
+            return nil
+        }
+        
+        var totalCount: Float = 0
+        lentSplitUnits.forEach({
+            guard let spend = $0.spend else { return }
+            totalCount += (Float(spend.totalAmount) * Float($0.percent)) / 100
+            relatedSpends.insert(spend)
+        })
+        
+        let fetchRequestBorrow = NSFetchRequest<SplitUnit>(entityName: "SplitUnit")
+        let payedByTargetUserPredicate = NSPredicate(format: "spend.payeer == %@", targetUser)
+        let appUserParPredicate = NSPredicate(format: "participant == %@", appUser)
+        let borrowPredicate = NSCompoundPredicate(
+            andPredicateWithSubpredicates: [
+                payedByTargetUserPredicate, appUserParPredicate
+            ]
+        )
+        
+        fetchRequestBorrow.relationshipKeyPathsForPrefetching = ["spend"]
+        fetchRequestBorrow.predicate = borrowPredicate
+        let borrowSpliUnits: [SplitUnit]!
+        do {
+            borrowSpliUnits = try context.fetch(fetchRequestBorrow)
+        } catch let error {
+            print("Failed to fetch borrow split units: \(error)")
+            return nil
+        }
+        
+        borrowSpliUnits.forEach({
+            guard let spend = $0.spend else { return }
+            totalCount -= (Float(spend.totalAmount) * Float($0.percent)) / 100
+            relatedSpends.insert(spend)
+        })
+        
+        return (relatedSpends, Int32(totalCount))
     }
     
     func clearAppData() {

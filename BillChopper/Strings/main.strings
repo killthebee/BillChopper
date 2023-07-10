@@ -1,4 +1,5 @@
 "eventButtonText" = "event:";
 "balanceButtonText" = "balance with:";
 "eventMenuText" = "events";
+"singularEventText" = "event";
 "getBalanceMenuText" = "users";

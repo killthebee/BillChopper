@@ -7,6 +7,7 @@ final class MainViewController: UIViewController {
     // TODO: balance for empty user!
     // TODO: Add "all" to events
     var appUser: AppUser? = nil
+    var currentAppUser: Participant? = nil
     
     // TODO: Probably it'll be best to make sets, if it's possible to make 'em hashable
     private var eventButtonData: [Event] = [] {
@@ -62,6 +63,11 @@ final class MainViewController: UIViewController {
         eventButtonData = CoreDataManager.shared.fetchEvents() ?? []
         usersButtonData = CoreDataManager.shared.fetchParticipants() ?? []
         spendsData = CoreDataManager.shared.fetchSpends() ?? []
+        usersButtonData.forEach({
+            if $0.imageName == appUser?.phone {
+                currentAppUser = $0
+            }
+        })
 //        print(event)
 //        let participantsSet = event?.spends
 //        print(participantsSet)
@@ -101,6 +107,7 @@ final class MainViewController: UIViewController {
             self.spendsData = CoreDataManager.shared.fetchSpends() ?? []
             self.tableView.reloadData()
             self.footer.eventName.text = "ALL"
+            self.footer.eventText.text = R.string.main.eventMenuText()
             self.calculateTotal()
         }
         buttons.append(allEventsButton)
@@ -112,6 +119,7 @@ final class MainViewController: UIViewController {
                 self.spendsData = CoreDataManager.shared.fetchEventSpends(eventData)
                 self.tableView.reloadData()
                 self.footer.eventName.text = eventName
+                self.footer.eventText.text = R.string.main.singularEventText()
                 self.calculateTotal()
             }
             buttons.append(eventButton)
@@ -129,11 +137,32 @@ final class MainViewController: UIViewController {
     private func getBalanceMenu() -> UIMenu {
         var buttons: [UIAction] = []
         for usersData in usersButtonData {
+            if usersData == currentAppUser { continue }
             let username = usersData.username ?? "unnamed"
             let imageName = usersData.imageName ?? "HombreDefault1"
-            print(imageName)
             let eventButton = UIAction(title: username, image: UIImage(named: imageName)) { (action) in
-                print("event named: \(usersData.username)")
+                
+                if let currentUser = self.currentAppUser {
+                    if let (spends, total) = CoreDataManager.shared.fetchBalanceWithUser(
+                        appUser: currentUser,
+                        targetUser: usersData
+                    ) {
+                        self.spendsData = []
+                        spends.forEach({self.spendsData.append($0)})
+                        self.tableView.reloadData()
+                        if total > 0 {
+                            self.footer.balanceTypeLabel.text = R.string.mainCell.youLent()
+                            self.footer.balance.text = String(total)
+                            self.footer.balance.textColor = customGreen
+                            self.footer.balanceTypeLabel.textColor = customGreen
+                        } else {
+                            self.footer.balanceTypeLabel.text = R.string.mainCell.youBorrowed()
+                            self.footer.balanceTypeLabel.textColor = .red
+                            self.footer.balance.text = String(-1 * total)
+                            self.footer.balance.textColor = .red
+                        }
+                    }
+                }
             }
             buttons.append(eventButton)
         }
@@ -165,7 +194,7 @@ final class MainViewController: UIViewController {
         }
         footer.balanceTypeLabel.text = R.string.mainCell.youBorrowed()
         footer.balanceTypeLabel.textColor = .red
-        footer.balance.text = String(total)
+        footer.balance.text = String(-1 * total)
         footer.balance.textColor = .red
     }
     
