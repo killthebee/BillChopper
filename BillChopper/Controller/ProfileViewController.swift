@@ -345,7 +345,11 @@ final class ProfileViewController: UIViewController {
         } else {
             appUser.isMale = false
         }
-        CoreDataManager.shared.updateAppUser(user: appUser)
+        CoreDataManager.shared.updateAppUser(
+            newPhone: validationResult["username"],
+            newUsername: self.usernameTextField.text,
+            isMale: validationResult["is_male"] == "True"
+        )
         // upload image
         if isImageChanged {
             uploadImage(fileName: "appUser.png", image: iconView.image!)

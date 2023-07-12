@@ -51,11 +51,15 @@ struct CoreDataManager {
         return nil
     }
     
-    func updateAppUser(user: AppUser) {
-        let context = persistentContainer.viewContext
-        
+    func updateAppUser(newPhone: String?, newUsername: String?, isMale: Bool) {
         persistentContainer.performBackgroundTask{ (context) in
             do {
+                let fetchRequest = NSFetchRequest<AppUser>(entityName: "AppUser")
+                fetchRequest.fetchLimit = 1
+                let currentUser = try context.fetch(fetchRequest).first
+                currentUser?.username = newUsername
+                currentUser?.phone = newPhone
+                currentUser?.isMale = isMale
                 try context.save()
             } catch let error {
                 print("Failed to update: \(error)")
