@@ -66,6 +66,7 @@ final class MainViewController: UIViewController {
         usersButtonData.forEach({
             if $0.imageName == appUser?.phone {
                 currentAppUser = $0
+                currentAppUser?.username = "You"
             }
         })
 //        print(event)
