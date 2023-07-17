@@ -23,7 +23,7 @@ class SpendTableViewCell: UITableViewCell {
         return lable
     }()
     
-    private var spendName: UILabel = {
+    var spendName: UILabel = {
         let lable = UILabel()
         lable.text = "dummy (spend)"
         lable.font = UIFont.boldSystemFont(ofSize: 19)

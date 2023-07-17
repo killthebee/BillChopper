@@ -45,6 +45,7 @@ struct CreateSpendResponse: Decodable {
 }
 
 struct EventSpend: Decodable {
+    let id: Int64
     let name: String
     let event: Int
     let payeer: UserFetch

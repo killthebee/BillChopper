@@ -108,6 +108,7 @@ struct CoreDataManager {
                     spend.split,
                     phone: appUserPhone
                 )
+                spendData.spendId = spend.id
                 spendData.totalAmount = spend.amount
                 spendData.name = spend.name
                 spendData.isBorrowed = isBorrowed
@@ -318,35 +319,21 @@ struct CoreDataManager {
             print("fieled to delete app user: \(error)")
         }
     }
-//
-//    func fetchEmployee(withName name: String) -> Employee? {
-//        let context = persistentContainer.viewContext
-//
-//        let fetchRequest = NSFetchRequest<Employee>(entityName: "Employee")
-//        fetchRequest.fetchLimit = 1
-//        fetchRequest.predicate = NSPredicate(format: "name == %@", name)
-//
-//        do {
-//            let employees = try context.fetch(fetchRequest)
-//            return employees.first
-//        } catch let error {
-//            print("Failed to fetch: \(error)")
-//        }
-//
-//        return nil
-//    }
-//
-//
-//
-//    func deleteEmployee(employee: Employee) {
-//        let context = persistentContainer.viewContext
-//        context.delete(employee)
-//
-//        do {
-//            try context.save()
-//        } catch let error {
-//            print("Failed to delete: \(error)")
-//        }
-//    }
+    
+    func deleteSpend(spendId: Int64) {
+        persistentContainer.performBackgroundTask{ (context) in
+            do {
+                let fetchRequest = NSFetchRequest<Spend>(entityName: "Spend")
+                fetchRequest.predicate = NSPredicate(format: "spendId == %d", spendId)
+                fetchRequest.fetchLimit = 1
+                if let spend = try context.fetch(fetchRequest).first {
+                    context.delete(spend)
+                }
+                try context.save()
+            } catch let error {
+                print("Failed to delete the spend: \(error)")
+            }
+        }
+    }
 
 }

@@ -9,12 +9,14 @@ enum Urls: String {
     case createEvent = "http://127.0.0.1:8000/api/user/create_event/"
     case createSpend = "http://127.0.0.1:8000/api/user/create_spend/"
     case fetchEventsSpends = "http://127.0.0.1:8000/api/user/fetch_events_spends/"
+    case deleteSpend = "http://127.0.0.1:8000/api/user/delete_spend/"
 }
 
 enum Method: String {
     case get = "GET"
     case post = "POST"
     case put = "PUT"
+    case delete = "DELETE"
 }
 
 enum ContentType: String {

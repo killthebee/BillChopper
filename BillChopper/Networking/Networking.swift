@@ -9,9 +9,16 @@ func setupRequest(
     url: Urls,
     method: Method,
     contertType: ContentType = .json,
-    body: Data? = nil
+    body: Data? = nil,
+    urlParam: String? = nil
 ) -> URLRequest {
-    var request = URLRequest(url: URL(string: url.rawValue)!)
+    let resultUrl: URL!
+    if let urlParam = urlParam {
+        resultUrl = URL(string: url.rawValue + urlParam + "/")!
+    } else {
+        resultUrl = URL(string: url.rawValue)!
+    }
+    var request = URLRequest(url: resultUrl)
     request.httpMethod = method.rawValue
     request.setValue(contertType.rawValue, forHTTPHeaderField: "Content-Type")
     if body != nil {

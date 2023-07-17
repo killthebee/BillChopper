@@ -320,8 +320,57 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        if let cell = tableView.cellForRow(at: indexPath) as? LentCell {
+          return true
+       } else {
+          return false
+       }
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let payed = UIContextualAction(style: .destructive,title: "Payed") {
+            [weak self] (action, view, completionHandler) in
+            self?.handleMoveToTrash(indexPath)
+            completionHandler(true)
+        }
+        payed.backgroundColor = .systemRed
+
+        let configuration = UISwipeActionsConfiguration(actions: [payed])
+
+        return configuration
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
     }
     
+    private func handleMoveToTrash(_ index: IndexPath) {
+        let spendId = spendsData[index.section].spendId
+        let successHandler = { [unowned self] (data: Data) throws in
+            CoreDataManager.shared.deleteSpend(spendId: spendId)
+            DispatchQueue.main.async {
+                self.spendsData.remove(at: index.section)
+                self.tableView.reloadData()
+            }
+        }
+//        print(spendsData[index.section].id)
+//        let spend = spendsData.remove(at: index.section)
+        var request = setupRequest(
+            url: .deleteSpend,
+            method: .delete,
+            contertType: .json,
+            urlParam: String(spendId)
+        )
+        guard let accessToken = KeychainHelper.standard.readToken(
+            service: "access-token", account: "backend-auth"
+        ) else { return }
+        request.allHTTPHeaderFields = [
+               "Authorization": "Bearer " + accessToken,
+               "Content-Type": "application/json"
+            ]
+        performRequest(request: request, successHandler: successHandler)
+        
+        print("Moved to trash")
+    }
 }
