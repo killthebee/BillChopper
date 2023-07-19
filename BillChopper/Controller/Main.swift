@@ -3,13 +3,9 @@ import CoreData
 
 final class MainViewController: UIViewController {
     
-    // TODO: perform fetch current user and set current user in app with right data type
-    // TODO: balance for empty user!
-    // TODO: Add "all" to events
     var appUser: AppUser? = nil
     var currentAppUser: Participant? = nil
     
-    // TODO: Probably it'll be best to make sets, if it's possible to make 'em hashable
     private var eventButtonData: [Event] = [] {
         didSet {
             self.eventButton.menu = getEventMenu()
@@ -24,12 +20,10 @@ final class MainViewController: UIViewController {
     
     private var spendsData: [Spend] = []
     
-    // unowned??
     private lazy var profileViewController = ProfileViewController()
     private lazy var addEventViewController = AddEventViewController()
     private lazy var addSpendViewController = AddSpendViewController()
     
-    // TODO: make buttons area shorter
     private let eventButton = TopMainButton(color: UIColor.systemGray, title: R.string.main.eventButtonText())
 
     private let balanceButton = TopMainButton(color: customGreen, title: R.string.main.balanceButtonText())
@@ -69,12 +63,7 @@ final class MainViewController: UIViewController {
                 currentAppUser?.username = "You"
             }
         })
-//        print(event)
-//        let participantsSet = event?.spends
-//        print(participantsSet)
-//        let participants = participantsSet?.allObjects as? [Spend]
-            
-//        print(participants)
+        
         view.backgroundColor = .white
         setupViews()
         addSubviews()
@@ -288,7 +277,6 @@ final class MainViewController: UIViewController {
     }
     
     @objc func handleTapOnProfileIcon(sender: UITapGestureRecognizer) {
-        // NOTE: https://developer.apple.com/documentation/uikit/uiviewcontroller/1621505-dismiss
         profileViewController.modalPresentationStyle = .pageSheet
         profileViewController.appUser = self.appUser
         profileViewController.isImageChanged = false
@@ -317,7 +305,6 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // do I even need background color?
         let cellData = spendsData[indexPath.section]
         let backgroundView = UIView()
         backgroundView.backgroundColor = .white
