@@ -117,52 +117,63 @@ class PhoneConverter {
         let newRawNumber = leftNumberPart + rightNumberPart
         return String(newRawNumber)
     }
+}
+
+func formatRawNumber(newRawNumber: String) -> String? {
+    if newRawNumber.count == 0 { return nil }
     
-    private func formatRawNumber(newRawNumber: String) -> String? {
-        if newRawNumber.count == 0 { return nil }
-        
-        let firstPartIndexOffset = newRawNumber.count > 2 ? 3 : newRawNumber.count
-        let firstPartIndex = newRawNumber.index(newRawNumber.startIndex, offsetBy: firstPartIndexOffset)
-        var formatedNumber = "(" + newRawNumber[..<firstPartIndex]
-        if newRawNumber.count > 2 {
-            formatedNumber += ") "
-        }
-        if newRawNumber.count <= 3 {
-            return formatedNumber
-        }
-        let secondPartIndexOffset = newRawNumber.count > 5 ? 6 : newRawNumber.count
-        
-        let secondPartIndex = newRawNumber.index(
-            newRawNumber.startIndex, offsetBy: secondPartIndexOffset
-        )
-        formatedNumber += newRawNumber[firstPartIndex..<secondPartIndex]
-        
-        if formatedNumber.count == 9 {
-            formatedNumber += " "
-        }
-        if newRawNumber.count <= 6 {
-            return formatedNumber
-        }
-        let thirdPartIndexOffset = newRawNumber.count > 7 ? 8 : newRawNumber.count
-        
-        let thirdPartIndex = newRawNumber.index(
-            newRawNumber.startIndex, offsetBy: thirdPartIndexOffset
-        )
-        formatedNumber += newRawNumber[secondPartIndex..<thirdPartIndex]
-        if formatedNumber.count == 12 {
-            formatedNumber += " "
-        }
-        if newRawNumber.count <= 8 {
-            return formatedNumber
-        }
-        let fourthPartIndexOffset = newRawNumber.count > 9 ? 10 : newRawNumber.count
-        
-        let fourthPartIndex = newRawNumber.index(
-            newRawNumber.startIndex, offsetBy: fourthPartIndexOffset
-        )
-        formatedNumber += newRawNumber[thirdPartIndex..<fourthPartIndex]
-        
+    let firstPartIndexOffset = newRawNumber.count > 2 ? 3 : newRawNumber.count
+    let firstPartIndex = newRawNumber.index(newRawNumber.startIndex, offsetBy: firstPartIndexOffset)
+    var formatedNumber = "(" + newRawNumber[..<firstPartIndex]
+    if newRawNumber.count > 2 {
+        formatedNumber += ") "
+    }
+    if newRawNumber.count <= 3 {
         return formatedNumber
     }
+    let secondPartIndexOffset = newRawNumber.count > 5 ? 6 : newRawNumber.count
     
+    let secondPartIndex = newRawNumber.index(
+        newRawNumber.startIndex, offsetBy: secondPartIndexOffset
+    )
+    formatedNumber += newRawNumber[firstPartIndex..<secondPartIndex]
+    
+    if formatedNumber.count == 9 {
+        formatedNumber += " "
+    }
+    if newRawNumber.count <= 6 {
+        return formatedNumber
+    }
+    let thirdPartIndexOffset = newRawNumber.count > 7 ? 8 : newRawNumber.count
+    
+    let thirdPartIndex = newRawNumber.index(
+        newRawNumber.startIndex, offsetBy: thirdPartIndexOffset
+    )
+    formatedNumber += newRawNumber[secondPartIndex..<thirdPartIndex]
+    if formatedNumber.count == 12 {
+        formatedNumber += " "
+    }
+    if newRawNumber.count <= 8 {
+        return formatedNumber
+    }
+    let fourthPartIndexOffset = newRawNumber.count > 9 ? 10 : newRawNumber.count
+    
+    let fourthPartIndex = newRawNumber.index(
+        newRawNumber.startIndex, offsetBy: fourthPartIndexOffset
+    )
+    formatedNumber += newRawNumber[thirdPartIndex..<fourthPartIndex]
+    
+    return formatedNumber
+}
+
+func stripCodeAndPhone(number: String) -> (code: String, phone: String)? {
+    if number.count < 11 {
+        return nil
+    }
+    
+    let startIndex = number.index(number.startIndex, offsetBy: 0)
+    let midIndex = number.index(number.endIndex, offsetBy: -10)
+    let endIndex = number.index(number.endIndex, offsetBy: 0)
+    
+    return (String(number[startIndex..<midIndex]), String(number[midIndex..<endIndex]))
 }

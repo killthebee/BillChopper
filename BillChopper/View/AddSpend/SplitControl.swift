@@ -1,13 +1,12 @@
 import UIKit
 
-
 class CustomSlider: UISlider {
     
     @IBInspectable var trackHeight: CGFloat = 3
     
     @IBInspectable var thumbWidth: CGFloat = 20
     
-    unowned var selectSplitView: SplitSelectorViewCell?
+    weak var selectSplitView: SplitSelectorViewCell?
     
     private lazy var thumbView: UIView = {
         let thumb = UIView()
@@ -50,6 +49,7 @@ class CustomSlider: UISlider {
     
     override var isTracking: Bool {
         selectSplitView?.percent.text = String(format: "%.0f", self.value)
+        selectSplitView?.vcDelegate?.recalculatePercents()
         return true
     }
 }

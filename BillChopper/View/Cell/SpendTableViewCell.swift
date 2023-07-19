@@ -23,7 +23,7 @@ class SpendTableViewCell: UITableViewCell {
         return lable
     }()
     
-    private let spendName: UILabel = {
+    var spendName: UILabel = {
         let lable = UILabel()
         lable.text = "dummy (spend)"
         lable.font = UIFont.boldSystemFont(ofSize: 19)
@@ -32,7 +32,7 @@ class SpendTableViewCell: UITableViewCell {
         return lable
     }()
     
-    private let spendPayeer: UILabel = {
+    private var spendPayeer: UILabel = {
         let lable = UILabel()
         lable.text = "Pavel payed 300$"
         lable.font = lable.font.withSize(15)
@@ -149,6 +149,14 @@ class SpendTableViewCell: UITableViewCell {
         )
     }
     
+    func configure(_ data: Spend) {
+        guard let spendDate = data.date?.get(.day, .month) else { return }
+        date.text = String(spendDate.day ?? 1)
+        month.text = convertNumToMonth(spendDate.month ?? 1)
+        spendName.text = data.name ?? "unnamed"
+        spendPayeer.text = "\(data.payeer?.username ?? "unnamed") payed \(data.totalAmount)$"
+        userBalanceDiff.text = String(data.amount)
+    }
 }
 
 final class LentCell: SpendTableViewCell {

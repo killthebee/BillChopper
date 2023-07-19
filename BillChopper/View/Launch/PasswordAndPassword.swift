@@ -11,6 +11,8 @@ class PasswordAndPassword: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        passwordInput.textContentType = .oneTimeCode
+        repeatPasswordInput.textContentType = .oneTimeCode
         addSubviews()
     }
     

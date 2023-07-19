@@ -10,7 +10,7 @@ class FooterView: UIView {
         return iconView
     }()
     
-    private let eventName: UILabel = {
+    let eventName: UILabel = {
         let lable = UILabel(text: "ALL")
         lable.font = UIFont.boldSystemFont(ofSize: 25)
         lable.textAlignment = .center
@@ -19,7 +19,7 @@ class FooterView: UIView {
         return lable
     }()
     
-    private let eventText: UILabel = {
+    let eventText: UILabel = {
         let lable = UILabel(text: R.string.mainFooter.events())
         lable.textAlignment = .center
         lable.textColor = .black
@@ -36,7 +36,7 @@ class FooterView: UIView {
         return balanceWithLabal
     }()
     
-    private let balanceTypeLabel: UILabel = {
+    let balanceTypeLabel: UILabel = {
         let balanceTypeLabel = UILabel()
         balanceTypeLabel.text = R.string.mainCell.youBorrowed()
         balanceTypeLabel.font = balanceTypeLabel.font.withSize(11)
@@ -46,7 +46,7 @@ class FooterView: UIView {
         return balanceTypeLabel
     }()
     
-    private let balance: UILabel = {
+    let balance: UILabel = {
         let balance = UILabel()
         balance.text = "3222 usd"
         balance.font = balance.font.withSize(23)

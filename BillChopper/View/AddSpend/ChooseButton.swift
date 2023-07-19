@@ -1,6 +1,7 @@
 import UIKit
 
 class ChooseButtonView: UIView {
+    // TODO: rename pls!
     let chooseEventLable: UILabel = {
         let lable = UILabel()
         lable.textColor = .black
@@ -22,7 +23,7 @@ class ChooseButtonView: UIView {
         return button
     }()
     
-    convenience init(frame: CGRect = .zero, text: String, image: UIImage) {
+    convenience init(frame: CGRect = .zero, text: String, image: UIImage, menu: UIMenu? = nil) {
         self.init(frame: frame)
         self.layer.borderWidth = 1
         self.layer.borderColor = UIColor.black.cgColor
@@ -31,7 +32,10 @@ class ChooseButtonView: UIView {
         self.addSubview(chooseEventLable)
         self.addSubview(chooseEventImage)
         
-        chooseButton.menu = getChooseMenu()
+        //TODO: guess i'm gonna comment it out soon
+        if let menu = menu {
+            chooseButton.menu = menu
+        }
         chooseEventLable.text = text
         chooseEventImage.image = image
     }

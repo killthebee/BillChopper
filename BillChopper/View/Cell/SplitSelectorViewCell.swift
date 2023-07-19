@@ -1,15 +1,16 @@
 import UIKit
 
-
 class SplitSelectorViewCell: UITableViewCell {
     static let identifier = "SplitSelectorViewCell"
     
-    private let slider = CustomSlider()
+    weak var vcDelegate: AddSpendDelegate?
     
-    private let userNameLable: UILabel = {
+    let slider = CustomSlider()
+    
+    let userNameLable: UILabel = {
         let lable = UILabel()
         // that's a placeholder
-        lable.text = "Maximillian"
+        //lable.text = "Maximillian"
         lable.textAlignment = .center
         lable.textColor = .black
         
@@ -28,10 +29,10 @@ class SplitSelectorViewCell: UITableViewCell {
         return lable
     }()
     
-    private let userIcon: ProfileIcon = {
+    private var userIcon: ProfileIcon = {
         let icon = ProfileIcon()
         // just a placeholder ( move to a configurator in the future )
-        icon.image = UIImage(named: "HombreDefault1")
+        //icon.image = UIImage(named: "HombreDefault1")
         
         return icon
     }()
@@ -78,5 +79,15 @@ class SplitSelectorViewCell: UITableViewCell {
         ]
         NSLayoutConstraint.activate(constraints)
     }
-
+    
+    func configure(_ eventUser: EventUserProtocol, _ delegate: AddSpendDelegate) {
+        guard let userPercent = eventUser.percent else { return }
+        percent.text = String(userPercent)
+        slider.setValue(Float(userPercent), animated: true)
+        userIcon.removeFromSuperview()
+        userIcon = ProfileIcon(profileImage: UIImage(named: eventUser.imageName ?? "HombreDefault1"))
+        contentView.addSubview(userIcon)
+        userNameLable.text = eventUser.username
+        vcDelegate = delegate
+    }
 }

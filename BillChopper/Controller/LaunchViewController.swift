@@ -1,14 +1,13 @@
 import UIKit
 
 class LaunchViewController: UIViewController {
+    private lazy var mainViewController = MainViewController()
 
     enum AuthStages {
         case chooseMethod
         case login
         case signup
     }
-    
-    private lazy var mainViewController = MainViewController()
     
     private var currentStage: AuthStages = .chooseMethod
     
@@ -85,7 +84,6 @@ class LaunchViewController: UIViewController {
     
     private lazy var signUpLable: UILabel = {
         let lable = UILabel()
-        lable.text = ifNewUserText
         lable.font = lable.font.withSize(15)
         lable.textColor = .black
         
@@ -116,7 +114,6 @@ class LaunchViewController: UIViewController {
     }()
     
     private var usernameTextField: CustomTextField = {
-        // TODO: dry this shit mb
         let usernameTextField = CustomTextField()
         usernameTextField.textColor = .black
         usernameTextField.placeholder = "username"
@@ -181,6 +178,48 @@ class LaunchViewController: UIViewController {
         return usernameHelpTextLable
     }()
     
+    private var passwordHelpText: UILabel = {
+        let passwordHelpText = UILabel()
+        passwordHelpText.font = passwordHelpText.font.withSize(15)
+        passwordHelpText.lineBreakMode = .byWordWrapping
+        passwordHelpText.numberOfLines = 0
+        passwordHelpText.textColor = .red
+        
+        return passwordHelpText
+    }()
+    
+    private let singInErrorHelpText: UILabel = {
+        let singInErrorHelpText = UILabel()
+        singInErrorHelpText.font = singInErrorHelpText.font.withSize(15)
+        singInErrorHelpText.lineBreakMode = .byWordWrapping
+        singInErrorHelpText.numberOfLines = 0
+        singInErrorHelpText.textColor = .red
+        
+        return singInErrorHelpText
+    }()
+    
+    private func setWarrings(erros: [String: String]) {
+        if let passwordWarning = erros["password"] {
+            passwordHelpText.text = passwordWarning
+        } else {
+            passwordHelpText.text = ""
+        }
+        if let usernameWarning = erros["username"] {
+            usernameHelpText.text = usernameWarning
+            usernameHelpText.textColor = .red
+        } else {
+            usernameHelpText.text = R.string.profileView.helpText()
+            usernameHelpText.textColor = .black
+        }
+        if let phoneWarning = erros["phone"] {
+            phoneHelpText.text = phoneWarning
+            phoneHelpText.textColor = .red
+        } else {
+            phoneHelpText.text = R.string.launchView.phoneHelpText()
+            phoneHelpText.textColor = .black
+        }
+    }
+    
     private let passwordAndPassword = PasswordAndPassword()
     
     private func changeStage(stage: AuthStages) {
@@ -205,6 +244,10 @@ class LaunchViewController: UIViewController {
             phoneAndPassword.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
             phoneAndPassword.widthAnchor.constraint(equalToConstant: 300),
             phoneAndPassword.heightAnchor.constraint(equalToConstant: 80),
+            
+            singInErrorHelpText.bottomAnchor.constraint(equalTo: phoneAndPassword.topAnchor),
+            singInErrorHelpText.widthAnchor.constraint(equalTo: phoneAndPassword.widthAnchor, multiplier: 0.9),
+            singInErrorHelpText.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
             
             welcomeBackHeaderLable.topAnchor.constraint(equalTo: authCoverView.topAnchor),
             welcomeBackHeaderLable.bottomAnchor.constraint(equalTo: phoneAndPassword.topAnchor),
@@ -234,7 +277,6 @@ class LaunchViewController: UIViewController {
             
             signUpHeader.centerXAnchor.constraint(equalTo: singUpHeaderContainer.centerXAnchor),
             signUpHeader.centerYAnchor.constraint(equalTo: singUpHeaderContainer.centerYAnchor),
-            //signUpHeader.heightAnchor.constraint(equalToConstant: 50)
             
             usernameTextField.topAnchor.constraint(equalTo: singUpHeaderContainer.bottomAnchor),
             usernameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -272,7 +314,10 @@ class LaunchViewController: UIViewController {
             passwordAndPassword.widthAnchor.constraint(equalToConstant: 300),
             passwordAndPassword.heightAnchor.constraint(equalToConstant: 80),
             
-            //authButtonsContainer.heightAnchor.constraint(equalTo: authCoverView.heightAnchor, multiplier: 0.3),
+            passwordHelpText.topAnchor.constraint(equalTo: passwordAndPassword.bottomAnchor),
+            passwordHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            passwordHelpText.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor, multiplier: 0.95),
+            
             authButtonsContainer.bottomAnchor.constraint(equalTo: authCoverView.bottomAnchor),
             authButtonsContainer.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
             authButtonsContainer.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
@@ -291,19 +336,19 @@ class LaunchViewController: UIViewController {
             [signUpButton, signInButton].forEach({authButtonsContainer.addSubview($0)})
             
             NSLayoutConstraint.activate(stage1Constraints)
-        case .login:
+        case .login where currentStage == .chooseMethod:
             currentStage = .login
             [signUpButton, signInButton, authButtonsContainer].forEach({$0.removeFromSuperview()})
             NSLayoutConstraint.deactivate(stage1Constraints)
             
-            [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer
+            [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer, singInErrorHelpText
             ].forEach({authCoverView.addSubview($0)})
             authButtonsContainer.addSubview(signInButton)
             
             NSLayoutConstraint.activate(stage2Constaints)
         case .signup where currentStage == .login:
             currentStage = .signup
-            [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer
+            [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer, singInErrorHelpText
             ].forEach({$0.removeFromSuperview()})
             NSLayoutConstraint.deactivate(stage2Constaints)
             
@@ -312,7 +357,7 @@ class LaunchViewController: UIViewController {
             UIView.animate(withDuration: 0.5, animations: {
                 self.view.layoutIfNeeded()
             })
-            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer,
+            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer, passwordHelpText
             ].forEach({authCoverView.addSubview($0)})
             authButtonsContainer.addSubview(signUpButton)
             phoneField.addSubview(phoneContainer)
@@ -331,7 +376,7 @@ class LaunchViewController: UIViewController {
             UIView.animate(withDuration: 0.5, animations: {
                 self.view.layoutIfNeeded()
             })
-            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer,
+            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer, passwordHelpText
             ].forEach({authCoverView.addSubview($0)})
             authButtonsContainer.addSubview(signUpButton)
             phoneField.addSubview(phoneContainer)
@@ -339,6 +384,24 @@ class LaunchViewController: UIViewController {
             singUpHeaderContainer.addSubview(signUpHeader)
             
             NSLayoutConstraint.activate(stage3Constraints)
+        case .login where currentStage == .signup:
+            currentStage = .login
+            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField,
+             phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer,
+             passwordHelpText].forEach({$0.removeFromSuperview()})
+            NSLayoutConstraint.deactivate(stage3Constraints)
+            
+            authContainerThreeStageHeightConstrain?.isActive = false
+            authContainerOneTwoStageHeightConstrain?.isActive = true
+            UIView.animate(withDuration: 0.5, animations: {
+                self.view.layoutIfNeeded()
+            })
+            
+            [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer, singInErrorHelpText
+            ].forEach({authCoverView.addSubview($0)})
+            authButtonsContainer.addSubview(signInButton)
+            
+            NSLayoutConstraint.activate(stage2Constaints)
         default:
             break
         }
@@ -347,17 +410,103 @@ class LaunchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil);
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil);
-        
         setupViews()
         addSubviews()
         addToolbars()
         initialLayoutSetUp(logoContainer: logoContainer)
+        CoreDataManager.shared.clearAppData()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(sender:)),
+            name: UIResponder.keyboardWillShowNotification, object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(sender:)),
+            name: UIResponder.keyboardWillHideNotification, object: nil
+        )
         
-        let tap = UITapGestureRecognizer(target: self, action: #selector(rotateTopConrenr))
-        logoContainer.addGestureRecognizer(tap)
+        UIView.animateKeyframes(withDuration: 1, delay: 0, animations: {
+            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5, animations: {
+                self.topCornerCircleView.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 0.5)
+            })
+            UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5, animations: {
+                self.bottomCornerCircleView.transform = CGAffineTransform(rotationAngle: -CGFloat.pi * 0.5)
+            })
+        }, completion: { _ in
+            self.changeStage(stage: .chooseMethod)
+            UIView.animate(withDuration: 0.67, animations: {
+                self.view.layoutIfNeeded()
+            })
+        })
+        refreshToken()
+    }
+    
+    // MARK: Launch sequence!
+    
+    private func refreshToken(){
+        let refreshToken = KeychainHelper.standard.readToken(
+            service: "refresh-token", account: "backend-auth"
+        )
+        if refreshToken == nil {
+            CoreDataManager.shared.clearAppUser()
+            return
+        }
+        
+        let refreshSuccessHandler = { [unowned self] (data: Data) throws in
+            let responseObject = try JSONDecoder().decode(RefreshSuccess.self, from: data)
+            KeychainHelper.standard.save(
+                Data(responseObject.access.utf8),
+                serice: "access-token",
+                account: "backend-auth"
+            )
+            
+            DispatchQueue.main.async {
+                self.fetchAppData()
+            }
+        }
+        
+        let failureHandler = { [unowned self] (data: Data) throws in
+            CoreDataManager.shared.clearAppUser()
+        }
+        
+        let json: [String: Any] = ["refresh": refreshToken]
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        let request = setupRequest(url: .refresh, method: .post, body: jsonData)
+        performRequest(
+            request: request,
+            successHandler: refreshSuccessHandler,
+            failureHandler: failureHandler
+        )
+    }
+    
+    private func fetchAppData() {
+        guard let appUser = CoreDataManager.shared.fetchAppUser(),
+              let appUserPhone = appUser.phone,
+              let accessToken = KeychainHelper.standard.readToken(
+            service: "access-token", account: "backend-auth"
+        ) else {
+            CoreDataManager.shared.clearAppUser()
+            return
+        }
+        
+        var request = setupRequest(url: .fetchEventsSpends, method: .get)
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        let successHanlder = { [unowned self] (data: Data) throws in
+            let responseObject = try JSONDecoder().decode([EventsSpends].self, from: data)
+            CoreDataManager.shared.saveEventsSpends(
+                data: responseObject,
+                appUserPhone: appUserPhone
+            )
+            
+            DispatchQueue.main.async {
+                self.mainViewController.appUser = appUser
+                self.mainViewController.modalPresentationStyle = .fullScreen
+                self.present(self.mainViewController, animated: false)
+            }
+        }
+        
+        performRequest(request: request, successHandler: successHanlder)
     }
     
     private func setupViews() {
@@ -401,7 +550,7 @@ class LaunchViewController: UIViewController {
         let signupPasswordKeyboardDownView = signupPasswordKeyboardDownButton.customView as? UIButton
         let signupRepeatPasswordKeyboardDownView = signupRepeatPasswordKeyboardDownButton.customView as? UIButton
         [loginCodeKeyboardDownView, loginPhoneKeyboardDownView, loginPasswordKeyboardDownView, usernameKeyboardDownView, signupCodeKeyboardDownView, signupPhoneKeyboardDownView,
-         signupRepeatPasswordKeyboardDownView, signupPasswordKeyboardDownView
+         signupRepeatPasswordKeyboardDownView, signupPasswordKeyboardDownView,
         ].forEach(
             {$0?.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)}
         )
@@ -460,7 +609,7 @@ class LaunchViewController: UIViewController {
         [logoView, logoContainer, topCornerCircleView, bottomCornerCircleView, authCoverView,
          signUpButton, signInButton, authButtonsContainer, phoneAndPassword, welcomeBackHeaderLable,
          signUpLable, singUpHeaderContainer, signUpHeader, usernameTextField, usernameHelpText, phoneField,
-         codeInput, phoneInput, phoneContainer, phoneHelpText, passwordAndPassword
+         codeInput, phoneInput, phoneContainer, phoneHelpText, passwordAndPassword, passwordHelpText, singInErrorHelpText
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         let viewHeight = view.frame.height
         
@@ -469,7 +618,6 @@ class LaunchViewController: UIViewController {
             authCoverView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             authCoverView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             authCoverView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            //authContainerHeightConstrain!,
             
             logoContainerBottomConstaint!,
             logoContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
@@ -492,81 +640,135 @@ class LaunchViewController: UIViewController {
             
         ]
         
-//        topCornerCircleView.frame = CGRect(
-//            x: view.frame.width * 0.25, y: 0, width: view.frame.width * 0.25, height: view.frame.width * 0.25)
         NSLayoutConstraint.activate(constraints)
     }
     
-    @objc func rotateTopConrenr() {
-        changeStage(stage: .chooseMethod)
-
-        UIView.animateKeyframes(withDuration: 1, delay: 0, animations: {
-            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.33, animations: {
-                self.topCornerCircleView.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 0.5)
-            })
-            UIView.addKeyframe(withRelativeStartTime: 0.33, relativeDuration: 0.33, animations: {
-                self.bottomCornerCircleView.transform = CGAffineTransform(rotationAngle: -CGFloat.pi * 0.5)
-            })
-            UIView.addKeyframe(withRelativeStartTime: 0.67, relativeDuration: 0.33, animations: {
-                self.view.layoutIfNeeded()
-            })
-        })
-    }
-    
     @objc func loginTapped() {
-        if currentStage == .login {
-            print("it's time to log user in!")
-            guard let phone = phoneAndPassword.phoneInput.text else { return }
-            guard let pw = phoneAndPassword.passwordInput.text else { return }
-            print(phoneAndPassword.phoneInput.text)
-            print(phoneAndPassword.passwordInput.text)
-            // TODO: make a func in delegate that will sanityze phone from +()etc
-            if phone == "(1" && pw == "q" {
-                print("me trying!")
-                mainViewController.modalPresentationStyle = .fullScreen
-                //mainViewController.modalTransitionStyle = .
-                present(mainViewController, animated: false)
-            }
+        if currentStage != .login {
+            changeStage(stage: .login)
             return
         }
-        changeStage(stage: .login)
-    }
+        
+        guard let phone = self.phoneInput.text,
+              let code = self.codeInput.text
+        else {
+            self.singInErrorHelpText.text = R.string.addEvent.notProvided()
+            return
+        }
+        
+        let verifier = Verifier()
+        let cleanPhoneNumber = verifier.stripPhoneNumber(phone: code + phone)
+        let isValidPhone = verifier.isValidPhone(phone: cleanPhoneNumber)
+        let (isValid, validationResult) = Verifier().verifySingIn(
+            username:  (phoneAndPassword.codeInput.text ?? "") +  (phoneAndPassword.phoneInput.text ?? ""),
+            password: phoneAndPassword.passwordInput.text
+        )
+        if !isValid {
+            self.singInErrorHelpText.text = validationResult["error"]
+            return
+        }
+        
+        let userFetchSuccessHandler = { [unowned self] (data: Data) throws in
+            let responseObject = try JSONDecoder().decode(UserFetch.self, from: data)
+            if let imageURLString = responseObject.profile.profile_image {
+                let imageURL = URL(string: imageURLString)!
+                if let data = try? Data(contentsOf: imageURL) {
+                    saveImage(fileName: "appUser", image: UIImage(data: data)!)
+                }
+            }
+            DispatchQueue.main.async {
+                guard let appUser = CoreDataManager.shared.createAppUser(
+                    username: responseObject.first_name,
+                    phone: responseObject.username,
+                    isMale: responseObject.profile.is_male
+                ) else { return }
+                self.fetchAppData()
+            }
+        }
+        
+        let signInSuccessHandler = { [weak self] (data: Data) throws in
+            let responseObject = try JSONDecoder().decode(LoginSuccess.self, from: data)
+            KeychainHelper.standard.save(
+                Data(responseObject.access.utf8),
+                serice: "access-token",
+                account: "backend-auth"
+            )
+            KeychainHelper.standard.save(
+                Data(responseObject.refresh.utf8),
+                serice: "refresh-token",
+                account: "backend-auth"
+            )
+            DispatchQueue.main.async {
+                let json: [String: Any] = ["username": validationResult["username"] ?? ""]
+                let jsonData = try? JSONSerialization.data(withJSONObject: json)
+                var request = setupRequest(url: .fetchUserData, method: .post, body: jsonData)
+                request.setValue("Bearer \(responseObject.access)", forHTTPHeaderField: "Authorization")
+                performRequest(
+                    request: request,
+                    successHandler: userFetchSuccessHandler
+                )
+            }
+        }
+            
+            
+        let signInFailureHandler = { [weak self] (data: Data) throws in
+            let responseObject = try JSONDecoder().decode(userFetchError.self, from: data)
+            DispatchQueue.main.async {
+                self?.singInErrorHelpText.text = responseObject.detail
+            }
+        }
+        let json: [String: Any] = validationResult
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        let request = setupRequest(url: .login, method: .post, body: jsonData)
+        performRequest(request: request, successHandler: signInSuccessHandler, failureHandler: signInFailureHandler)
+        }
     
     @objc func signupTapped() {
-        let signUpHeadnler = { [weak self] (data: Data) throws in
-            let responseObject = try JSONDecoder().decode(DummyData.self, from: data)
-            if responseObject.Success {
-                print("yeey")
-                DispatchQueue.main.async {
-                    self?.signUpButton.setTitle("yeeey", for: .normal)
-                }
-                
-            } else {
-                print("neeey!")
-            }
-        }
         if currentStage == .signup {
-            let json: [String: Any] = ["title": "hmmm", "kek": 69]
+            let signUpSuccessHandler = { [unowned self] (data: Data) throws in
+                let responseObject = try JSONDecoder().decode(RegisterationSuccess.self, from: data)
+                DispatchQueue.main.async {
+                    self.welcomeBackHeaderLable.text = "Time to Login!"
+                    self.changeStage(stage: .login)
+                    return
+                }
+            }
+            let signUpFailureHandler = { [weak self] (data: Data) throws in
+                let responseObject = try JSONDecoder().decode(RegisterError.self, from: data)
+                DispatchQueue.main.async {
+                    var errors: [String: String] = [:]
+                    if let usernameWarning = responseObject.username {
+                        errors["username"] = usernameWarning.joined(separator: " ")
+                    }
+                    if responseObject.password != nil {
+                        errors["password"] = "least one uppercase, least one digit, min 8 characters total"
+                    }
+                    self?.setWarrings(erros: errors)
+                }
+            }
+            let (isValid, validationResult) = Verifier().verifyUserSignUpData(
+                username: self.usernameTextField.text ?? "",
+                password: self.passwordAndPassword.passwordInput.text ?? "",
+                secondPassword: self.passwordAndPassword.repeatPasswordInput.text ?? "",
+                phone: (self.codeInput.text ?? "") + (self.phoneInput.text ?? "")
+            )
+
+            if !isValid {
+                setWarrings(erros: validationResult)
+                return
+            }
+            let json: [String: Any] = validationResult
             let jsonData = try? JSONSerialization.data(withJSONObject: json)
-            let request = setupRequest(url: .dummy, method: .post, body: jsonData)
-            performRequest(request: request, handler: signUpHeadnler)
-//            let queue = DispatchQueue.global(qos: .utility)
-//            queue.async {
-//                print("camoon!")
-//                if let data = try? Data(contentsOf: dummyUrl) {
-//                    print(data)
-//                }
-//            }
-            print("it's time to sing user up!")
+            let request = setupRequest(url: .register, method: .post, body: jsonData)
+            performRequest(request: request, successHandler: signUpSuccessHandler, failureHandler: signUpFailureHandler)
             return
         }
-        print("print is working, like ok")
         changeStage(stage: .signup)
     }
     
     @objc func keyboardWillShow(sender: NSNotification) {
-        self.view.frame.origin.y = view.frame.maxY > 815 ? -170 : -220
-        
+        // keypad for buttom password is covering the field
+        self.view.frame.origin.y = -220
     }
     
     @objc func keyboardWillHide(sender: NSNotification) {

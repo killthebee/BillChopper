@@ -1,3 +1,14 @@
 "event" = "event";
 "payedBy" = "payed by";
 "selectSplit" = "select split";
+"newSpendPlaceholder" = "spend name";
+"newSpendHelpText" = "name";
+"spendTotalAmount" = "spend total amount";
+"spendTotalText" = "Total";
+"percentMore" = "percents >> 100% reload";
+"percentLess" = "percents << 100% reload";
+"reloadRange" = " reload";
+"ok" = "ok :)";
+"nameWorning" = "name isn't valid";
+"amountWorning" = "spend amount isn't valid";
+"date" = "date";

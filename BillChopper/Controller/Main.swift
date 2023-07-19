@@ -3,7 +3,22 @@ import CoreData
 
 final class MainViewController: UIViewController {
     
-    private var viewContext: NSManagedObjectContext!
+    var appUser: AppUser? = nil
+    var currentAppUser: Participant? = nil
+    
+    private var eventButtonData: [Event] = [] {
+        didSet {
+            self.eventButton.menu = getEventMenu()
+        }
+    }
+    
+    private var usersButtonData: [Participant] = [] {
+        didSet {
+            self.balanceButton.menu = getBalanceMenu()
+        }
+    }
+    
+    private var spendsData: [Spend] = []
     
     private lazy var profileViewController = ProfileViewController()
     private lazy var addEventViewController = AddEventViewController()
@@ -13,7 +28,12 @@ final class MainViewController: UIViewController {
 
     private let balanceButton = TopMainButton(color: customGreen, title: R.string.main.balanceButtonText())
     
-    private let profileIcon = ProfileIcon(profileImage: R.image.hombreDefault1())
+    private let profileIcon: ProfileIcon = {
+        if let appUserImage = loadImageFromDiskWith(fileName: "appUser") {
+            return ProfileIcon(profileImage: appUserImage)
+        }
+        return ProfileIcon(profileImage: R.image.hombreDefault1())
+    }()
 
     private let footer = FooterView()
     
@@ -29,25 +49,33 @@ final class MainViewController: UIViewController {
     let coverPlusIconView: UIButton = {
         let coverView = UIButton()
         coverView.showsMenuAsPrimaryAction = true
-        
         return coverView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        eventButtonData = CoreDataManager.shared.fetchEvents() ?? []
+        usersButtonData = CoreDataManager.shared.fetchParticipants() ?? []
+        spendsData = CoreDataManager.shared.fetchSpends() ?? []
+        usersButtonData.forEach({
+            if $0.imageName == appUser?.phone {
+                currentAppUser = $0
+                currentAppUser?.username = "You"
+            }
+        })
+        
         view.backgroundColor = .white
         setupViews()
         addSubviews()
+        calculateTotal()
+        loadPhotos()
     }
     
     private func setupViews() {
-        viewContext = PersistanceController.shared.container.viewContext
-        
         tableView.dataSource = self
         tableView.delegate = self
         
         eventButton.menu = getEventMenu()
-        balanceButton.menu = getBalanceMenu()
         coverPlusIconView.menu = getCoverPlusIconMenu()
         
         let tapOnProfileIconGesutre = UITapGestureRecognizer(
@@ -64,37 +92,118 @@ final class MainViewController: UIViewController {
     }
     
     private func getEventMenu() -> UIMenu {
-        let dummyEvent1 = UIAction(title: "event1", image: UIImage(named: "LentActionIcon")) { (action) in
-            print("dummy event1")
+        var buttons: [UIAction] = []
+        let allEventsButton = UIAction(title: "all") { (action) in
+            self.spendsData = CoreDataManager.shared.fetchSpends() ?? []
+            self.tableView.reloadData()
+            self.footer.eventName.text = "ALL"
+            self.footer.eventText.text = R.string.main.eventMenuText()
+            self.calculateTotal()
         }
-        let dummyEvent2 = UIAction(title: "event2", image: UIImage(named: "BorrowActionIcon")) { (action) in
-            print("dummy event2")
+        buttons.append(allEventsButton)
+        for eventData in eventButtonData {
+            let eventName = eventData.name ?? "unnamed"
+            let imageName = reverseConvertEventTypes(type: eventData.eventType)
+            let eventButton = UIAction(title: eventName, image: UIImage(named: imageName)) { (action) in
+                print("event named: \(eventName)")
+                self.spendsData = CoreDataManager.shared.fetchEventSpends(eventData)
+                self.tableView.reloadData()
+                self.footer.eventName.text = eventName
+                self.footer.eventText.text = R.string.main.singularEventText()
+                self.calculateTotal()
+            }
+            buttons.append(eventButton)
         }
         
         let menu = UIMenu(
             title: R.string.main.eventMenuText(),
             options: .displayInline,
-            children: [dummyEvent1, dummyEvent2]
+            children: buttons
         )
         
         return menu
     }
     
     private func getBalanceMenu() -> UIMenu {
-        let dummyBalance1 = UIAction(title: "balance1", image: UIImage(named: "HombreDefault1.1")) { (action) in
-            print("dummy balance1")
-        }
-        let dummyBalance2 = UIAction(title: "balance2", image: UIImage(named: "HombreDefault1.1")) { (action) in
-            print("dummy balance2")
+        var buttons: [UIAction] = []
+        for usersData in usersButtonData {
+            if usersData == currentAppUser { continue }
+            let username = usersData.username ?? "unnamed"
+            let imageName = usersData.imageName ?? "HombreDefault1"
+            let eventButton = UIAction(
+                title: username,
+                image: loadImageFromDiskWith(fileName: imageName)) { (action) in
+                if let currentUser = self.currentAppUser {
+                    if let (spends, total) = CoreDataManager.shared.fetchBalanceWithUser(
+                        appUser: currentUser,
+                        targetUser: usersData
+                    ) {
+                        self.spendsData = []
+                        spends.forEach({self.spendsData.append($0)})
+                        self.tableView.reloadData()
+                        if total > 0 {
+                            self.footer.balanceTypeLabel.text = R.string.mainCell.youLent()
+                            self.footer.balance.text = String(total)
+                            self.footer.balance.textColor = customGreen
+                            self.footer.balanceTypeLabel.textColor = customGreen
+                        } else {
+                            self.footer.balanceTypeLabel.text = R.string.mainCell.youBorrowed()
+                            self.footer.balanceTypeLabel.textColor = .red
+                            self.footer.balance.text = String(-1 * total)
+                            self.footer.balance.textColor = .red
+                        }
+                    }
+                }
+            }
+            buttons.append(eventButton)
         }
         
         let menu = UIMenu(
             title: R.string.main.getBalanceMenuText(),
             options: .displayInline,
-            children: [dummyBalance1, dummyBalance2]
+            children: buttons
         )
         
         return menu
+    }
+    
+    private func calculateTotal() {
+        var total: Int16 = 0
+        for spendData in spendsData {
+            if spendData.isBorrowed {
+                total -= spendData.amount
+                continue
+            }
+            total += spendData.amount
+        }
+        if total >= 0 {
+            footer.balanceTypeLabel.text = R.string.mainCell.youLent()
+            footer.balanceTypeLabel.textColor = customGreen
+            footer.balance.text = String(total)
+            footer.balance.textColor = customGreen
+            return
+        }
+        footer.balanceTypeLabel.text = R.string.mainCell.youBorrowed()
+        footer.balanceTypeLabel.textColor = .red
+        footer.balance.text = String(-1 * total)
+        footer.balance.textColor = .red
+    }
+    
+    private func loadPhotos() {
+        DispatchQueue.global(qos: .utility).async {
+            for particiapnt in self.usersButtonData {
+                // download photo
+                guard let imgUrl = particiapnt.imageUrl,
+                      let imageName = particiapnt.imageName,
+                      let imageData = downloadImage(url: imgUrl) else { continue }
+                // save photo to file system
+                saveImage(fileName: imageName, image: UIImage(data: imageData)!)
+            }
+            // reload balance buttons
+            DispatchQueue.main.async {
+                self.balanceButton.menu = self.getBalanceMenu()
+            }
+        }
     }
     
     private func getCoverPlusIconMenu() -> UIMenu {
@@ -167,20 +276,10 @@ final class MainViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
     }
     
-    @objc func fetchStuff(_ sender: UIButton) {
-        let request = AppUser.createFetchRequest()
-        do {
-            let appUsers = try viewContext.fetch(request)
-            print(appUsers.count)
-            print(appUsers[0].name)
-        } catch {
-            print("fetch failed")
-        }
-    }
-    
     @objc func handleTapOnProfileIcon(sender: UITapGestureRecognizer) {
-        // NOTE: https://developer.apple.com/documentation/uikit/uiviewcontroller/1621505-dismiss
         profileViewController.modalPresentationStyle = .pageSheet
+        profileViewController.appUser = self.appUser
+        profileViewController.isImageChanged = false
         profileViewController.modalTransitionStyle = .coverVertical
         present(profileViewController, animated: true)
     }
@@ -201,33 +300,78 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         return 1
     }
     
-    
     func numberOfSections(in tableView: UITableView) -> Int {
-            return 13
+        return spendsData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cellData = spendsData[indexPath.section]
         let backgroundView = UIView()
         backgroundView.backgroundColor = .white
         
-        if indexPath.section != 3 {
+        if cellData.isBorrowed {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: SpendTableViewCell.identifier) as? SpendTableViewCell else { return UITableViewCell() }
             cell.backgroundColor = .white
             cell.selectedBackgroundView = backgroundView
             
-            return cell
-        } else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: LentCell.newIdentifier) as? LentCell else { return UITableViewCell() }
-            cell.backgroundColor = .white
-            cell.selectedBackgroundView = backgroundView
+            cell.configure(cellData)
             
             return cell
         }
-        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: LentCell.newIdentifier) as? LentCell else { return UITableViewCell() }
+        cell.backgroundColor = .white
+        cell.selectedBackgroundView = backgroundView
+        cell.configure(cellData)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        if let cell = tableView.cellForRow(at: indexPath) as? LentCell {
+          return true
+       } else {
+          return false
+       }
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let payed = UIContextualAction(style: .destructive,title: "Payed") {
+            [weak self] (action, view, completionHandler) in
+            self?.handleMoveToTrash(indexPath)
+            completionHandler(true)
+        }
+        payed.backgroundColor = .systemRed
+
+        let configuration = UISwipeActionsConfiguration(actions: [payed])
+
+        return configuration
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
     }
     
+    private func handleMoveToTrash(_ index: IndexPath) {
+        let spendId = spendsData[index.section].spendId
+        let successHandler = { [unowned self] (data: Data) throws in
+            CoreDataManager.shared.deleteSpend(spendId: spendId)
+            DispatchQueue.main.async {
+                self.spendsData.remove(at: index.section)
+                self.tableView.reloadData()
+            }
+        }
+        var request = setupRequest(
+            url: .deleteSpend,
+            method: .delete,
+            contertType: .json,
+            urlParam: String(spendId)
+        )
+        guard let accessToken = KeychainHelper.standard.readToken(
+            service: "access-token", account: "backend-auth"
+        ) else { return }
+        request.allHTTPHeaderFields = [
+               "Authorization": "Bearer " + accessToken,
+               "Content-Type": "application/json"
+            ]
+        performRequest(request: request, successHandler: successHandler)
+    }
 }

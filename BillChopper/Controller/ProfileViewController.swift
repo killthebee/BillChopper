@@ -2,9 +2,12 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
+    var appUser: AppUser? = nil
+    
     private var iconView = ProfileIcon().setUpIconView()
     
     var isPhoneInput = true
+    var isImageChanged = false
     
     private lazy var coverView: UIView = {
         let coverView = UIView()
@@ -42,10 +45,11 @@ final class ProfileViewController: UIViewController {
         return saveButton
     }()
     
-    private var usernameTextField: CustomTextField = {
+    private lazy var usernameTextField: CustomTextField = {
         let usernameTextField = CustomTextField()
-        usernameTextField.text = "John Dhoe"
+        usernameTextField.text = appUser?.username
         usernameTextField.textColor = .black
+        usernameTextField.textAlignment = .center
         usernameTextField.placeholder = "username"
         usernameTextField.font = UIFont.boldSystemFont(ofSize: 21)
         usernameTextField.autocorrectionType = UITextAutocorrectionType.no
@@ -75,6 +79,16 @@ final class ProfileViewController: UIViewController {
         return usernameHelpTextLable
     }()
     
+    private var phoneAndGenderHelpText: UILabel = {
+        let usernameHelpTextLable = UILabel()
+        usernameHelpTextLable.font = usernameHelpTextLable.font.withSize(15)
+        usernameHelpTextLable.lineBreakMode = .byWordWrapping
+        usernameHelpTextLable.numberOfLines = 0
+        usernameHelpTextLable.textColor = .red
+        
+        return usernameHelpTextLable
+    }()
+    
     private let PhoneAndGender: PhoneAndGender = BillChopper.PhoneAndGender()
     
     private let exitButton: UIButton = {
@@ -86,6 +100,22 @@ final class ProfileViewController: UIViewController {
     
     private var isIconZoomed = false
     private var imagePicker: ImagePicker!
+    
+    private func setWarnings(erros: [String: String]) {
+        if let usernameError = erros["username"] {
+            usernameHelpText.text = usernameError
+        } else {
+            usernameHelpText.text = R.string.profileView.helpText()
+        }
+        if let genderError = erros["gender"] {
+            phoneAndGenderHelpText.text = genderError
+        } else if let phoneError = erros["phone"] {
+            phoneAndGenderHelpText.text = phoneError
+        } else {
+            phoneAndGenderHelpText.text = ""
+        }
+        
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -97,6 +127,11 @@ final class ProfileViewController: UIViewController {
         addToolbars()
         setupViews()
         addSubviews()
+        setUpPhoneField()
+        setUpGender()
+        if let appUserImage = loadImageFromDiskWith(fileName: "appUser") {
+            iconView.image = appUserImage
+        }
     }
     
     private func addToolbars() {
@@ -135,6 +170,9 @@ final class ProfileViewController: UIViewController {
     private func setupViews() {
         view.backgroundColor = .white
         self.imagePicker = ImagePicker(presentationController: self, delegate: self)
+//        if let phoneNum = appUser?.phone {
+//            self.rawNumber =
+//        }
         usernameTextField.delegate = self
         
         
@@ -145,8 +183,33 @@ final class ProfileViewController: UIViewController {
         iconView.addGestureRecognizer(tapOnIconGestureRecognizer)
     }
     
+    private func setUpPhoneField() {
+        guard let phoneNumber = appUser?.phone,
+        let phoneSplit = stripCodeAndPhone(number: phoneNumber) else {
+            phoneAndGenderHelpText.text = "feiled to load phone number"
+            return
+        }
+        let code = "+" + phoneSplit.code
+        let phone = phoneSplit.phone
+        let phoneDelegate = PhoneAndGender.phoneInput.delegate as? PhoneInputDelegate
+        
+        PhoneAndGender.codeInput.text = code
+        phoneDelegate?.insertNumber(num: phone)
+        PhoneAndGender.phoneInput.text = formatRawNumber(newRawNumber: phone)
+    }
+    
+    private func setUpGender() {
+        guard let isMale = appUser?.isMale else { return }
+        PhoneAndGender.genderButton.setTitleColor(.black, for: .normal)
+        if isMale {
+            PhoneAndGender.genderButton.setTitle(R.string.profileView.male(), for: .normal)
+            return
+        }
+        PhoneAndGender.genderButton.setTitle(R.string.profileView.female(), for: .normal)
+    }
+    
     private func addSubviews() {
-        [exitButton, uploadButton, usernameTextField, usernameHelpText, PhoneAndGender, saveButton, iconView].forEach({view.addSubview($0)})
+        [exitButton, uploadButton, usernameTextField, usernameHelpText, PhoneAndGender, saveButton, iconView, phoneAndGenderHelpText].forEach({view.addSubview($0)})
     }
     
     @objc func doneButtonTapped() {
@@ -205,8 +268,7 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        [iconView, exitButton, uploadButton, usernameTextField, usernameHelpText, PhoneAndGender,
-         saveButton].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
+        [iconView, exitButton, uploadButton, usernameTextField, usernameHelpText, PhoneAndGender,saveButton, phoneAndGenderHelpText].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         
         
         let heigthToUploadButton: CGFloat = 50 + iconViewDiameter
@@ -242,6 +304,10 @@ final class ProfileViewController: UIViewController {
             PhoneAndGender.heightAnchor.constraint(equalToConstant: 80),
             PhoneAndGender.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor),
             
+            phoneAndGenderHelpText.topAnchor.constraint(equalTo: PhoneAndGender.bottomAnchor),
+            phoneAndGenderHelpText.widthAnchor.constraint(equalTo: PhoneAndGender.widthAnchor, multiplier: 0.9),
+            phoneAndGenderHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
             saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
             saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             saveButton.heightAnchor.constraint(equalToConstant: 40),
@@ -259,7 +325,49 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc func handleSaveButtonClicked(_ sender: UIButton) {
-        print("save requested")
+        // verify
+        let verifier = Verifier()
+        let (isValid, validationResult) = Verifier().verifyUserUpdate(
+            username: self.usernameTextField.text,
+            gender: self.PhoneAndGender.genderButton.titleLabel?.text,
+            phone: (self.PhoneAndGender.codeInput.text ?? "") + (self.PhoneAndGender.phoneInput.text ?? "")
+        )
+        if !isValid {
+            setWarnings(erros: validationResult)
+            return
+        }
+        // save to db
+        guard let appUser = appUser else { return }//warning?
+        appUser.phone = validationResult["username"] ?? appUser.phone
+        appUser.username = self.usernameTextField.text
+        if validationResult["is_male"] == "True" {
+            appUser.isMale = true
+        } else {
+            appUser.isMale = false
+        }
+        CoreDataManager.shared.updateAppUser(
+            newPhone: validationResult["username"],
+            newUsername: self.usernameTextField.text,
+            isMale: validationResult["is_male"] == "True"
+        )
+        // upload image
+        if isImageChanged {
+            uploadImage(fileName: "appUser.png", image: iconView.image!)
+            saveImage(fileName: "appUser.png", image: iconView.image!)
+        }
+        // upload profile updates
+        let jsonData = try? JSONSerialization.data(withJSONObject: validationResult)
+        var request = setupRequest(url: .updateUser, method: .put, body: jsonData)
+        guard let accessToken = KeychainHelper.standard.readToken(
+            service: "access-token", account: "backend-auth"
+        ) else { return }
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        let successHandler = { [unowned self] (data: Data) throws in
+            DispatchQueue.main.async {
+                self.dismiss(animated: true)
+            }
+        }
+        performRequest(request: request, successHandler: successHandler)
     }
     
     @objc func handleExitButtonClicked(_ sender: UIButton) {
@@ -277,6 +385,7 @@ extension ProfileViewController: ImagePickerDelegate, UITextFieldDelegate {
         iconView.removeFromSuperview()
         iconView = ProfileIcon().setUpIconView(image)
         setupIconView(iconView: iconView)
+        isImageChanged = true
         
         let tapOnIconGestureRecognizer = UITapGestureRecognizer(
             target: self, action: #selector(handleTapOnIcon)
