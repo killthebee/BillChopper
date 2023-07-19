@@ -79,6 +79,7 @@ final class MainViewController: UIViewController {
         setupViews()
         addSubviews()
         calculateTotal()
+        loadPhotos()
     }
     
     private func setupViews() {
@@ -86,7 +87,6 @@ final class MainViewController: UIViewController {
         tableView.delegate = self
         
         eventButton.menu = getEventMenu()
-        balanceButton.menu = getBalanceMenu()
         coverPlusIconView.menu = getCoverPlusIconMenu()
         
         let tapOnProfileIconGesutre = UITapGestureRecognizer(
@@ -141,8 +141,9 @@ final class MainViewController: UIViewController {
             if usersData == currentAppUser { continue }
             let username = usersData.username ?? "unnamed"
             let imageName = usersData.imageName ?? "HombreDefault1"
-            let eventButton = UIAction(title: username, image: UIImage(named: imageName)) { (action) in
-                
+            let eventButton = UIAction(
+                title: username,
+                image: loadImageFromDiskWith(fileName: imageName)) { (action) in
                 if let currentUser = self.currentAppUser {
                     if let (spends, total) = CoreDataManager.shared.fetchBalanceWithUser(
                         appUser: currentUser,
@@ -197,6 +198,23 @@ final class MainViewController: UIViewController {
         footer.balanceTypeLabel.textColor = .red
         footer.balance.text = String(-1 * total)
         footer.balance.textColor = .red
+    }
+    
+    private func loadPhotos() {
+        DispatchQueue.global(qos: .utility).async {
+            for particiapnt in self.usersButtonData {
+                // download photo
+                guard let imgUrl = particiapnt.imageUrl,
+                      let imageName = particiapnt.imageName,
+                      let imageData = downloadImage(url: imgUrl) else { continue }
+                // save photo to file system
+                saveImage(fileName: imageName, image: UIImage(data: imageData)!)
+            }
+            // reload balance buttons
+            DispatchQueue.main.async {
+                self.balanceButton.menu = self.getBalanceMenu()
+            }
+        }
     }
     
     private func getCoverPlusIconMenu() -> UIMenu {
@@ -354,8 +372,6 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
                 self.tableView.reloadData()
             }
         }
-//        print(spendsData[index.section].id)
-//        let spend = spendsData.remove(at: index.section)
         var request = setupRequest(
             url: .deleteSpend,
             method: .delete,
@@ -370,7 +386,5 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
                "Content-Type": "application/json"
             ]
         performRequest(request: request, successHandler: successHandler)
-        
-        print("Moved to trash")
     }
 }

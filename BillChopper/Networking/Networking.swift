@@ -107,3 +107,13 @@ func uploadImage(fileName: String, image: UIImage) {
         }
     }).resume()
 }
+
+
+func downloadImage(url: String) -> Data? {
+    let imageUrl = URL(string: url)!
+    if let data = try? Data(contentsOf: imageUrl) {
+        return data
+    }
+    
+    return nil
+}
