@@ -114,7 +114,6 @@ class LaunchViewController: UIViewController {
     }()
     
     private var usernameTextField: CustomTextField = {
-        // TODO: dry this shit mb
         let usernameTextField = CustomTextField()
         usernameTextField.textColor = .black
         usernameTextField.placeholder = "username"
@@ -181,7 +180,6 @@ class LaunchViewController: UIViewController {
     
     private var passwordHelpText: UILabel = {
         let passwordHelpText = UILabel()
-        //passwordHelpText.text = "Problems: least one uppercase, least one digit, min 8 characters total"
         passwordHelpText.font = passwordHelpText.font.withSize(15)
         passwordHelpText.lineBreakMode = .byWordWrapping
         passwordHelpText.numberOfLines = 0
@@ -192,7 +190,6 @@ class LaunchViewController: UIViewController {
     
     private let singInErrorHelpText: UILabel = {
         let singInErrorHelpText = UILabel()
-//        singInErrorHelpText.text = "No active account found with the given credentials"
         singInErrorHelpText.font = singInErrorHelpText.font.withSize(15)
         singInErrorHelpText.lineBreakMode = .byWordWrapping
         singInErrorHelpText.numberOfLines = 0
@@ -280,7 +277,6 @@ class LaunchViewController: UIViewController {
             
             signUpHeader.centerXAnchor.constraint(equalTo: singUpHeaderContainer.centerXAnchor),
             signUpHeader.centerYAnchor.constraint(equalTo: singUpHeaderContainer.centerYAnchor),
-            //signUpHeader.heightAnchor.constraint(equalToConstant: 50)
             
             usernameTextField.topAnchor.constraint(equalTo: singUpHeaderContainer.bottomAnchor),
             usernameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -322,7 +318,6 @@ class LaunchViewController: UIViewController {
             passwordHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             passwordHelpText.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor, multiplier: 0.95),
             
-            //authButtonsContainer.heightAnchor.constraint(equalTo: authCoverView.heightAnchor, multiplier: 0.3),
             authButtonsContainer.bottomAnchor.constraint(equalTo: authCoverView.bottomAnchor),
             authButtonsContainer.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
             authButtonsContainer.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
@@ -417,7 +412,7 @@ class LaunchViewController: UIViewController {
         view.backgroundColor = .white
         setupViews()
         addSubviews()
-        self.addToolbars()
+        addToolbars()
         initialLayoutSetUp(logoContainer: logoContainer)
         CoreDataManager.shared.clearAppData()
         NotificationCenter.default.addObserver(
@@ -439,7 +434,6 @@ class LaunchViewController: UIViewController {
                 self.bottomCornerCircleView.transform = CGAffineTransform(rotationAngle: -CGFloat.pi * 0.5)
             })
         }, completion: { _ in
-            //CoreDataManager.shared.clearAppData()
             self.changeStage(stage: .chooseMethod)
             UIView.animate(withDuration: 0.67, animations: {
                 self.view.layoutIfNeeded()
@@ -460,7 +454,6 @@ class LaunchViewController: UIViewController {
         }
         
         let refreshSuccessHandler = { [unowned self] (data: Data) throws in
-            // TODO: mb catch and launch .chooseMethod stage on main queue
             let responseObject = try JSONDecoder().decode(RefreshSuccess.self, from: data)
             KeychainHelper.standard.save(
                 Data(responseObject.access.utf8),
@@ -512,6 +505,7 @@ class LaunchViewController: UIViewController {
                 self.present(self.mainViewController, animated: false)
             }
         }
+        
         performRequest(request: request, successHandler: successHanlder)
     }
     
@@ -624,7 +618,6 @@ class LaunchViewController: UIViewController {
             authCoverView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             authCoverView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             authCoverView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            //authContainerHeightConstrain!,
             
             logoContainerBottomConstaint!,
             logoContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
@@ -647,25 +640,7 @@ class LaunchViewController: UIViewController {
             
         ]
         
-//        topCornerCircleView.frame = CGRect(
-//            x: view.frame.width * 0.25, y: 0, width: view.frame.width * 0.25, height: view.frame.width * 0.25)
         NSLayoutConstraint.activate(constraints)
-    }
-    
-    @objc func rotateTopCorner() {
-//        changeStage(stage: .chooseMethod)
-
-        UIView.animateKeyframes(withDuration: 1, delay: 0, animations: {
-            UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.33, animations: {
-                self.topCornerCircleView.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 0.5)
-            })
-            UIView.addKeyframe(withRelativeStartTime: 0.33, relativeDuration: 0.33, animations: {
-                self.bottomCornerCircleView.transform = CGAffineTransform(rotationAngle: -CGFloat.pi * 0.5)
-            })
-            UIView.addKeyframe(withRelativeStartTime: 0.67, relativeDuration: 0.33, animations: {
-                self.view.layoutIfNeeded()
-            })
-        })
     }
     
     @objc func loginTapped() {
@@ -684,10 +659,6 @@ class LaunchViewController: UIViewController {
         let verifier = Verifier()
         let cleanPhoneNumber = verifier.stripPhoneNumber(phone: code + phone)
         let isValidPhone = verifier.isValidPhone(phone: cleanPhoneNumber)
-//        guard isValidfPhone else {
-//            self.singInErrorHelpText.text = R.string.addEvent.phoneNotValid()
-//            return
-//        }
         let (isValid, validationResult) = Verifier().verifySingIn(
             username:  (phoneAndPassword.codeInput.text ?? "") +  (phoneAndPassword.phoneInput.text ?? ""),
             password: phoneAndPassword.passwordInput.text
@@ -727,11 +698,7 @@ class LaunchViewController: UIViewController {
                 serice: "refresh-token",
                 account: "backend-auth"
             )
-            
-            // TODO: fetch user data
-            // TODO: present main VC
             DispatchQueue.main.async {
-//                let json: [String: Any] = ["username": cleanPhoneNumber]
                 let json: [String: Any] = ["username": validationResult["username"] ?? ""]
                 let jsonData = try? JSONSerialization.data(withJSONObject: json)
                 var request = setupRequest(url: .fetchUserData, method: .post, body: jsonData)
@@ -751,8 +718,6 @@ class LaunchViewController: UIViewController {
             }
         }
         let json: [String: Any] = validationResult
-        // Un123456
-//        let json: [String: Any] = ["username": "admin", "password": "123456"]
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         let request = setupRequest(url: .login, method: .post, body: jsonData)
         performRequest(request: request, successHandler: signInSuccessHandler, failureHandler: signInFailureHandler)
@@ -792,7 +757,6 @@ class LaunchViewController: UIViewController {
                 setWarrings(erros: validationResult)
                 return
             }
-            print(validationResult)
             let json: [String: Any] = validationResult
             let jsonData = try? JSONSerialization.data(withJSONObject: json)
             let request = setupRequest(url: .register, method: .post, body: jsonData)
@@ -803,8 +767,7 @@ class LaunchViewController: UIViewController {
     }
     
     @objc func keyboardWillShow(sender: NSNotification) {
-        // keypad for buttom password is covering field
-//        self.view.frame.origin.y = view.frame.maxY > 845 ? -170 : -220
+        // keypad for buttom password is covering the field
         self.view.frame.origin.y = -220
     }
     
