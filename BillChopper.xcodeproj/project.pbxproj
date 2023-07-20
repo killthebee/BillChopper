@@ -251,9 +251,9 @@
 			isa = PBXGroup;
 			children = (
 				307849A228EB5D2700AEFECA /* Main.swift */,
+				30DBDCD1294B2A6500D44D9C /* AddSpendViewController.swift */,
 				30DA407C2926793600E2DC17 /* ProfileViewController.swift */,
 				304FDCE329350D5700737B7B /* AddEventViewController.swift */,
-				30DBDCD1294B2A6500D44D9C /* AddSpendViewController.swift */,
 				30DF1A22299E9181007B6476 /* LaunchViewController.swift */,
 			);
 			path = Controller;

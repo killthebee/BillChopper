@@ -182,7 +182,7 @@ struct CoreDataManager {
     func fetchEvents() -> [Event]? {
         let context = persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<Event>(entityName: "Event")
-//        fetchRequest.relationshipKeyPathsForPrefetching = ["spends"]
+        fetchRequest.relationshipKeyPathsForPrefetching = ["participants"]
 //        fetchRequest.returnsObjectsAsFaults = true
         do {
             let events = try context.fetch(fetchRequest)

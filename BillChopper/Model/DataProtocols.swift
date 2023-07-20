@@ -1,17 +1,17 @@
 import Foundation
+import UIKit
 
 protocol EventUserProtocol {
     var username: String { get }
-    var percent: Int? { get set }
-    var imageName: String? { get set }
-    var phone: String { get }
+    var percent: Int { get set }
+    var image: UIImage? { get set }
 }
 // probably i'm gonna need event parrent for the spend
 
 protocol newEvenUserProtocol {
     var username: String? { get set }
-    var phone: String { get }
     var imageName: String? { get set }
+    var phone: String { get }
 }
 
 protocol EventProtocol {
@@ -42,9 +42,8 @@ protocol SpendDataProtocol {
 
 struct EventUser: EventUserProtocol {
     let username: String
-    var percent: Int?
-    var imageName: String?
-    let phone: String
+    var percent: Int
+    var image: UIImage?
 }
 
 struct newEventUser: newEvenUserProtocol {

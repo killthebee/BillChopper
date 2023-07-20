@@ -213,6 +213,7 @@ final class MainViewController: UIViewController {
             self.present(self.addEventViewController, animated: true)
         }
         let addSpend = UIAction(title: "add new spend", image: UIImage(named: "spendIcon")) { (action) in
+            self.addSpendViewController.events = self.eventButtonData
             self.addSpendViewController.modalPresentationStyle = .pageSheet
             self.addSpendViewController.modalTransitionStyle = .coverVertical
             self.present(self.addSpendViewController, animated: true)

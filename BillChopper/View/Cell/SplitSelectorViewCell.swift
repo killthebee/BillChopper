@@ -81,11 +81,10 @@ class SplitSelectorViewCell: UITableViewCell {
     }
     
     func configure(_ eventUser: EventUserProtocol, _ delegate: AddSpendDelegate) {
-        guard let userPercent = eventUser.percent else { return }
-        percent.text = String(userPercent)
-        slider.setValue(Float(userPercent), animated: true)
+        percent.text = String(eventUser.percent)
+        slider.setValue(Float(eventUser.percent), animated: true)
         userIcon.removeFromSuperview()
-        userIcon = ProfileIcon(profileImage: UIImage(named: eventUser.imageName ?? "HombreDefault1"))
+        userIcon = ProfileIcon(profileImage: eventUser.image)
         contentView.addSubview(userIcon)
         userNameLable.text = eventUser.username
         vcDelegate = delegate

@@ -6,19 +6,9 @@ protocol AddSpendDelegate: AnyObject {
 
 final class AddSpendViewController: UIViewController {
     
-    private var eventUsers: [EventUserProtocol] = []
+    var events: [Event] = []
     
-    private var spendEvents: [EventProtocol] = [
-        spendEvent(eventType: "other", name: "hmm1", users: [
-            EventUser(username: "Ilya", imageName: "HombreDefault1", phone: "44444444445"),
-            EventUser(username: "Dmitriy", imageName: "HombreDefault1.1", phone: "123456"),
-            EventUser(username: "Kiril", phone: "33333333333"),
-        ]),
-        spendEvent(eventType: "party", name: "hmm2", users: [
-            EventUser(username: "Dmitriy", imageName: "HombreDefault1.1", phone: "123456"),
-            EventUser(username: "Kiril", phone: "33333333333"),
-        ]),
-    ]
+    private var eventUsers: [EventUserProtocol] = []
     
     private lazy var spendNameTextField: CustomTextField = {
         let spendNameTextField = CustomTextField()
@@ -103,27 +93,39 @@ final class AddSpendViewController: UIViewController {
     }()
     
     private lazy var chooseEventView: ChooseButtonView = {
-        var events = Array<UIAction>()
-        for event in spendEvents {
-            events.append(UIAction(
-                title: event.name,
-                image: UIImage(named: "\(event.eventType)Icon")
-            ){
-                [unowned self] (action) in
-                self.eventUsers = event.users
+        var eventsButtons = Array<UIAction>()
+        for event in events {
+            eventsButtons.append(UIAction(
+                title: event.name ?? "",
+                image: UIImage(named: "\(reverseConvertEventTypes(type: event.eventType))Icon")
+            ){ [unowned self] (action) in
+                self.eventUsers = []
+                guard let participants = event.participants?.allObjects as? [Participant] else {
+                    return
+                }
+                let percent = 100 / participants.count
+                for participant in participants {
+                    let image = loadImageFromDiskWith(fileName: participant.imageName ?? "") ?? UIImage(named: "HombreDefault1")
+                    self.eventUsers.append(EventUser(
+                        username: participant.username ?? "unnamed",
+                        percent: percent,
+                        image: image
+                    ))
+                }
+                
                 self.splitSelectorsView.reloadData()
                 self.chooseEventView.chooseEventLable.text = event.name
                 
                 var userButtons = Array<UIAction>()
                 self.selectSplitText.text = R.string.addSpend.selectSplit()
                 self.selectSplitText.textColor = .black
-                for user in event.users {
+                for user in self.eventUsers {
                     let userButton = UIAction(
                         title: user.username,
-                        image: UIImage(named: user.imageName ?? "HombreDefault1")
+                        image: user.image
                     ) { (action) in
                         self.chooseUserView.chooseEventLable.text = user.username
-                        self.chooseUserView.chooseEventImage.image = UIImage(named:  user.imageName ?? "HombreDefault1")
+                        self.chooseUserView.chooseEventImage.image = user.image
                     }
                     userButtons.append(userButton)
                 }
@@ -146,7 +148,7 @@ final class AddSpendViewController: UIViewController {
 //                self.view.addSubview(self.chooseUserView)
             })
         }
-        let menu = UIMenu(title: "spendEvents", options: .displayInline, children: events)
+        let menu = UIMenu(title: "spendEvents", options: .displayInline, children: eventsButtons)
         let button =  ChooseButtonView(
             text: "choose event",
             image: UIImage(named: "saveIcon")!,
@@ -559,10 +561,6 @@ extension AddSpendViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var eventUser = eventUsers[indexPath.row]
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SplitSelectorViewCell.identifier) as? SplitSelectorViewCell else { return UITableViewCell() }
-        if eventUsers[indexPath.row].percent == nil {
-            let startingSplit = 100 / tableView.numberOfRows(inSection: 0)
-            eventUsers[indexPath.row].percent = startingSplit
-        }
         cell.configure(eventUsers[indexPath.row], self)
 //        cell.becomeFirstResponder()
         
