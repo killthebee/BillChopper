@@ -2,6 +2,8 @@ import UIKit
 
 final class AddEventViewController: UIViewController {
     
+    var currentUserPhone: String? = nil
+    
     private var iconView = ProfileIcon().setUpIconView(
         R.image.eventIcon()!
     )
@@ -304,10 +306,9 @@ final class AddEventViewController: UIViewController {
         
         let userFetchSuccessHandler = { [unowned self] (data: Data) throws in
             let responsObject = try JSONDecoder().decode(UserFetch.self, from: data)
-            print(responsObject.profile.profile_image)
             DispatchQueue.main.async {
                 // wounder whether it'll create retain cycle xd
-                guard var delegate = self.userTableView.delegate as? UserTableDelegateAndDataSource else {
+                guard let delegate = self.userTableView.delegate as? UserTableDelegateAndDataSource else {
                     return
                 }
                 let newEventUser = newEventUser(
@@ -325,7 +326,7 @@ final class AddEventViewController: UIViewController {
             let responseObject = try JSONDecoder().decode(userFetchError.self, from: data)
             DispatchQueue.main.async {
                 if responseObject.detail == "Not found." {
-                    guard var delegate = self.userTableView.delegate as? UserTableDelegateAndDataSource else {
+                    guard let delegate = self.userTableView.delegate as? UserTableDelegateAndDataSource else {
                         return
                     }
                     delegate.newEventUsers.append(newEventUser(phone: code + phone))
@@ -378,10 +379,10 @@ final class AddEventViewController: UIViewController {
             return
         }
         // TODO: add current user, make shure at least two users in event
+        delegate.newEventUsers.append(newEventUser(username: "You", phone: self.currentUserPhone!))
         let usernames = delegate.newEventUsers.map {
             ["username": Verifier().stripPhoneNumber(phone: $0.phone)]
         }
-        
         let json: [String: Any] = [
             "participants": usernames,
             "name": eventName,

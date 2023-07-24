@@ -3,6 +3,8 @@ import CoreData
 
 final class MainViewController: UIViewController {
     
+    // TODO: test if participant is unathentickated 
+    
     var appUser: AppUser? = nil
     var currentAppUser: Participant? = nil
     
@@ -21,7 +23,7 @@ final class MainViewController: UIViewController {
     var spendsData: [Spend] = []
     
     private lazy var profileViewController = ProfileViewController()
-    private lazy var addEventViewController = AddEventViewController()
+//    private lazy var addEventViewController = AddEventViewController()
 //    private weak var addSpendViewController = AddSpendViewController()
     
     private let eventButton = TopMainButton(color: UIColor.systemGray, title: R.string.main.eventButtonText())
@@ -209,9 +211,11 @@ final class MainViewController: UIViewController {
     
     private func getCoverPlusIconMenu() -> UIMenu {
         let addEvent = UIAction(title: "add new event", image: UIImage(named: "eventIcon")) { (action) in
-            self.addEventViewController.modalPresentationStyle = .pageSheet
-            self.addEventViewController.modalTransitionStyle = .coverVertical
-            self.present(self.addEventViewController, animated: true)
+            let AddEventViewController = AddEventViewController()
+            AddEventViewController.currentUserPhone = self.currentAppUser?.imageName
+            AddEventViewController.modalPresentationStyle = .pageSheet
+            AddEventViewController.modalTransitionStyle = .coverVertical
+            self.present(AddEventViewController, animated: true)
         }
         let addSpend = UIAction(title: "add new spend", image: UIImage(named: "spendIcon")) { (action) in
             let addSpendViewController = AddSpendViewController()
