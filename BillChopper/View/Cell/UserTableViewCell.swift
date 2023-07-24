@@ -63,9 +63,11 @@ final class UserTableViewCell: UITableViewCell {
             usernameLable.text = "new User!"
         }
         if let imageUrl = userData.imageUrl {
-            guard let imageData = downloadImage(url: imageUrl) else { return }
-            saveImage(fileName: userData.phone, image: UIImage(data: imageData)!)
-            userIconView.image = loadImageFromDiskWith(fileName: userData.phone)
+            DispatchQueue.main.async {
+                guard let imageData = downloadImage(url: imageUrl) else { return }
+                saveImage(fileName: userData.phone, image: UIImage(data: imageData)!)
+                self.userIconView.image = loadImageFromDiskWith(fileName: userData.phone)
+            }
         }
     }
 }
