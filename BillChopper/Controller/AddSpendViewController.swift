@@ -6,7 +6,12 @@ protocol AddSpendDelegate: AnyObject {
 
 final class AddSpendViewController: UIViewController {
     
+    unowned var mainVC : MainViewController!
+    
     var events: [Event] = []
+    private var currentEvent: Event? = nil
+    private var payeer: Participant? = nil
+    private var participants: [Participant]? = nil
     
     private var eventUsers: [EventUserProtocol] = []
     
@@ -100,16 +105,19 @@ final class AddSpendViewController: UIViewController {
                 image: UIImage(named: "\(reverseConvertEventTypes(type: event.eventType))Icon")
             ){ [unowned self] (action) in
                 self.eventUsers = []
+                self.currentEvent = event
                 guard let participants = event.participants?.allObjects as? [Participant] else {
                     return
                 }
+                self.participants = participants
                 let percent = 100 / participants.count
                 for participant in participants {
                     let image = loadImageFromDiskWith(fileName: participant.imageName ?? "") ?? UIImage(named: "HombreDefault1")
                     self.eventUsers.append(EventUser(
                         username: participant.username ?? "unnamed",
                         percent: percent,
-                        image: image
+                        image: image,
+                        phone: participant.imageName ?? "unknown"
                     ))
                 }
                 
@@ -119,11 +127,12 @@ final class AddSpendViewController: UIViewController {
                 var userButtons = Array<UIAction>()
                 self.selectSplitText.text = R.string.addSpend.selectSplit()
                 self.selectSplitText.textColor = .black
-                for user in self.eventUsers {
+                for (index, user) in self.eventUsers.enumerated() {
                     let userButton = UIAction(
                         title: user.username,
                         image: user.image
                     ) { (action) in
+                        self.payeer = participants[index]
                         self.chooseUserView.chooseEventLable.text = user.username
                         self.chooseUserView.chooseEventImage.image = user.image
                     }
@@ -251,6 +260,8 @@ final class AddSpendViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("777")
+        print(CoreDataManager.shared.fetchSpends())
         addSubviews()
         setupViews()
         addToolbars()
@@ -468,53 +479,62 @@ final class AddSpendViewController: UIViewController {
         // TODO: Erase warnings!@
         // gathering data
 //         spend name
+        selectSplitText.textColor = .black
         let verifier = Verifier()
-//        guard let spendName = spendNameTextField.text,
-//              verifier.isValidEventName(eventName: spendName) else {
-//            nameHelpText.text = R.string.addSpend.nameWorning()
-//            return
-//        }
+        guard let spendName = spendNameTextField.text,
+              verifier.isValidEventName(eventName: spendName) else {
+            nameHelpText.text = R.string.addSpend.nameWorning()
+            return
+        }
+        print(spendName)
 ////         spend amount
         guard let spendAmount = spendAmountTextField.text,
               verifier.isAmountValid(amount: spendAmount) else {
             amountHelpText.text = R.string.addSpend.amountWorning()
             return
         }
+        print(spendAmount)
         // TODO: After implementing COREDATA make request
         // current event
-//        print(chooseEventView.chooseEventLable.text)
+        print(currentEvent)
         // current user
-//        print(self.chooseUserView.chooseEventLable.text)
-//        current split
-//        var spilt: [String: Int] = [:]
-//        for i in 0 ..< eventUsers.count {
-//            let indexPath = IndexPath(row: i, section: 0)
-//            guard let cell = splitSelectorsView.cellForRow(at: indexPath) as? SplitSelectorViewCell else {
-//                break
-//            }
-//            spilt[cell.userNameLable.text ?? "unknown"] = Int(cell.percent.text ?? "0") ?? 0
-//        }
-//        print(spilt)
-        
-        let split: [String: Any] = [
-            "admin": 33,
-            "123456": 33,
-            "23456677": 33,
-        ]
-        let splitJson = try! JSONSerialization.data(withJSONObject: split)
-        let splitString = String(data: splitJson, encoding: .utf8)!
+        print(self.payeer)
+        // current date
         let dateFormatter = DateFormatter()
         let userLocale = Locale(identifier: Locale.current.languageCode ?? "ru_RU")
         dateFormatter.locale = userLocale
         dateFormatter.dateFormat = "YYYY-MM-dd"
-        let createdDate = dateFormatter.string(from: datePicker.date)
+        let date = datePicker.date
+        let createdDate = dateFormatter.string(from: date)
+        print(createdDate)
+//        current split
+        var split: [String: Int8] = [:]
+        for i in 0 ..< eventUsers.count {
+            let indexPath = IndexPath(row: i, section: 0)
+            guard let cell = splitSelectorsView.cellForRow(at: indexPath) as? SplitSelectorViewCell else {
+                break
+            }
+            split[cell.phone] = Int8(cell.percent.text ?? "0") ?? 0
+        }
+        let splitIsntOk = (
+            selectSplitText.attributedText ==
+        NSMutableAttributedString(string: R.string.addSpend.percentLess())) || (selectSplitText.attributedText ==
+            NSMutableAttributedString(string:R.string.addSpend.percentMore()))
+        if splitIsntOk {
+            selectSplitText.textColor = .red
+            return
+        }
+        print(split)
+        // toss spend to the backend
+        let splitJson = try! JSONSerialization.data(withJSONObject: split)
+        let splitString = String(data: splitJson, encoding: .utf8)!
         let spendData: [String: Any] = [
             "split": splitString,
-            "name": "8Spend",
-            "payeer": ["username": "admin"],
-            "event": ["id": "28", "name": "test10"],
+            "name": spendName,
+            "payeer": ["username": payeer?.imageName],
+            "event": ["id": currentEvent?.eventId, "name": currentEvent?.name],
             "date": createdDate,
-            "amount": spendAmount
+            "amount": spendAmount,
         ]
         let jsonData = try? JSONSerialization.data(withJSONObject: spendData)
         var request = setupRequest(url: .createSpend, method: .post, body: jsonData)
@@ -523,8 +543,23 @@ final class AddSpendViewController: UIViewController {
         ) else { return }
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         let successHanlder = { [unowned self] (data: Data) throws in
-            // TODO: make a success notification bar
-            print(data)
+            let responseObject = try JSONDecoder().decode(SpendCreateSuccess.self, from: data)
+            
+            DispatchQueue.main.async {
+                let newSpend = CoreDataManager.shared.createSpend(
+                    name: spendName,
+                    eventId: self.currentEvent?.objectID,
+                    payeerUsername: self.payeer?.username,
+                    date: date,
+                    spendId: responseObject.spendId,
+                    totalAmount: Int16(spendAmount) ?? 0,
+                    split: split
+                )
+            if newSpend == nil { return }
+                self.mainVC.spendsData.append(newSpend!)
+                self.mainVC.tableView.reloadData()
+                self.dismiss(animated: true)
+            }
         }
         performRequest(request: request, successHandler: successHanlder)
     }
@@ -552,6 +587,7 @@ final class AddSpendViewController: UIViewController {
     }
     
     @objc func reloadSplit() {
+        self.selectSplitText.textColor = .black
         self.splitSelectorsView.reloadData()
         self.selectSplitText.text = R.string.addSpend.selectSplit()
     }
@@ -592,6 +628,5 @@ extension AddSpendViewController: UITextFieldDelegate {
         return true
     }
 }
-
 
 extension AddSpendViewController: AddSpendDelegate {}

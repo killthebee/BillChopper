@@ -18,11 +18,11 @@ final class MainViewController: UIViewController {
         }
     }
     
-    private var spendsData: [Spend] = []
+    var spendsData: [Spend] = []
     
     private lazy var profileViewController = ProfileViewController()
     private lazy var addEventViewController = AddEventViewController()
-    private lazy var addSpendViewController = AddSpendViewController()
+//    private weak var addSpendViewController = AddSpendViewController()
     
     private let eventButton = TopMainButton(color: UIColor.systemGray, title: R.string.main.eventButtonText())
 
@@ -37,7 +37,7 @@ final class MainViewController: UIViewController {
 
     private let footer = FooterView()
     
-    private let tableView: UITableView = {
+    let tableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .white
         tableView.register(SpendTableViewCell.self, forCellReuseIdentifier: SpendTableViewCell.identifier)
@@ -60,6 +60,7 @@ final class MainViewController: UIViewController {
         usersButtonData.forEach({
             if $0.imageName == appUser?.phone {
                 currentAppUser = $0
+                // TODO: replace it everywhere
                 currentAppUser?.username = "You"
             }
         })
@@ -213,10 +214,12 @@ final class MainViewController: UIViewController {
             self.present(self.addEventViewController, animated: true)
         }
         let addSpend = UIAction(title: "add new spend", image: UIImage(named: "spendIcon")) { (action) in
-            self.addSpendViewController.events = self.eventButtonData
-            self.addSpendViewController.modalPresentationStyle = .pageSheet
-            self.addSpendViewController.modalTransitionStyle = .coverVertical
-            self.present(self.addSpendViewController, animated: true)
+            let addSpendViewController = AddSpendViewController()
+            addSpendViewController.mainVC = self
+            addSpendViewController.events = self.eventButtonData
+            addSpendViewController.modalPresentationStyle = .pageSheet
+            addSpendViewController.modalTransitionStyle = .coverVertical
+            self.present(addSpendViewController, animated: true)
         }
         
         let menu = UIMenu(

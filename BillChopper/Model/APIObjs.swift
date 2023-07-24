@@ -40,10 +40,6 @@ struct UserFetch: Decodable {
     let profile: Profile
 }
 
-struct CreateSpendResponse: Decodable {
-    let success: Bool
-}
-
 struct EventSpend: Decodable {
     let id: Int64
     let name: String
@@ -60,4 +56,9 @@ struct EventsSpends: Decodable {
     let participants: [UserFetch]
     let event_type: Int8
     let spends: [EventSpend]
+}
+
+struct SpendCreateSuccess: Decodable {
+    let success: Bool
+    let spendId: Int64
 }

@@ -7,6 +7,8 @@ class SplitSelectorViewCell: UITableViewCell {
     
     let slider = CustomSlider()
     
+    var phone: String = ""
+    
     let userNameLable: UILabel = {
         let lable = UILabel()
         // that's a placeholder
@@ -88,5 +90,6 @@ class SplitSelectorViewCell: UITableViewCell {
         contentView.addSubview(userIcon)
         userNameLable.text = eventUser.username
         vcDelegate = delegate
+        phone = eventUser.phone
     }
 }

@@ -69,13 +69,14 @@ struct CoreDataManager {
     
     func saveEventsSpends(data: [EventsSpends], appUserPhone: String) {
         let context = persistentContainer.viewContext
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         
         // TODO: check if it's on main thread ones I'll figure out where to fire this method
         // I'll keep participants in memory for a monent
         var participantsTempStorage: [String: Participant] = [:]
         for event in data{
             let eventData = Event(context: context)
-            eventData.id = event.id
+            eventData.eventId = event.id
             eventData.eventType = Int16(event.event_type)
             eventData.name = event.name
             for participant in event.participants {
@@ -334,6 +335,63 @@ struct CoreDataManager {
                 print("Failed to delete the spend: \(error)")
             }
         }
+    }
+    
+    func createSpend(
+        name: String,
+        eventId: NSManagedObjectID?,
+        payeerUsername: String?,
+        date: Date,
+        spendId: Int64,
+        totalAmount: Int16,
+        split: [String: Int8]
+    ) -> Spend? {
+        let context = persistentContainer.viewContext
+        do {
+            guard let eventId = eventId,
+                  let event = context.object(with: eventId) as? Event,
+                  let participants = event.participants?.allObjects as? [Participant],
+                  let payeerUsername = payeerUsername else { return nil }
+            
+            let newSpendData = Spend(context: context)
+            newSpendData.name = name
+            newSpendData.date = date
+            newSpendData.spendId = spendId
+            newSpendData.totalAmount = totalAmount
+            newSpendData.event = event
+//
+                newSpendData.isBorrowed = payeerUsername != "You"
+//                
+//
+            for participant in participants {
+                guard let phone = participant.imageName else { break }
+                let newSplitUnit = SplitUnit(context: context)
+                // TODO: think about Int8
+                newSplitUnit.percent = Int16(split[phone]!)
+                newSplitUnit.participant = participant
+                newSplitUnit.spend = newSpendData
+
+                guard let username = participant.username else { break }
+                if username == "You" {
+                    newSpendData.amount = calculateSpendAmount(
+                        isBorrowed: payeerUsername != "You",
+                        totalAmount,
+                        split,
+                        phone: phone
+                    )
+                }
+                if username == payeerUsername {
+                    newSpendData.payeer = participant
+                }
+            }
+            try context.save()
+            
+            return newSpendData
+        }
+        catch {
+            print("failed to save new spend: \(error)")
+        }
+        return nil
     }
 
 }

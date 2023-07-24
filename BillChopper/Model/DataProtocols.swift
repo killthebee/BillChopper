@@ -5,6 +5,7 @@ protocol EventUserProtocol {
     var username: String { get }
     var percent: Int { get set }
     var image: UIImage? { get set }
+    var phone: String { get }
 }
 // probably i'm gonna need event parrent for the spend
 
@@ -44,6 +45,7 @@ struct EventUser: EventUserProtocol {
     let username: String
     var percent: Int
     var image: UIImage?
+    let phone: String
 }
 
 struct newEventUser: newEvenUserProtocol {
