@@ -312,7 +312,8 @@ final class AddEventViewController: UIViewController {
                 }
                 let newEventUser = newEventUser(
                     username: responsObject.first_name,
-                    phone: code + phone
+                    phone: code + phone,
+                    imageUrl: responsObject.profile.profile_image ?? nil
                 )
                 delegate.newEventUsers.append(newEventUser)
                 self.userTableView.reloadData()

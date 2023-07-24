@@ -11,7 +11,7 @@ protocol EventUserProtocol {
 
 protocol newEventUserProtocol {
     var username: String? { get set }
-    var imageName: String? { get set }
+    var imageUrl: String? { get set }
     var phone: String { get }
 }
 
@@ -51,7 +51,7 @@ struct EventUser: EventUserProtocol {
 struct newEventUser: newEventUserProtocol {
     var username: String?
     let phone: String
-    var imageName: String?
+    var imageUrl: String?
 }
 
 struct spendEvent: EventProtocol {
