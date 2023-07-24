@@ -304,6 +304,7 @@ final class AddEventViewController: UIViewController {
         
         let userFetchSuccessHandler = { [unowned self] (data: Data) throws in
             let responsObject = try JSONDecoder().decode(UserFetch.self, from: data)
+            print(responsObject.profile.profile_image)
             DispatchQueue.main.async {
                 // wounder whether it'll create retain cycle xd
                 guard var delegate = self.userTableView.delegate as? UserTableDelegateAndDataSource else {
@@ -401,11 +402,6 @@ final class AddEventViewController: UIViewController {
             }
         }
         performRequest(request: request, successHandler: successHanlder)
-//        print(usernames)
-        
-//        print(currentEventType)
-        
-//        print(eventNameTextField.text)
     }
     
     @objc func handleExitButtonClicked(_ sender: UIButton) {
@@ -471,7 +467,7 @@ extension AddEventViewController: UITextFieldDelegate { }
 
 class UserTableDelegateAndDataSource: NSObject {
     // TODO: fetch array with user models here
-    var newEventUsers: [newEvenUserProtocol] = []
+    var newEventUsers: [newEventUserProtocol] = []
 }
 
 extension UserTableDelegateAndDataSource: UITableViewDataSource, UITableViewDelegate{

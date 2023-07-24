@@ -55,10 +55,12 @@ final class UserTableViewCell: UITableViewCell {
         userPhoneLable.widthAnchor.constraint(equalTo: cellStack.widthAnchor, multiplier: 0.6).isActive = true
     }
     
-    func configure(_ userData: newEvenUserProtocol) {
+    func configure(_ userData: newEventUserProtocol) {
         userPhoneLable.text = userData.phone
         if let username = userData.username {
-            usernameLable.text = username
+            usernameLable.text = username != "" ? username : "new User!"
+        } else {
+            usernameLable.text = "new User!"
         }
         if let image = userData.imageName {
             userIconView.image = UIImage(named: image)

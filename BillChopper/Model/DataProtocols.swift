@@ -9,7 +9,7 @@ protocol EventUserProtocol {
 }
 // probably i'm gonna need event parrent for the spend
 
-protocol newEvenUserProtocol {
+protocol newEventUserProtocol {
     var username: String? { get set }
     var imageName: String? { get set }
     var phone: String { get }
@@ -48,7 +48,7 @@ struct EventUser: EventUserProtocol {
     let phone: String
 }
 
-struct newEventUser: newEvenUserProtocol {
+struct newEventUser: newEventUserProtocol {
     var username: String?
     let phone: String
     var imageName: String?
