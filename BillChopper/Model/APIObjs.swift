@@ -62,3 +62,7 @@ struct SpendCreateSuccess: Decodable {
     let success: Bool
     let spendId: Int64
 }
+
+struct EventCreated: Decodable {
+    let id: Int16
+}

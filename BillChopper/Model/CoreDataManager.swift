@@ -359,6 +359,8 @@ struct CoreDataManager {
             newSpendData.spendId = spendId
             newSpendData.totalAmount = totalAmount
             newSpendData.event = event
+            // TODO: Check if its working of main screen
+            event.addToSpends(newSpendData)
 //
                 newSpendData.isBorrowed = payeerUsername != "You"
 //                
@@ -391,7 +393,44 @@ struct CoreDataManager {
         catch {
             print("failed to save new spend: \(error)")
         }
+        
         return nil
     }
-
+    
+    func createEvent(
+        eventId: Int16,
+        name: String,
+        eventType: Int16,
+        users: [newEventUserProtocol]
+    ) -> Event? {
+        let context = persistentContainer.viewContext
+        
+        let newEventData = Event(context: context)
+        newEventData.name = name
+        newEventData.eventType = eventType
+        newEventData.eventId = eventId
+        
+        for user in users {
+            let fetchRequest = NSFetchRequest<Participant>(entityName: "Participant")
+            fetchRequest.predicate = NSPredicate(format: "imageName == %d", user.phone)
+            fetchRequest.fetchLimit = 1
+            if let participant = try? context.fetch(fetchRequest).first {
+                newEventData.addToParticipants(participant)
+                participant.addToEvents(newEventData)
+            } else {
+                let newParticipantData = Participant(context: context)
+                newParticipantData.imageName = user.phone
+                newParticipantData.username = user.phone
+                newEventData.addToParticipants(newParticipantData)
+                newParticipantData.addToEvents(newEventData)
+            }
+        }
+        do {
+            try context.save()
+            return newEventData
+        } catch {
+            print("failed to save new event: \(error)")
+        }
+        return nil
+    }
 }

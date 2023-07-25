@@ -8,7 +8,7 @@ final class MainViewController: UIViewController {
     var appUser: AppUser? = nil
     var currentAppUser: Participant? = nil
     
-    private var eventButtonData: [Event] = [] {
+    var eventButtonData: [Event] = [] {
         didSet {
             self.eventButton.menu = getEventMenu()
         }
@@ -212,6 +212,7 @@ final class MainViewController: UIViewController {
     private func getCoverPlusIconMenu() -> UIMenu {
         let addEvent = UIAction(title: "add new event", image: UIImage(named: "eventIcon")) { (action) in
             let AddEventViewController = AddEventViewController()
+            AddEventViewController.mainVC = self
             AddEventViewController.currentUserPhone = self.currentAppUser?.imageName
             AddEventViewController.modalPresentationStyle = .pageSheet
             AddEventViewController.modalTransitionStyle = .coverVertical

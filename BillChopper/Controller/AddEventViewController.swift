@@ -3,6 +3,7 @@ import UIKit
 final class AddEventViewController: UIViewController {
     
     var currentUserPhone: String? = nil
+    unowned var mainVC: MainViewController!
     
     private var iconView = ProfileIcon().setUpIconView(
         R.image.eventIcon()!
@@ -399,7 +400,17 @@ final class AddEventViewController: UIViewController {
         
         let successHanlder = { [unowned self] (data: Data) throws in
             // TODO: make a success notification bar
+            let responseObject = try JSONDecoder().decode(EventCreated.self, from: data)
+            
             DispatchQueue.main.async {
+                let newEvent = CoreDataManager.shared.createEvent(
+                    eventId: responseObject.id,
+                    name: eventName,
+                    eventType: Int16(convertEventTypes(type:currentEventType)),
+                    users: delegate.newEventUsers
+                )
+                if newEvent == nil { return }
+                self.mainVC.eventButtonData.append(newEvent!)
                 dismiss(animated: true)
             }
         }
