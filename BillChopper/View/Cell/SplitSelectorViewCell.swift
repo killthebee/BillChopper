@@ -33,8 +33,6 @@ class SplitSelectorViewCell: UITableViewCell {
     
     private var userIcon: ProfileIcon = {
         let icon = ProfileIcon()
-        // just a placeholder ( move to a configurator in the future )
-        //icon.image = UIImage(named: "HombreDefault1")
         
         return icon
     }()

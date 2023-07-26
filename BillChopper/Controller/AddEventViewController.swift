@@ -37,7 +37,6 @@ final class AddEventViewController: UIViewController {
     
     private let invalidPhoneWarningLable: UILabel = {
         let invalidPhoneWarningLable = UILabel()
-        //invalidPhoneWarningLable.text = "Phone is not valid!"
         invalidPhoneWarningLable.font = invalidPhoneWarningLable.font.withSize(15)
         invalidPhoneWarningLable.lineBreakMode = .byWordWrapping
         invalidPhoneWarningLable.numberOfLines = 0
@@ -66,7 +65,6 @@ final class AddEventViewController: UIViewController {
         return table
     }()
     
-    // TODO: change the layout so it'll fit on mini
     private let phoneInput = PhoneInput(isCode: false)
     
     private let codeInput = PhoneInput(isCode: true)
@@ -94,7 +92,6 @@ final class AddEventViewController: UIViewController {
     }()
     
     private var viewModels: [CollectionTableViewCellViewModel] = [
-        // TODO: Add ~2 more pls
         CollectionTableViewCellViewModel(viewModels: [
             TileCollectionViewModel(
                 eventTypeName: R.string.addEvent.tripEventType(),
@@ -358,9 +355,6 @@ final class AddEventViewController: UIViewController {
             successHandler: userFetchSuccessHandler,
             failureHandler: fetchFailureHandler
         )
-        
-        // TODO: Figure out what to do with img urls
-        
     }
     
     @objc func handleSaveEvent(_ sender: UIButton) {
@@ -375,12 +369,16 @@ final class AddEventViewController: UIViewController {
             return
         }
         
-        guard delegate.newEventUsers.count > 0 else {
+        if !Verifier().UsersAreAdded(users: delegate.newEventUsers) {
             self.invalidPhoneWarningLable.text = "no user were added!"
             return
         }
-        // TODO: add current user, make shure at least two users in event
-        delegate.newEventUsers.append(newEventUser(username: "You", phone: self.currentUserPhone!))
+        delegate.newEventUsers.append(
+            newEventUser(
+                username: R.string.main.you(),
+                phone: self.currentUserPhone!
+            )
+        )
         let usernames = delegate.newEventUsers.map {
             ["username": Verifier().stripPhoneNumber(phone: $0.phone)]
         }
@@ -479,7 +477,6 @@ extension AddEventViewController: CollectionTableViewCellDelegate {
 extension AddEventViewController: UITextFieldDelegate { }
 
 class UserTableDelegateAndDataSource: NSObject {
-    // TODO: fetch array with user models here
     var newEventUsers: [newEventUserProtocol] = []
 }
 

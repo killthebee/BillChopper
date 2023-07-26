@@ -148,4 +148,8 @@ class Verifier {
         
         return isValid ? (isValid, serializedData) : (isValid, errors)
     }
+    
+    func UsersAreAdded(users: [newEventUserProtocol]) -> Bool {
+        return users.count > 0 
+    }
 }

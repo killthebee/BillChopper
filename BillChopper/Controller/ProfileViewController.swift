@@ -29,20 +29,11 @@ final class ProfileViewController: UIViewController {
         return uploadButton
     }()
     
-    private var saveButton: UIButton = {
-        // TODO: use already existing save button
-        let saveButton = UIButton()
+    private let saveButton: SaveButton = {
+        let button = SaveButton()
+        button.addTarget(self, action: #selector(handleSaveButtonClicked), for: .touchDown)
         
-        saveButton.backgroundColor = UIColor(
-            hue: 0/360, saturation: 0/100, brightness: 98/100, alpha: 1.0
-        )
-        saveButton.layer.borderWidth = 1
-        saveButton.layer.cornerRadius = 15
-        saveButton.setTitle(R.string.profileView.saveButtonTitle(), for: .normal )
-        saveButton.setTitleColor(.black, for: .normal)
-        saveButton.addTarget(self, action: #selector(handleSaveButtonClicked), for: .touchDown)
-        
-        return saveButton
+        return button
     }()
     
     private lazy var usernameTextField: CustomTextField = {
@@ -170,9 +161,6 @@ final class ProfileViewController: UIViewController {
     private func setupViews() {
         view.backgroundColor = .white
         self.imagePicker = ImagePicker(presentationController: self, delegate: self)
-//        if let phoneNum = appUser?.phone {
-//            self.rawNumber =
-//        }
         usernameTextField.delegate = self
         
         
@@ -221,7 +209,6 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc func handleTapOnIcon() {
-        // why do I need selfs here?
         let newDiameter = CGFloat(300)
         iconTopAnchor?.constant = CGFloat(self.view.center.y) - newDiameter / 2
         iconWidthAnchor?.constant = newDiameter

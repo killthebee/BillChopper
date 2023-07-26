@@ -3,8 +3,6 @@ import CoreData
 
 final class MainViewController: UIViewController {
     
-    // TODO: test if participant is unathentickated 
-    
     var appUser: AppUser? = nil
     var currentAppUser: Participant? = nil
     
@@ -62,8 +60,7 @@ final class MainViewController: UIViewController {
         usersButtonData.forEach({
             if $0.imageName == appUser?.phone {
                 currentAppUser = $0
-                // TODO: replace it everywhere
-                currentAppUser?.username = "You"
+                currentAppUser?.username = R.string.main.you()
             }
         })
         

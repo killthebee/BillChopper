@@ -32,10 +32,7 @@ class ChooseButtonView: UIView {
         self.addSubview(chooseEventLable)
         self.addSubview(chooseEventImage)
         
-        //TODO: guess i'm gonna comment it out soon
-        if let menu = menu {
-            chooseButton.menu = menu
-        }
+        chooseButton.menu = menu
         chooseEventLable.text = text
         chooseEventImage.image = image
     }

@@ -365,7 +365,6 @@ final class AddSpendViewController: UIViewController {
          spendNameTextField, spendAmountTextField, spendTotalStackView, nameHelpText, amountHelpText,
          datePicker, spendDateStackView, spendDateText,
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
-        // TODO: make extra container for stacks so they'll be centered
         let constraints: [NSLayoutConstraint] = [
         
             chooseUserView.widthAnchor.constraint(equalTo: payeerStackView.widthAnchor, multiplier: 0.7),
@@ -476,8 +475,6 @@ final class AddSpendViewController: UIViewController {
     }
     
     @objc func handleSaveEvent(_ sender: UIButton) {
-        // TODO: Erase warnings!@
-        // gathering data
 //         spend name
         selectSplitText.textColor = .black
         let verifier = Verifier()
@@ -494,7 +491,6 @@ final class AddSpendViewController: UIViewController {
             return
         }
         print(spendAmount)
-        // TODO: After implementing COREDATA make request
         // current event
         print(currentEvent)
         // current user
