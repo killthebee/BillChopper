@@ -1,7 +1,6 @@
 import UIKit
 
 class ChooseButtonView: UIView {
-    // TODO: rename pls!
     let chooseEventLable: UILabel = {
         let lable = UILabel()
         lable.textColor = .black
@@ -60,25 +59,6 @@ class ChooseButtonView: UIView {
             width: bounds.size.width * 0.16,
             height: bounds.size.width * 0.16
         )
-    }
-    
-    private func getChooseMenu() -> UIMenu {
-        let dummyEvent1 = UIAction(title: "event1", image: UIImage(named: "LentActionIcon")) {
-            (action) in
-            print("dummy event1")
-        }
-        let dummyEvent2 = UIAction(title: "event2", image: UIImage(named: "BorrowActionIcon")) {
-            (action) in
-            print("dummy event2")
-        }
-        
-        let menu = UIMenu(
-            title: "events",
-            options: .displayInline,
-            children: [dummyEvent1, dummyEvent2]
-        )
-        
-        return menu
     }
     
 }
