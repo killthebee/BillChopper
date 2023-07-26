@@ -44,7 +44,7 @@ let flexSpace = UIBarButtonItem(
 
 
 func convertEventTypes(type: String) -> Int {
-    // hardcode is the right way to write ones code!
+    // hardcode is the right way!
     switch type {
     case "trip":
         return 1
@@ -107,7 +107,7 @@ func convertNumToMonth(_ num: Int) -> String {
 
 
 func isImageDefault(image: UIImage?) -> Bool {
-    // TODO: increase list of default images
+    // TODO: increase list of default images and second gender
     return image == UIImage(named: "HombreDefault1")
 }
 

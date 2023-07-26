@@ -1,10 +1,5 @@
 import UIKit
 
-class Networking {
-    // I think it'll grow
-    
-}
-
 func setupRequest(
     url: Urls,
     method: Method,
@@ -38,15 +33,15 @@ func performRequest(
             let data = data,
             let response = response as? HTTPURLResponse,
             error == nil
-        else {                                                               // check for fundamental networking error
+        else {
             print("error", error ?? URLError(.badServerResponse))
             return
         }
-        guard (200 ... 299) ~= response.statusCode else {                    // check for http errors
+        guard (200 ... 299) ~= response.statusCode else {
             do {
                 try failureHandler(data)
             } catch {
-                print(error) // parsing error
+                print(error)
                 
                 if let responseString = String(data: data, encoding: .utf8) {
                     print("responseString = \(responseString)")
@@ -59,7 +54,7 @@ func performRequest(
         do {
             try successHandler(data)
         } catch {
-            print(error) // parsing error
+            print(error)
 
             if let responseString = String(data: data, encoding: .utf8) {
                 print("responseString = \(responseString)")
