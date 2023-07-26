@@ -116,7 +116,7 @@ class LaunchViewController: UIViewController {
     private var usernameTextField: CustomTextField = {
         let usernameTextField = CustomTextField()
         usernameTextField.textColor = .black
-        usernameTextField.placeholder = "username"
+        usernameTextField.placeholder = R.string.profileView.usernamePlacehodler()
         usernameTextField.font = UIFont.boldSystemFont(ofSize: 21)
         usernameTextField.autocorrectionType = UITextAutocorrectionType.no
         usernameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
@@ -521,10 +521,16 @@ class LaunchViewController: UIViewController {
     
     private func addToolbars() {
         let loginContinueButton = UIBarButtonItem(
-            title: "Continue", style: .plain,target: self, action: nil
+            title: R.string.profileView.continue(),
+            style: .plain,
+            target: self,
+            action: nil
         )
         let signupContinueButton = UIBarButtonItem(
-            title: "Continue", style: .plain,target: self, action: nil
+            title: R.string.profileView.continue(),
+            style: .plain,
+            target: self,
+            action: nil
         )
         
         let loginCodeKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
@@ -728,7 +734,7 @@ class LaunchViewController: UIViewController {
             let signUpSuccessHandler = { [unowned self] (data: Data) throws in
                 let responseObject = try JSONDecoder().decode(RegisterationSuccess.self, from: data)
                 DispatchQueue.main.async {
-                    self.welcomeBackHeaderLable.text = "Time to Login!"
+                    self.welcomeBackHeaderLable.text = R.string.launchView.welcomeBackHeader()
                     self.changeStage(stage: .login)
                     return
                 }
@@ -741,7 +747,7 @@ class LaunchViewController: UIViewController {
                         errors["username"] = usernameWarning.joined(separator: " ")
                     }
                     if responseObject.password != nil {
-                        errors["password"] = "least one uppercase, least one digit, min 8 characters total"
+                        errors["password"] = R.string.launchView.pwError()
                     }
                     self?.setWarrings(erros: errors)
                 }
@@ -798,6 +804,5 @@ class LaunchViewController: UIViewController {
         } else {
             print("none")
         }
-        
     }
 }

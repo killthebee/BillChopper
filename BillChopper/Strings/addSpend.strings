@@ -12,3 +12,7 @@
 "nameWorning" = "name isn't valid";
 "amountWorning" = "spend amount isn't valid";
 "date" = "date";
+"unknown" = "unknown";
+"chooseUser" = "choose user";
+"chooseEvent" = "choose event";
+"eventIsEmpty" = "event is empty";

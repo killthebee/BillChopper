@@ -20,10 +20,6 @@ final class MainViewController: UIViewController {
     
     var spendsData: [Spend] = []
     
-    private lazy var profileViewController = ProfileViewController()
-//    private lazy var addEventViewController = AddEventViewController()
-//    private weak var addSpendViewController = AddSpendViewController()
-    
     private let eventButton = TopMainButton(color: UIColor.systemGray, title: R.string.main.eventButtonText())
 
     private let balanceButton = TopMainButton(color: customGreen, title: R.string.main.balanceButtonText())
@@ -93,19 +89,18 @@ final class MainViewController: UIViewController {
     
     private func getEventMenu() -> UIMenu {
         var buttons: [UIAction] = []
-        let allEventsButton = UIAction(title: "all") { (action) in
+        let allEventsButton = UIAction(title: R.string.main.all()) { (action) in
             self.spendsData = CoreDataManager.shared.fetchSpends() ?? []
             self.tableView.reloadData()
-            self.footer.eventName.text = "ALL"
+            self.footer.eventName.text = R.string.main.allBig()
             self.footer.eventText.text = R.string.main.eventMenuText()
             self.calculateTotal()
         }
         buttons.append(allEventsButton)
         for eventData in eventButtonData {
-            let eventName = eventData.name ?? "unnamed"
+            let eventName = eventData.name ?? R.string.main.unnamed()
             let imageName = reverseConvertEventTypes(type: eventData.eventType)
             let eventButton = UIAction(title: eventName, image: UIImage(named: imageName)) { (action) in
-                print("event named: \(eventName)")
                 self.spendsData = CoreDataManager.shared.fetchEventSpends(eventData)
                 self.tableView.reloadData()
                 self.footer.eventName.text = eventName
@@ -128,7 +123,7 @@ final class MainViewController: UIViewController {
         var buttons: [UIAction] = []
         for usersData in usersButtonData {
             if usersData == currentAppUser { continue }
-            let username = usersData.username ?? "unnamed"
+            let username = usersData.username ?? R.string.main.unnamed()
             let imageName = usersData.imageName ?? "HombreDefault1"
             let eventButton = UIAction(
                 title: username,
@@ -207,7 +202,9 @@ final class MainViewController: UIViewController {
     }
     
     private func getCoverPlusIconMenu() -> UIMenu {
-        let addEvent = UIAction(title: "add new event", image: UIImage(named: "eventIcon")) { (action) in
+        let addEvent = UIAction(
+            title: R.string.main.addEvent(),
+            image: UIImage(named: "eventIcon")) { (action) in
             let AddEventViewController = AddEventViewController()
             AddEventViewController.mainVC = self
             AddEventViewController.currentUserPhone = self.currentAppUser?.imageName
@@ -215,7 +212,9 @@ final class MainViewController: UIViewController {
             AddEventViewController.modalTransitionStyle = .coverVertical
             self.present(AddEventViewController, animated: true)
         }
-        let addSpend = UIAction(title: "add new spend", image: UIImage(named: "spendIcon")) { (action) in
+        let addSpend = UIAction(
+            title: R.string.main.addSpend(),
+            image: UIImage(named: "spendIcon")) { (action) in
             let addSpendViewController = AddSpendViewController()
             addSpendViewController.mainVC = self
             addSpendViewController.events = self.eventButtonData
@@ -283,6 +282,7 @@ final class MainViewController: UIViewController {
     }
     
     @objc func handleTapOnProfileIcon(sender: UITapGestureRecognizer) {
+        let profileViewController = ProfileViewController()
         profileViewController.modalPresentationStyle = .pageSheet
         profileViewController.appUser = self.appUser
         profileViewController.isImageChanged = false
@@ -340,7 +340,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let payed = UIContextualAction(style: .destructive,title: "Payed") {
+        let payed = UIContextualAction(style: .destructive, title: R.string.main.payed()) {
             [weak self] (action, view, completionHandler) in
             self?.handleMoveToTrash(indexPath)
             completionHandler(true)

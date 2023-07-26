@@ -114,10 +114,10 @@ final class AddSpendViewController: UIViewController {
                 for participant in participants {
                     let image = loadImageFromDiskWith(fileName: participant.imageName ?? "") ?? UIImage(named: "HombreDefault1")
                     self.eventUsers.append(EventUser(
-                        username: participant.username ?? "unnamed",
+                        username: participant.username ?? R.string.main.unnamed(),
                         percent: percent,
                         image: image,
-                        phone: participant.imageName ?? "unknown"
+                        phone: participant.imageName ?? R.string.addSpend.unknown()
                     ))
                 }
                 
@@ -139,14 +139,14 @@ final class AddSpendViewController: UIViewController {
                     userButtons.append(userButton)
                 }
                 let menu = UIMenu(
-                    title: "choose user",
+                    title: R.string.addSpend.chooseUser(),
                     options: .displayInline,
                     children: userButtons
                 )
                 
                 self.payeerStackView.removeFromSuperview()
                 self.chooseUserView = ChooseButtonView(
-                    text: "choose user",
+                    text: R.string.addSpend.chooseUser(),
                     image: UIImage(named: "HombreDefault1")!,
                     menu: menu
                 )
@@ -159,7 +159,7 @@ final class AddSpendViewController: UIViewController {
         }
         let menu = UIMenu(title: "spendEvents", options: .displayInline, children: eventsButtons)
         let button =  ChooseButtonView(
-            text: "choose event",
+            text: R.string.addSpend.chooseEvent(),
             image: UIImage(named: "saveIcon")!,
             menu: menu
         )
@@ -168,7 +168,10 @@ final class AddSpendViewController: UIViewController {
     }()
 
     private var chooseUserView: ChooseButtonView = {
-        let button = ChooseButtonView(text: "choose user", image: UIImage(named: "HombreDefault1")!)
+        let button = ChooseButtonView(
+            text:R.string.addSpend.chooseUser(),
+            image: UIImage(named: "HombreDefault1")!
+        )
         button.chooseButton.addTarget(self, action: #selector(unselectedTap), for: .touchUpInside)
         
         return button
@@ -260,8 +263,6 @@ final class AddSpendViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("777")
-        print(CoreDataManager.shared.fetchSpends())
         addSubviews()
         setupViews()
         addToolbars()
@@ -333,20 +334,6 @@ final class AddSpendViewController: UIViewController {
         dateTextField.widthAnchor.constraint(equalTo: stack.widthAnchor, multiplier: 0.7).isActive = true
         
         return stack
-//        let wrap = UIView()
-//        wrap.translatesAutoresizingMaskIntoConstraints = false
-//        wrap.addSubview(datePicker)
-//        wrap.layer.borderColor = UIColor.black.cgColor
-//        wrap.layer.cornerRadius = 15
-//        wrap.layer.borderWidth = 1
-//        datePicker.centerXAnchor.constraint(equalTo: wrap.centerXAnchor).isActive = true
-//        datePicker.centerYAnchor.constraint(equalTo: wrap.centerYAnchor).isActive = true
-//        let stack = UIStackView(
-//            arrangedSubviews: [spendDateText, wrap]
-//        )
-//        wrap.widthAnchor.constraint(equalTo: stack.widthAnchor, multiplier: 0.7).isActive = true
-//
-//        return stack
     }()
     
     override func viewDidLayoutSubviews() {
@@ -578,7 +565,7 @@ final class AddSpendViewController: UIViewController {
     }
     
     @objc func unselectedTap() {
-        self.chooseUserView.chooseEventLable.text = "event is empty"
+        self.chooseUserView.chooseEventLable.text = R.string.addSpend.eventIsEmpty()
         self.chooseUserView.chooseEventLable.textColor = .red
     }
     
@@ -594,7 +581,6 @@ extension AddSpendViewController: UITableViewDelegate, UITableViewDataSource {
         var eventUser = eventUsers[indexPath.row]
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SplitSelectorViewCell.identifier) as? SplitSelectorViewCell else { return UITableViewCell() }
         cell.configure(eventUsers[indexPath.row], self)
-//        cell.becomeFirstResponder()
         
         return cell 
     }

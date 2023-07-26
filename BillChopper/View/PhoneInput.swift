@@ -1,6 +1,5 @@
 import UIKit
 
-
 class PhoneInput: UITextField {
     
     required init(isCode: Bool) {

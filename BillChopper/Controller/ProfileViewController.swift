@@ -41,7 +41,7 @@ final class ProfileViewController: UIViewController {
         usernameTextField.text = appUser?.username
         usernameTextField.textColor = .black
         usernameTextField.textAlignment = .center
-        usernameTextField.placeholder = "username"
+        usernameTextField.placeholder = R.string.profileView.usernamePlacehodler()
         usernameTextField.font = UIFont.boldSystemFont(ofSize: 21)
         usernameTextField.autocorrectionType = UITextAutocorrectionType.no
         usernameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
@@ -127,7 +127,10 @@ final class ProfileViewController: UIViewController {
     
     private func addToolbars() {
         let continueButton = UIBarButtonItem(
-            title: "Continue", style: .plain,target: self, action: nil
+            title: R.string.profileView.continue(),
+            style: .plain,
+            target: self,
+            action: nil
         )
         
         let codeKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
@@ -174,7 +177,7 @@ final class ProfileViewController: UIViewController {
     private func setUpPhoneField() {
         guard let phoneNumber = appUser?.phone,
         let phoneSplit = stripCodeAndPhone(number: phoneNumber) else {
-            phoneAndGenderHelpText.text = "feiled to load phone number"
+            phoneAndGenderHelpText.text = R.string.profileView.phoneParseFail()
             return
         }
         let code = "+" + phoneSplit.code

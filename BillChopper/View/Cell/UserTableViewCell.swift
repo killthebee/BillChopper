@@ -7,7 +7,7 @@ final class UserTableViewCell: UITableViewCell {
     
     private let userPhoneLable: UILabel = UILabel()
     
-    private let usernameLable: UILabel = UILabel(text: "New user")
+    private let usernameLable: UILabel = UILabel()
     
     lazy private var cellStack = UIStackView(
         //arrangedSubviews: [userIconView, usernameLable, userPhoneLable]
@@ -58,9 +58,9 @@ final class UserTableViewCell: UITableViewCell {
     func configure(_ userData: newEventUserProtocol) {
         userPhoneLable.text = userData.phone
         if let username = userData.username {
-            usernameLable.text = username != "" ? username : "new User!"
+            usernameLable.text = username != "" ? username : R.string.addEvent.newUserEx()
         } else {
-            usernameLable.text = "new User!"
+            usernameLable.text = R.string.addEvent.newUserEx()
         }
         if let imageUrl = userData.imageUrl {
             DispatchQueue.main.async {

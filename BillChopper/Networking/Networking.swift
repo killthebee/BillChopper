@@ -105,6 +105,7 @@ func uploadImage(fileName: String, image: UIImage) {
 
 
 func downloadImage(url: String) -> Data? {
+    // Use async!
     let imageUrl = URL(string: url)!
     if let data = try? Data(contentsOf: imageUrl) {
         return data

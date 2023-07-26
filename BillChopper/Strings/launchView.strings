@@ -7,3 +7,5 @@
 "singUpRange" = "Sing up!";
 "signUp" = "Sign up";
 "phoneHelpText" = "Enter your phone number so other user can add you";
+"pwError" = "least one uppercase, least one digit, min 8 characters total";
+"welcomeBackHeader" = "Time to Login!";

@@ -1,6 +1,5 @@
 import UIKit
 
-
 class PhoneInputDelegate: NSObject {
     
     var rawNumber = ""
@@ -26,7 +25,6 @@ extension PhoneInputDelegate: UITextFieldDelegate {
                 continueButton?.tintColor = .systemGray
                 return false
             }
-            print(textField.text)
             return true
         case 1:
             clearButton?.tintColor = customGreen

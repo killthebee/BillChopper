@@ -5,3 +5,6 @@
 "gender" = "gender:";
 "male" = "male";
 "female" = "female";
+"usernamePlacehodler" = "username";
+"phoneParseFail" = "failed to load phone number";
+"continue" = "Continue";

@@ -1,6 +1,5 @@
 import UIKit
 
-
 class CustomTextField: UITextField {
     
     public var sidePadding: CGFloat = 10

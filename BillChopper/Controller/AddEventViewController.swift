@@ -132,10 +132,16 @@ final class AddEventViewController: UIViewController {
     
     private func addToolbar() {
         let continueButton = UIBarButtonItem(
-            title: "Continue", style: .plain,target: self, action: nil
+            title: R.string.profileView.continue(),
+            style: .plain,
+            target: self,
+            action: nil
         )
         let clearButton = UIBarButtonItem(
-            title: "Clear", style: .plain,target: self, action: nil
+            title: R.string.addEvent.clear(),
+            style: .plain,
+            target: self,
+            action: nil
         )
         
         let codeKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
@@ -361,7 +367,7 @@ final class AddEventViewController: UIViewController {
         guard let eventName = eventNameTextField.text,
               Verifier().isValidEventName(eventName: eventName) else {
             self.eventNameHelpLable.textColor = .red
-            self.eventNameHelpLable.text = "Event name isn't valid"
+            self.eventNameHelpLable.text = R.string.addEvent.eventNameNotValid()
             return
         }
         
@@ -370,7 +376,7 @@ final class AddEventViewController: UIViewController {
         }
         
         if !Verifier().UsersAreAdded(users: delegate.newEventUsers) {
-            self.invalidPhoneWarningLable.text = "no user were added!"
+            self.invalidPhoneWarningLable.text = R.string.addEvent.noUserAdded()
             return
         }
         delegate.newEventUsers.append(

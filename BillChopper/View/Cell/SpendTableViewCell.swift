@@ -6,7 +6,6 @@ class SpendTableViewCell: UITableViewCell {
     
     private let date: UILabel = {
         let lable = UILabel()
-        lable.text = "23"
         lable.font = lable.font.withSize(21)
         lable.textColor = .black
         
@@ -15,8 +14,6 @@ class SpendTableViewCell: UITableViewCell {
     
     private let month: UILabel = {
         let lable = UILabel()
-        // TODO: make an enum with months and rswift strings
-        lable.text = "sep"
         lable.font = lable.font.withSize(13)
         lable.textColor = .black
         
@@ -25,7 +22,6 @@ class SpendTableViewCell: UITableViewCell {
     
     var spendName: UILabel = {
         let lable = UILabel()
-        lable.text = "dummy (spend)"
         lable.font = UIFont.boldSystemFont(ofSize: 19)
         lable.textColor = .black
         
@@ -34,7 +30,6 @@ class SpendTableViewCell: UITableViewCell {
     
     private var spendPayeer: UILabel = {
         let lable = UILabel()
-        lable.text = "Pavel payed 300$"
         lable.font = lable.font.withSize(15)
         lable.textColor = .black
         
@@ -53,7 +48,6 @@ class SpendTableViewCell: UITableViewCell {
     
     let userBalanceDiff: UILabel = {
         let lable = UILabel()
-        lable.text = "$1670"
         lable.font = lable.font.withSize(23)
         lable.textAlignment = .right
         lable.textColor = .red
@@ -153,8 +147,9 @@ class SpendTableViewCell: UITableViewCell {
         guard let spendDate = data.date?.get(.day, .month) else { return }
         date.text = String(spendDate.day ?? 1)
         month.text = convertNumToMonth(spendDate.month ?? 1)
-        spendName.text = data.name ?? "unnamed"
-        spendPayeer.text = "\(data.payeer?.username ?? "unnamed") payed \(data.totalAmount)$"
+        spendName.text = data.name ?? R.string.main.unnamed()
+        spendPayeer.text =
+        "\(data.payeer?.username ?? R.string.main.unnamed()) \(R.string.main.payed()) \(data.totalAmount)$"
         userBalanceDiff.text = String(data.amount)
     }
 }
@@ -172,7 +167,6 @@ final class LentCell: SpendTableViewCell {
         userAction.text = R.string.mainCell.youLent()
         userAction.textColor = customGreen
         
-        userBalanceDiff.text = "$1670"
         userBalanceDiff.textAlignment = .right
         userBalanceDiff.textColor = customGreen
     }

@@ -1,6 +1,5 @@
 import UIKit
 
-
 class ExitCross: UIButton {
     
     override init(frame: CGRect) {
