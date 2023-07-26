@@ -555,7 +555,7 @@ final class AddSpendViewController: UIViewController {
                     totalAmount: Int16(spendAmount) ?? 0,
                     split: split
                 )
-            if newSpend == nil { return }
+                if newSpend == nil { return }
                 self.mainVC.spendsData.append(newSpend!)
                 self.mainVC.tableView.reloadData()
                 self.dismiss(animated: true)
