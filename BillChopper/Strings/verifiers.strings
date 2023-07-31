@@ -8,3 +8,7 @@
 "pwOrUsernameNotValid" = "No password or phone provided!";
 "usernameIsEmpty" = "username field is empty";
 "genderNotSelected" = "gender hasn't been chosen";
+"spendNameEmpty" = "no spend name";
+"spendNameNotValid" = "spend name isn't valed";
+"amountEmpty" = "no spend amount";
+"amountNotValid" = "amount not valid";

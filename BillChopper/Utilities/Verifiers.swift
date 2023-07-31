@@ -149,7 +149,52 @@ class Verifier {
         return isValid ? (isValid, serializedData) : (isValid, errors)
     }
     
+    func validateNewSpend(
+        _ name: String?,
+        _ amount: String?,
+        _ splitPecents: Int
+    )  -> (isValied: Bool, data: [String: String] ) {
+        var isValid = true
+        var errors: [String: String] = [:]
+        var serializedData: [String: String] = [:]
+        if name == nil {
+            isValid = false
+            errors["name"] = R.string.verifiers.spendNameEmpty()
+        } else {
+            if isValidEventName(eventName: name!) {
+                serializedData["name"] = name!
+            } else {
+                isValid = false
+                errors["name"] = R.string.verifiers.spendNameNotValid()
+            }
+            
+        }
+        
+        if amount == nil {
+            isValid = false
+            errors["amount"] = R.string.verifiers.amountEmpty()
+        } else {
+            if isAmountValid(amount: amount!) {
+                serializedData["amount"] = amount!
+            } else {
+                isValid = false
+                errors["amount"] = R.string.verifiers.amountNotValid()
+            }
+        }
+        
+        if !isSplitValid(splitPecents) {
+            isValid = false
+            errors["split"] = "error"
+        }
+        
+        return isValid ? (isValid, serializedData) : (isValid, errors)
+    }
+    
     func UsersAreAdded(users: [newEventUserProtocol]) -> Bool {
         return users.count > 0 
+    }
+    
+    func isSplitValid(_ sum: Int) -> Bool {
+        return !(99 > sum || 100 < sum)
     }
 }
