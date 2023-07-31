@@ -24,7 +24,7 @@ final class MainViewController: UIViewController {
 
     private let balanceButton = TopMainButton(color: customGreen, title: R.string.main.balanceButtonText())
     
-    private let profileIcon: ProfileIcon = {
+    let profileIcon: ProfileIcon = {
         if let appUserImage = loadImageFromDiskWith(fileName: "appUser") {
             return ProfileIcon(profileImage: appUserImage)
         }
@@ -283,6 +283,7 @@ final class MainViewController: UIViewController {
     
     @objc func handleTapOnProfileIcon(sender: UITapGestureRecognizer) {
         let profileViewController = ProfileViewController()
+        profileViewController.mainVC = self
         profileViewController.modalPresentationStyle = .pageSheet
         profileViewController.appUser = self.appUser
         profileViewController.isImageChanged = false
