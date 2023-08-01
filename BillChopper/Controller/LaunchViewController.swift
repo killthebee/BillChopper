@@ -1,8 +1,8 @@
 import UIKit
 
 class LaunchViewController: UIViewController {
-    private lazy var mainViewController = MainViewController()
-
+    
+    // MARK: Data
     enum AuthStages {
         case chooseMethod
         case login
@@ -10,7 +10,11 @@ class LaunchViewController: UIViewController {
     }
     
     private var currentStage: AuthStages = .chooseMethod
+    private let ifNewUserText = R.string.launchView.ifNewUser()
+    private let signUpRange = R.string.launchView.singUpRange()
+    let phoneNumDelegate = PhoneInputDelegate()
     
+    // MARK: UI Elements
     private let logoView: UIImageView = {
         let view = UIImageView()
         view.image = R.image.logo3()
@@ -79,9 +83,6 @@ class LaunchViewController: UIViewController {
         return lable
     }()
     
-    private let ifNewUserText = R.string.launchView.ifNewUser()
-    private let signUpRange = R.string.launchView.singUpRange()
-    
     private lazy var signUpLable: UILabel = {
         let lable = UILabel()
         lable.font = lable.font.withSize(15)
@@ -136,10 +137,7 @@ class LaunchViewController: UIViewController {
     }()
     
     let codeInput = PhoneInput(isCode: true)
-    
     let phoneInput = PhoneInput(isCode: false)
-    
-    let phoneNumDelegate = PhoneInputDelegate()
     
     private let phoneContainer = UIView()
     
@@ -198,223 +196,23 @@ class LaunchViewController: UIViewController {
         return singInErrorHelpText
     }()
     
-    private func setWarrings(erros: [String: String]) {
-        if let passwordWarning = erros["password"] {
-            passwordHelpText.text = passwordWarning
-        } else {
-            passwordHelpText.text = ""
-        }
-        if let usernameWarning = erros["username"] {
-            usernameHelpText.text = usernameWarning
-            usernameHelpText.textColor = .red
-        } else {
-            usernameHelpText.text = R.string.profileView.helpText()
-            usernameHelpText.textColor = .black
-        }
-        if let phoneWarning = erros["phone"] {
-            phoneHelpText.text = phoneWarning
-            phoneHelpText.textColor = .red
-        } else {
-            phoneHelpText.text = R.string.launchView.phoneHelpText()
-            phoneHelpText.textColor = .black
-        }
-    }
-    
     private let passwordAndPassword = PasswordAndPassword()
     
-    private func changeStage(stage: AuthStages) {
-        let stage1Constraints: [NSLayoutConstraint] = [
-            authButtonsContainer.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
-            authButtonsContainer.centerYAnchor.constraint(equalTo: authCoverView.centerYAnchor),
-            authButtonsContainer.widthAnchor.constraint(equalToConstant: 200),
-            authButtonsContainer.heightAnchor.constraint(equalToConstant: 135),
-            
-            signUpButton.topAnchor.constraint(equalTo: authButtonsContainer.topAnchor),
-            signUpButton.leadingAnchor.constraint(equalTo: authButtonsContainer.leadingAnchor),
-            signUpButton.trailingAnchor.constraint(equalTo: authButtonsContainer.trailingAnchor),
-            signUpButton.heightAnchor.constraint(equalToConstant: 50),
-            
-            signInButton.bottomAnchor.constraint(equalTo: authButtonsContainer.bottomAnchor),
-            signInButton.leadingAnchor.constraint(equalTo: authButtonsContainer.leadingAnchor),
-            signInButton.trailingAnchor.constraint(equalTo: authButtonsContainer.trailingAnchor),
-            signInButton.heightAnchor.constraint(equalToConstant: 50)
-        ]
-        let stage2Constaints: [NSLayoutConstraint] = [
-            phoneAndPassword.centerYAnchor.constraint(equalTo: authCoverView.centerYAnchor),
-            phoneAndPassword.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
-            phoneAndPassword.widthAnchor.constraint(equalToConstant: 300),
-            phoneAndPassword.heightAnchor.constraint(equalToConstant: 80),
-            
-            singInErrorHelpText.bottomAnchor.constraint(equalTo: phoneAndPassword.topAnchor),
-            singInErrorHelpText.widthAnchor.constraint(equalTo: phoneAndPassword.widthAnchor, multiplier: 0.9),
-            singInErrorHelpText.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
-            
-            welcomeBackHeaderLable.topAnchor.constraint(equalTo: authCoverView.topAnchor),
-            welcomeBackHeaderLable.bottomAnchor.constraint(equalTo: phoneAndPassword.topAnchor),
-            welcomeBackHeaderLable.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
-            welcomeBackHeaderLable.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
-            
-            signUpLable.topAnchor.constraint(equalTo: phoneAndPassword.bottomAnchor),
-            signUpLable.heightAnchor.constraint(equalToConstant: 20),
-            signUpLable.leadingAnchor.constraint(equalTo: phoneAndPassword.leadingAnchor, constant: 14),
-            signUpLable.trailingAnchor.constraint(equalTo: phoneAndPassword.trailingAnchor),
-            
-            authButtonsContainer.topAnchor.constraint(equalTo: signUpLable.bottomAnchor),
-            authButtonsContainer.bottomAnchor.constraint(equalTo: authCoverView.bottomAnchor),
-            authButtonsContainer.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
-            authButtonsContainer.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
-            
-            signInButton.centerXAnchor.constraint(equalTo: authButtonsContainer.centerXAnchor),
-            signInButton.centerYAnchor.constraint(equalTo: authButtonsContainer.centerYAnchor),
-            signInButton.heightAnchor.constraint(equalToConstant: 50),
-            signInButton.widthAnchor.constraint(equalToConstant: 200),
-        ]
-        let stage3Constraints: [NSLayoutConstraint] = [
-            singUpHeaderContainer.topAnchor.constraint(equalTo: authCoverView.topAnchor),
-            singUpHeaderContainer.heightAnchor.constraint(equalTo: authCoverView.heightAnchor, multiplier: 0.2),
-            singUpHeaderContainer.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
-            singUpHeaderContainer.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
-            
-            signUpHeader.centerXAnchor.constraint(equalTo: singUpHeaderContainer.centerXAnchor),
-            signUpHeader.centerYAnchor.constraint(equalTo: singUpHeaderContainer.centerYAnchor),
-            
-            usernameTextField.topAnchor.constraint(equalTo: singUpHeaderContainer.bottomAnchor),
-            usernameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            usernameTextField.heightAnchor.constraint(equalToConstant: 40),
-            usernameTextField.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
-            
-            usernameHelpText.topAnchor.constraint(equalTo: usernameTextField.bottomAnchor, constant: 10),
-            usernameHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            usernameHelpText.heightAnchor.constraint(equalToConstant: 40),
-            usernameHelpText.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor, multiplier: 0.95),
-            
-            phoneField.topAnchor.constraint(equalTo: usernameHelpText.bottomAnchor, constant: 40),
-            phoneField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            phoneField.heightAnchor.constraint(equalToConstant: 40),
-            phoneField.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor),
-            
-            phoneContainer.centerXAnchor.constraint(equalTo: phoneField.centerXAnchor),
-            phoneContainer.centerYAnchor.constraint(equalTo: phoneField.centerYAnchor),
-            phoneContainer.heightAnchor.constraint(equalTo: phoneField.heightAnchor),
-            
-            codeInput.heightAnchor.constraint(equalTo: phoneContainer.heightAnchor),
-            codeInput.leadingAnchor.constraint(equalTo: phoneContainer.leadingAnchor),
-            
-            phoneInput.leadingAnchor.constraint(equalTo: codeInput.trailingAnchor),
-            phoneInput.heightAnchor.constraint(equalTo: phoneContainer.heightAnchor),
-            phoneInput.trailingAnchor.constraint(equalTo: phoneContainer.trailingAnchor),
-            
-            phoneHelpText.topAnchor.constraint(equalTo: phoneContainer.bottomAnchor, constant: 10),
-            phoneHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            phoneHelpText.heightAnchor.constraint(equalToConstant: 40),
-            phoneHelpText.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor, multiplier: 0.95),
-            
-            passwordAndPassword.topAnchor.constraint(equalTo: phoneHelpText.bottomAnchor, constant: 40),
-            passwordAndPassword.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
-            passwordAndPassword.widthAnchor.constraint(equalToConstant: 300),
-            passwordAndPassword.heightAnchor.constraint(equalToConstant: 80),
-            
-            passwordHelpText.topAnchor.constraint(equalTo: passwordAndPassword.bottomAnchor),
-            passwordHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            passwordHelpText.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor, multiplier: 0.95),
-            
-            authButtonsContainer.bottomAnchor.constraint(equalTo: authCoverView.bottomAnchor),
-            authButtonsContainer.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
-            authButtonsContainer.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
-//
-            signUpButton.centerXAnchor.constraint(equalTo: authButtonsContainer.centerXAnchor),
-            signUpButton.centerYAnchor.constraint(equalTo: authButtonsContainer.centerYAnchor),
-            signUpButton.heightAnchor.constraint(equalToConstant: 50),
-            signUpButton.widthAnchor.constraint(equalToConstant: 200),
-        ]
-        switch stage {
-        case .chooseMethod:
-            authContainerZeroStageHeightConstrain?.isActive = false
-            authContainerOneTwoStageHeightConstrain?.isActive = true
-            
-            authCoverView.addSubview(authButtonsContainer)
-            [signUpButton, signInButton].forEach({authButtonsContainer.addSubview($0)})
-            
-            NSLayoutConstraint.activate(stage1Constraints)
-        case .login where currentStage == .chooseMethod:
-            currentStage = .login
-            [signUpButton, signInButton, authButtonsContainer].forEach({$0.removeFromSuperview()})
-            NSLayoutConstraint.deactivate(stage1Constraints)
-            
-            [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer, singInErrorHelpText
-            ].forEach({authCoverView.addSubview($0)})
-            authButtonsContainer.addSubview(signInButton)
-            
-            NSLayoutConstraint.activate(stage2Constaints)
-        case .signup where currentStage == .login:
-            currentStage = .signup
-            [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer, singInErrorHelpText
-            ].forEach({$0.removeFromSuperview()})
-            NSLayoutConstraint.deactivate(stage2Constaints)
-            
-            authContainerOneTwoStageHeightConstrain?.isActive = false
-            authContainerThreeStageHeightConstrain?.isActive = true
-            UIView.animate(withDuration: 0.5, animations: {
-                self.view.layoutIfNeeded()
-            })
-            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer, passwordHelpText
-            ].forEach({authCoverView.addSubview($0)})
-            authButtonsContainer.addSubview(signUpButton)
-            phoneField.addSubview(phoneContainer)
-            [codeInput, phoneInput].forEach({phoneContainer.addSubview($0)})
-            singUpHeaderContainer.addSubview(signUpHeader)
-            
-            NSLayoutConstraint.activate(stage3Constraints)
-            
-        case .signup where currentStage == .chooseMethod:
-            currentStage = .signup
-            [signUpButton, signInButton, authButtonsContainer].forEach({$0.removeFromSuperview()})
-            NSLayoutConstraint.deactivate(stage1Constraints)
-            
-            authContainerOneTwoStageHeightConstrain?.isActive = false
-            authContainerThreeStageHeightConstrain?.isActive = true
-            UIView.animate(withDuration: 0.5, animations: {
-                self.view.layoutIfNeeded()
-            })
-            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer, passwordHelpText
-            ].forEach({authCoverView.addSubview($0)})
-            authButtonsContainer.addSubview(signUpButton)
-            phoneField.addSubview(phoneContainer)
-            [codeInput, phoneInput].forEach({phoneContainer.addSubview($0)})
-            singUpHeaderContainer.addSubview(signUpHeader)
-            
-            NSLayoutConstraint.activate(stage3Constraints)
-        case .login where currentStage == .signup:
-            currentStage = .login
-            [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField,
-             phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer,
-             passwordHelpText].forEach({$0.removeFromSuperview()})
-            NSLayoutConstraint.deactivate(stage3Constraints)
-            
-            authContainerThreeStageHeightConstrain?.isActive = false
-            authContainerOneTwoStageHeightConstrain?.isActive = true
-            UIView.animate(withDuration: 0.5, animations: {
-                self.view.layoutIfNeeded()
-            })
-            
-            [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer, singInErrorHelpText
-            ].forEach({authCoverView.addSubview($0)})
-            authButtonsContainer.addSubview(signInButton)
-            
-            NSLayoutConstraint.activate(stage2Constaints)
-        default:
-            break
-        }
-    }
-
+    // Mark: Setup VC
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupViews()
         addSubviews()
         addToolbars()
-        initialLayoutSetUp(logoContainer: logoContainer)
+        initialAuthContainerLayoutSetUp()
+        addKeyboardNotifications()
         CoreDataManager.shared.clearAppData()
+        startAnimations()
+        refreshToken()
+    }
+    
+    private func addKeyboardNotifications() {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(keyboardWillShow(sender:)),
@@ -425,7 +223,9 @@ class LaunchViewController: UIViewController {
             selector: #selector(keyboardWillHide(sender:)),
             name: UIResponder.keyboardWillHideNotification, object: nil
         )
-        
+    }
+    
+    private func startAnimations() {
         UIView.animateKeyframes(withDuration: 1, delay: 0, animations: {
             UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5, animations: {
                 self.topCornerCircleView.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 0.5)
@@ -439,11 +239,9 @@ class LaunchViewController: UIViewController {
                 self.view.layoutIfNeeded()
             })
         })
-        refreshToken()
     }
     
     // MARK: Launch sequence!
-    
     private func refreshToken(){
         let refreshToken = KeychainHelper.standard.readToken(
             service: "refresh-token", account: "backend-auth"
@@ -500,9 +298,10 @@ class LaunchViewController: UIViewController {
             )
             
             DispatchQueue.main.async {
-                self.mainViewController.appUser = appUser
-                self.mainViewController.modalPresentationStyle = .fullScreen
-                self.present(self.mainViewController, animated: false)
+                let mainViewController = MainViewController()
+                mainViewController.appUser = appUser
+                mainViewController.modalPresentationStyle = .fullScreen
+                self.present(mainViewController, animated: false)
             }
         }
         
@@ -591,25 +390,31 @@ class LaunchViewController: UIViewController {
         signupPhoneDeledate?.continueButton = signupContinueButton
     }
     
+    private func initialAuthContainerLayoutSetUp() {
+        authContainerZeroStageHeightConstrain.isActive = true
+        authContainerOneTwoStageHeightConstrain.isActive = false
+        authContainerThreeStageHeightConstrain.isActive = false
+    }
+    
+    // MARK: Layout
     private let logoContainer = UIView()
-    private var logoContainerBottomConstaint: NSLayoutConstraint?
-    private var authContainerZeroStageHeightConstrain: NSLayoutConstraint?
-    private var authContainerOneTwoStageHeightConstrain: NSLayoutConstraint?
-    private var authContainerThreeStageHeightConstrain: NSLayoutConstraint?
+    
     private let authButtonsContainer = UIView()
     
     private lazy var singUpHeaderContainer = UIView()
-
-    private func initialLayoutSetUp(logoContainer: UIView) {
-        authContainerZeroStageHeightConstrain = authCoverView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0)
-        authContainerOneTwoStageHeightConstrain = authCoverView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5)
-        authContainerThreeStageHeightConstrain = authCoverView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7)
-        
-        authContainerZeroStageHeightConstrain?.isActive = true
-        authContainerOneTwoStageHeightConstrain?.isActive = false
-        authContainerThreeStageHeightConstrain?.isActive = false
-        logoContainerBottomConstaint = logoContainer.bottomAnchor.constraint(equalTo: authCoverView.topAnchor)
-    }
+    
+    private lazy var logoContainerBottomConstaint = logoContainer.bottomAnchor.constraint(
+        equalTo: authCoverView.topAnchor
+    )
+    private lazy var authContainerZeroStageHeightConstrain = authCoverView.heightAnchor.constraint(
+        equalTo: view.heightAnchor, multiplier: 0
+    )
+    private lazy var authContainerOneTwoStageHeightConstrain = authCoverView.heightAnchor.constraint(
+        equalTo: view.heightAnchor, multiplier: 0.5
+    )
+    private lazy var authContainerThreeStageHeightConstrain = authCoverView.heightAnchor.constraint(
+        equalTo: view.heightAnchor, multiplier: 0.7
+    )
     
     override func viewDidLayoutSubviews() {
         [logoView, logoContainer, topCornerCircleView, bottomCornerCircleView, authCoverView,
@@ -625,7 +430,7 @@ class LaunchViewController: UIViewController {
             authCoverView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             authCoverView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            logoContainerBottomConstaint!,
+            logoContainerBottomConstaint,
             logoContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             logoContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             logoContainer.topAnchor.constraint(equalTo: view.topAnchor),
@@ -649,30 +454,258 @@ class LaunchViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
     }
     
-    @objc func loginTapped() {
-        if currentStage != .login {
-            changeStage(stage: .login)
-            return
-        }
+    private lazy var stage1Constraints: [NSLayoutConstraint] = [
+        authButtonsContainer.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
+        authButtonsContainer.centerYAnchor.constraint(equalTo: authCoverView.centerYAnchor),
+        authButtonsContainer.widthAnchor.constraint(equalToConstant: 200),
+        authButtonsContainer.heightAnchor.constraint(equalToConstant: 135),
         
-        guard let phone = self.phoneInput.text,
-              let code = self.codeInput.text
-        else {
-            self.singInErrorHelpText.text = R.string.addEvent.notProvided()
-            return
-        }
+        signUpButton.topAnchor.constraint(equalTo: authButtonsContainer.topAnchor),
+        signUpButton.leadingAnchor.constraint(equalTo: authButtonsContainer.leadingAnchor),
+        signUpButton.trailingAnchor.constraint(equalTo: authButtonsContainer.trailingAnchor),
+        signUpButton.heightAnchor.constraint(equalToConstant: 50),
         
+        signInButton.bottomAnchor.constraint(equalTo: authButtonsContainer.bottomAnchor),
+        signInButton.leadingAnchor.constraint(equalTo: authButtonsContainer.leadingAnchor),
+        signInButton.trailingAnchor.constraint(equalTo: authButtonsContainer.trailingAnchor),
+        signInButton.heightAnchor.constraint(equalToConstant: 50)
+    ]
+    
+    private lazy var stage2Constaints: [NSLayoutConstraint] = [
+        phoneAndPassword.centerYAnchor.constraint(equalTo: authCoverView.centerYAnchor),
+        phoneAndPassword.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
+        phoneAndPassword.widthAnchor.constraint(equalToConstant: 300),
+        phoneAndPassword.heightAnchor.constraint(equalToConstant: 80),
+        
+        singInErrorHelpText.bottomAnchor.constraint(equalTo: phoneAndPassword.topAnchor),
+        singInErrorHelpText.widthAnchor.constraint(equalTo: phoneAndPassword.widthAnchor, multiplier: 0.9),
+        singInErrorHelpText.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
+        
+        welcomeBackHeaderLable.topAnchor.constraint(equalTo: authCoverView.topAnchor),
+        welcomeBackHeaderLable.bottomAnchor.constraint(equalTo: phoneAndPassword.topAnchor),
+        welcomeBackHeaderLable.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
+        welcomeBackHeaderLable.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
+        
+        signUpLable.topAnchor.constraint(equalTo: phoneAndPassword.bottomAnchor),
+        signUpLable.heightAnchor.constraint(equalToConstant: 20),
+        signUpLable.leadingAnchor.constraint(equalTo: phoneAndPassword.leadingAnchor, constant: 14),
+        signUpLable.trailingAnchor.constraint(equalTo: phoneAndPassword.trailingAnchor),
+        
+        authButtonsContainer.topAnchor.constraint(equalTo: signUpLable.bottomAnchor),
+        authButtonsContainer.bottomAnchor.constraint(equalTo: authCoverView.bottomAnchor),
+        authButtonsContainer.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
+        authButtonsContainer.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
+        
+        signInButton.centerXAnchor.constraint(equalTo: authButtonsContainer.centerXAnchor),
+        signInButton.centerYAnchor.constraint(equalTo: authButtonsContainer.centerYAnchor),
+        signInButton.heightAnchor.constraint(equalToConstant: 50),
+        signInButton.widthAnchor.constraint(equalToConstant: 200),
+    ]
+    
+    private lazy var stage3Constraints: [NSLayoutConstraint] = [
+        singUpHeaderContainer.topAnchor.constraint(equalTo: authCoverView.topAnchor),
+        singUpHeaderContainer.heightAnchor.constraint(equalTo: authCoverView.heightAnchor, multiplier: 0.2),
+        singUpHeaderContainer.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
+        singUpHeaderContainer.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
+        
+        signUpHeader.centerXAnchor.constraint(equalTo: singUpHeaderContainer.centerXAnchor),
+        signUpHeader.centerYAnchor.constraint(equalTo: singUpHeaderContainer.centerYAnchor),
+        
+        usernameTextField.topAnchor.constraint(equalTo: singUpHeaderContainer.bottomAnchor),
+        usernameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+        usernameTextField.heightAnchor.constraint(equalToConstant: 40),
+        usernameTextField.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
+        
+        usernameHelpText.topAnchor.constraint(equalTo: usernameTextField.bottomAnchor, constant: 10),
+        usernameHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+        usernameHelpText.heightAnchor.constraint(equalToConstant: 40),
+        usernameHelpText.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor, multiplier: 0.95),
+        
+        phoneField.topAnchor.constraint(equalTo: usernameHelpText.bottomAnchor, constant: 40),
+        phoneField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+        phoneField.heightAnchor.constraint(equalToConstant: 40),
+        phoneField.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor),
+        
+        phoneContainer.centerXAnchor.constraint(equalTo: phoneField.centerXAnchor),
+        phoneContainer.centerYAnchor.constraint(equalTo: phoneField.centerYAnchor),
+        phoneContainer.heightAnchor.constraint(equalTo: phoneField.heightAnchor),
+        
+        codeInput.heightAnchor.constraint(equalTo: phoneContainer.heightAnchor),
+        codeInput.leadingAnchor.constraint(equalTo: phoneContainer.leadingAnchor),
+        
+        phoneInput.leadingAnchor.constraint(equalTo: codeInput.trailingAnchor),
+        phoneInput.heightAnchor.constraint(equalTo: phoneContainer.heightAnchor),
+        phoneInput.trailingAnchor.constraint(equalTo: phoneContainer.trailingAnchor),
+        
+        phoneHelpText.topAnchor.constraint(equalTo: phoneContainer.bottomAnchor, constant: 10),
+        phoneHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+        phoneHelpText.heightAnchor.constraint(equalToConstant: 40),
+        phoneHelpText.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor, multiplier: 0.95),
+        
+        passwordAndPassword.topAnchor.constraint(equalTo: phoneHelpText.bottomAnchor, constant: 40),
+        passwordAndPassword.centerXAnchor.constraint(equalTo: authCoverView.centerXAnchor),
+        passwordAndPassword.widthAnchor.constraint(equalToConstant: 300),
+        passwordAndPassword.heightAnchor.constraint(equalToConstant: 80),
+        
+        passwordHelpText.topAnchor.constraint(equalTo: passwordAndPassword.bottomAnchor),
+        passwordHelpText.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+        passwordHelpText.widthAnchor.constraint(equalTo: usernameTextField.widthAnchor, multiplier: 0.95),
+        
+        authButtonsContainer.topAnchor.constraint(equalTo: passwordHelpText.bottomAnchor),
+        authButtonsContainer.bottomAnchor.constraint(equalTo: authCoverView.bottomAnchor),
+        authButtonsContainer.leadingAnchor.constraint(equalTo: authCoverView.leadingAnchor),
+        authButtonsContainer.trailingAnchor.constraint(equalTo: authCoverView.trailingAnchor),
+
+        signUpButton.centerXAnchor.constraint(equalTo: authButtonsContainer.centerXAnchor),
+        signUpButton.centerYAnchor.constraint(equalTo: authButtonsContainer.centerYAnchor),
+        signUpButton.heightAnchor.constraint(equalToConstant: 50),
+        signUpButton.widthAnchor.constraint(equalToConstant: 200),
+    ]
+    
+    private func layoutChooseMethodStage() {
+        authContainerZeroStageHeightConstrain.isActive = false
+        authContainerOneTwoStageHeightConstrain.isActive = true
+        
+        authCoverView.addSubview(authButtonsContainer)
+        [signUpButton, signInButton].forEach({authButtonsContainer.addSubview($0)})
+        
+        NSLayoutConstraint.activate(stage1Constraints)
+    }
+    
+    private func layoutSignInFromChooseMethod() {
+        currentStage = .login
+        [signUpButton, signInButton, authButtonsContainer].forEach({$0.removeFromSuperview()})
+        NSLayoutConstraint.deactivate(stage1Constraints)
+        
+        [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer, singInErrorHelpText
+        ].forEach({authCoverView.addSubview($0)})
+        authButtonsContainer.addSubview(signInButton)
+        
+        NSLayoutConstraint.activate(stage2Constaints)
+    }
+    
+    private func layoutSingUpFromSingIn() {
+        currentStage = .signup
+        [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer, singInErrorHelpText
+        ].forEach({$0.removeFromSuperview()})
+        NSLayoutConstraint.deactivate(stage2Constaints)
+        
+        authContainerOneTwoStageHeightConstrain.isActive = false
+        authContainerThreeStageHeightConstrain.isActive = true
+        UIView.animate(withDuration: 0.5, animations: {
+            self.view.layoutIfNeeded()
+        })
+        [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer, passwordHelpText
+        ].forEach({authCoverView.addSubview($0)})
+        authButtonsContainer.addSubview(signUpButton)
+        phoneField.addSubview(phoneContainer)
+        [codeInput, phoneInput].forEach({phoneContainer.addSubview($0)})
+        singUpHeaderContainer.addSubview(signUpHeader)
+        
+        NSLayoutConstraint.activate(stage3Constraints)
+    }
+    
+    private func layoutSingUpFromChooseMethod() {
+        currentStage = .signup
+        [signUpButton, signInButton, authButtonsContainer].forEach({$0.removeFromSuperview()})
+        NSLayoutConstraint.deactivate(stage1Constraints)
+        
+        authContainerOneTwoStageHeightConstrain.isActive = false
+        authContainerThreeStageHeightConstrain.isActive = true
+        UIView.animate(withDuration: 0.5, animations: {
+            self.view.layoutIfNeeded()
+        })
+        [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField, phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer, passwordHelpText
+        ].forEach({authCoverView.addSubview($0)})
+        authButtonsContainer.addSubview(signUpButton)
+        phoneField.addSubview(phoneContainer)
+        [codeInput, phoneInput].forEach({phoneContainer.addSubview($0)})
+        singUpHeaderContainer.addSubview(signUpHeader)
+        
+        NSLayoutConstraint.activate(stage3Constraints)
+    }
+    
+    private func layoutSingInFromSingUp() {
+        currentStage = .login
+        [singUpHeaderContainer, usernameTextField, usernameHelpText, phoneField,
+         phoneContainer, phoneHelpText, passwordAndPassword, authButtonsContainer,
+         passwordHelpText].forEach({$0.removeFromSuperview()})
+        NSLayoutConstraint.deactivate(stage3Constraints)
+        
+        authContainerThreeStageHeightConstrain.isActive = false
+        authContainerOneTwoStageHeightConstrain.isActive = true
+        UIView.animate(withDuration: 0.5, animations: {
+            self.view.layoutIfNeeded()
+        })
+        
+        [welcomeBackHeaderLable, phoneAndPassword, signUpLable, signInButton, authButtonsContainer, singInErrorHelpText
+        ].forEach({authCoverView.addSubview($0)})
+        authButtonsContainer.addSubview(signInButton)
+        
+        NSLayoutConstraint.activate(stage2Constaints)
+    }
+    
+    //MARK: Logic
+    private func changeStage(stage: AuthStages) {
+        switch stage {
+        case .chooseMethod:
+            layoutChooseMethodStage()
+        case .login where currentStage == .chooseMethod:
+            layoutSignInFromChooseMethod()
+        case .signup where currentStage == .login:
+            layoutSingUpFromSingIn()
+        case .signup where currentStage == .chooseMethod:
+            layoutSingUpFromChooseMethod()
+        case .login where currentStage == .signup:
+            layoutSingInFromSingUp()
+        default:
+            break
+        }
+    }
+    
+    private func setWarrings(erros: [String: String]) {
+        if let passwordWarning = erros["password"] {
+            passwordHelpText.text = passwordWarning
+        } else {
+            passwordHelpText.text = ""
+        }
+        if let usernameWarning = erros["username"] {
+            usernameHelpText.text = usernameWarning
+            usernameHelpText.textColor = .red
+        } else {
+            usernameHelpText.text = R.string.profileView.helpText()
+            usernameHelpText.textColor = .black
+        }
+        if let phoneWarning = erros["phone"] {
+            phoneHelpText.text = phoneWarning
+            phoneHelpText.textColor = .red
+        } else {
+            phoneHelpText.text = R.string.launchView.phoneHelpText()
+            phoneHelpText.textColor = .black
+        }
+    }
+    
+    private func validateLoginInputs() -> [String: String]? {
         let verifier = Verifier()
-        let cleanPhoneNumber = verifier.stripPhoneNumber(phone: code + phone)
-        let isValidPhone = verifier.isValidPhone(phone: cleanPhoneNumber)
         let (isValid, validationResult) = Verifier().verifySingIn(
             username:  (phoneAndPassword.codeInput.text ?? "") +  (phoneAndPassword.phoneInput.text ?? ""),
             password: phoneAndPassword.passwordInput.text
         )
         if !isValid {
             self.singInErrorHelpText.text = validationResult["error"]
+            return nil
+        }
+        
+        return validationResult
+    }
+    
+    @objc func loginTapped() {
+        if currentStage != .login {
+            changeStage(stage: .login)
             return
         }
+        
+        guard let validationResult = validateLoginInputs() else { return }
         
         let userFetchSuccessHandler = { [unowned self] (data: Data) throws in
             let responseObject = try JSONDecoder().decode(UserFetch.self, from: data)
@@ -715,8 +748,7 @@ class LaunchViewController: UIViewController {
                 )
             }
         }
-            
-            
+             
         let signInFailureHandler = { [weak self] (data: Data) throws in
             let responseObject = try JSONDecoder().decode(userFetchError.self, from: data)
             DispatchQueue.main.async {
@@ -729,47 +761,54 @@ class LaunchViewController: UIViewController {
         performRequest(request: request, successHandler: signInSuccessHandler, failureHandler: signInFailureHandler)
         }
     
+    private func makeSingUpRequest() -> URLRequest? {
+        let (isValid, validationResult) = Verifier().verifyUserSignUpData(
+            username: self.usernameTextField.text ?? "",
+            password: self.passwordAndPassword.passwordInput.text ?? "",
+            secondPassword: self.passwordAndPassword.repeatPasswordInput.text ?? "",
+            phone: (self.codeInput.text ?? "") + (self.phoneInput.text ?? "")
+        )
+        if !isValid {
+            setWarrings(erros: validationResult)
+            return nil
+        }
+        
+        let json: [String: Any] = validationResult
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        return setupRequest(url: .register, method: .post, body: jsonData)
+    }
+    
     @objc func signupTapped() {
-        if currentStage == .signup {
-            let signUpSuccessHandler = { [unowned self] (data: Data) throws in
-                let responseObject = try JSONDecoder().decode(RegisterationSuccess.self, from: data)
-                DispatchQueue.main.async {
-                    self.welcomeBackHeaderLable.text = R.string.launchView.welcomeBackHeader()
-                    self.changeStage(stage: .login)
-                    return
-                }
-            }
-            let signUpFailureHandler = { [weak self] (data: Data) throws in
-                let responseObject = try JSONDecoder().decode(RegisterError.self, from: data)
-                DispatchQueue.main.async {
-                    var errors: [String: String] = [:]
-                    if let usernameWarning = responseObject.username {
-                        errors["username"] = usernameWarning.joined(separator: " ")
-                    }
-                    if responseObject.password != nil {
-                        errors["password"] = R.string.launchView.pwError()
-                    }
-                    self?.setWarrings(erros: errors)
-                }
-            }
-            let (isValid, validationResult) = Verifier().verifyUserSignUpData(
-                username: self.usernameTextField.text ?? "",
-                password: self.passwordAndPassword.passwordInput.text ?? "",
-                secondPassword: self.passwordAndPassword.repeatPasswordInput.text ?? "",
-                phone: (self.codeInput.text ?? "") + (self.phoneInput.text ?? "")
-            )
-
-            if !isValid {
-                setWarrings(erros: validationResult)
-                return
-            }
-            let json: [String: Any] = validationResult
-            let jsonData = try? JSONSerialization.data(withJSONObject: json)
-            let request = setupRequest(url: .register, method: .post, body: jsonData)
-            performRequest(request: request, successHandler: signUpSuccessHandler, failureHandler: signUpFailureHandler)
+        if currentStage != .signup {
+            changeStage(stage: .signup)
             return
         }
-        changeStage(stage: .signup)
+        
+        let signUpSuccessHandler = { [unowned self] (data: Data) throws in
+            let responseObject = try JSONDecoder().decode(RegisterationSuccess.self, from: data)
+            DispatchQueue.main.async {
+                self.welcomeBackHeaderLable.text = R.string.launchView.welcomeBackHeader()
+                self.changeStage(stage: .login)
+                return
+            }
+        }
+        
+        let signUpFailureHandler = { [weak self] (data: Data) throws in
+            let responseObject = try JSONDecoder().decode(RegisterError.self, from: data)
+            DispatchQueue.main.async {
+                var errors: [String: String] = [:]
+                if let usernameWarning = responseObject.username {
+                    errors["username"] = usernameWarning.joined(separator: " ")
+                }
+                if responseObject.password != nil {
+                    errors["password"] = R.string.launchView.pwError()
+                }
+                self?.setWarrings(erros: errors)
+            }
+        }
+        
+        guard let request = makeSingUpRequest() else { return }
+        performRequest(request: request, successHandler: signUpSuccessHandler, failureHandler: signUpFailureHandler)
     }
     
     @objc func keyboardWillShow(sender: NSNotification) {
@@ -799,10 +838,7 @@ class LaunchViewController: UIViewController {
     @objc func switchToSingUp(sender:UITapGestureRecognizer) {
         let signUpRange = (ifNewUserText as NSString).range(of: signUpRange)
         if sender.didTapAttributedTextInLabel(label: signUpLable, inRange: signUpRange) {
-            print("signup")
             changeStage(stage: .signup)
-        } else {
-            print("none")
         }
     }
 }
