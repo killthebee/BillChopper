@@ -1,10 +1,8 @@
 import UIKit
 
-
 public protocol ImagePickerDelegate: class {
     func didSelect(image: UIImage?)
 }
-
 
 class ImagePicker: NSObject {
     
@@ -39,7 +37,6 @@ class ImagePicker: NSObject {
             self.presentationController?.present(self.pickerController, animated: true)
         }
     }
-    
     
     public func present(from sourceView: UIView) {
         let alertController = UIAlertController(
@@ -88,14 +85,12 @@ extension ImagePicker: UIImagePickerControllerDelegate {
         _ picker: UIImagePickerController,
         didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]
     ) {
-        // why original or edited?
         guard let image = info[.originalImage] as? UIImage else {
             return self.pickerController(picker, didSelect: nil)
         }
         self.pickerController(picker, didSelect: image)
     }
 }
-
 
 extension ImagePicker: UINavigationControllerDelegate {
     

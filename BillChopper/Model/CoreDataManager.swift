@@ -362,7 +362,7 @@ struct CoreDataManager {
             // TODO: Check if its working of main screen
             event.addToSpends(newSpendData)
 //
-                newSpendData.isBorrowed = payeerUsername != "You"
+            newSpendData.isBorrowed = payeerUsername != R.string.main.you()
 //                
 //
             for participant in participants {
@@ -374,9 +374,9 @@ struct CoreDataManager {
                 newSplitUnit.spend = newSpendData
 
                 guard let username = participant.username else { break }
-                if username == "You" {
+                if username == R.string.main.you() {
                     newSpendData.amount = calculateSpendAmount(
-                        isBorrowed: payeerUsername != "You",
+                        isBorrowed: payeerUsername != R.string.main.you(),
                         totalAmount,
                         split,
                         phone: phone

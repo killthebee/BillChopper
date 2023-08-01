@@ -2,12 +2,17 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
+    // MARK: Data
+    unowned var mainVC: MainViewController!
+    
     var appUser: AppUser? = nil
-    
-    private var iconView = ProfileIcon().setUpIconView()
-    
     var isPhoneInput = true
     var isImageChanged = false
+    private var isIconZoomed = false
+    private var imagePicker: ImagePicker!
+    
+    // MAKR: UI Elements
+    private var iconView = ProfileIcon().setUpIconView()
     
     private lazy var coverView: UIView = {
         let coverView = UIView()
@@ -24,25 +29,22 @@ final class ProfileViewController: UIViewController {
         let uploadButton = UIButton()
         uploadButton.setTitle(R.string.profileView.uploadButtonTitle(), for: .normal)
         uploadButton.setTitleColor(.systemBlue, for: .normal)
-        uploadButton.addTarget(self, action: #selector(handleUploadButtonClicked), for: .touchDown)
+        uploadButton.addTarget(
+            self,
+            action: #selector(handleUploadButtonClicked),
+            for: .touchDown
+        )
         
         return uploadButton
     }()
     
-    private var saveButton: UIButton = {
-        // TODO: use already existing save button
-        let saveButton = UIButton()
-        
-        saveButton.backgroundColor = UIColor(
-            hue: 0/360, saturation: 0/100, brightness: 98/100, alpha: 1.0
+    private let saveButton: SaveButton = {
+        let button = SaveButton()
+        button.addTarget(
+            self, action: #selector(handleSaveButtonClicked), for: .touchDown
         )
-        saveButton.layer.borderWidth = 1
-        saveButton.layer.cornerRadius = 15
-        saveButton.setTitle(R.string.profileView.saveButtonTitle(), for: .normal )
-        saveButton.setTitleColor(.black, for: .normal)
-        saveButton.addTarget(self, action: #selector(handleSaveButtonClicked), for: .touchDown)
         
-        return saveButton
+        return button
     }()
     
     private lazy var usernameTextField: CustomTextField = {
@@ -50,7 +52,7 @@ final class ProfileViewController: UIViewController {
         usernameTextField.text = appUser?.username
         usernameTextField.textColor = .black
         usernameTextField.textAlignment = .center
-        usernameTextField.placeholder = "username"
+        usernameTextField.placeholder = R.string.profileView.usernamePlacehodler()
         usernameTextField.font = UIFont.boldSystemFont(ofSize: 21)
         usernameTextField.autocorrectionType = UITextAutocorrectionType.no
         usernameTextField.clearButtonMode = UITextField.ViewMode.whileEditing
@@ -93,50 +95,54 @@ final class ProfileViewController: UIViewController {
     
     private let exitButton: UIButton = {
         let button = ExitCross()
-        button.addTarget(self, action: #selector(handleExitButtonClicked), for: .touchDown)
+        button.addTarget(
+            self, action: #selector(handleExitButtonClicked), for: .touchDown
+        )
         
         return button
     }()
     
-    private var isIconZoomed = false
-    private var imagePicker: ImagePicker!
-    
-    private func setWarnings(erros: [String: String]) {
-        if let usernameError = erros["username"] {
-            usernameHelpText.text = usernameError
-        } else {
-            usernameHelpText.text = R.string.profileView.helpText()
-        }
-        if let genderError = erros["gender"] {
-            phoneAndGenderHelpText.text = genderError
-        } else if let phoneError = erros["phone"] {
-            phoneAndGenderHelpText.text = phoneError
-        } else {
-            phoneAndGenderHelpText.text = ""
-        }
-        
-    }
-
+    // MARK: Setup VC
     override func viewDidLoad() {
         super.viewDidLoad()
-        (UIApplication.shared.delegate as! AppDelegate).restrictRotation = .portrait
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil);
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil);
-        
+        addKeyboardNotifications()
         setupIconView(iconView: iconView)
         addToolbars()
         setupViews()
         addSubviews()
         setUpPhoneField()
         setUpGender()
+        setUserImage()
+    }
+    
+    private func setUserImage() {
         if let appUserImage = loadImageFromDiskWith(fileName: "appUser") {
             iconView.image = appUserImage
         }
     }
     
+    private func addKeyboardNotifications() {
+        (UIApplication.shared.delegate as! AppDelegate).restrictRotation = .portrait
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(sender:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        );
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(sender:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        );
+    }
+    
     private func addToolbars() {
         let continueButton = UIBarButtonItem(
-            title: "Continue", style: .plain,target: self, action: nil
+            title: R.string.profileView.continue(),
+            style: .plain,
+            target: self,
+            action: nil
         )
         
         let codeKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
@@ -170,9 +176,6 @@ final class ProfileViewController: UIViewController {
     private func setupViews() {
         view.backgroundColor = .white
         self.imagePicker = ImagePicker(presentationController: self, delegate: self)
-//        if let phoneNum = appUser?.phone {
-//            self.rawNumber =
-//        }
         usernameTextField.delegate = self
         
         
@@ -186,7 +189,7 @@ final class ProfileViewController: UIViewController {
     private func setUpPhoneField() {
         guard let phoneNumber = appUser?.phone,
         let phoneSplit = stripCodeAndPhone(number: phoneNumber) else {
-            phoneAndGenderHelpText.text = "feiled to load phone number"
+            phoneAndGenderHelpText.text = R.string.profileView.phoneParseFail()
             return
         }
         let code = "+" + phoneSplit.code
@@ -202,57 +205,21 @@ final class ProfileViewController: UIViewController {
         guard let isMale = appUser?.isMale else { return }
         PhoneAndGender.genderButton.setTitleColor(.black, for: .normal)
         if isMale {
-            PhoneAndGender.genderButton.setTitle(R.string.profileView.male(), for: .normal)
+            PhoneAndGender.genderButton.setTitle(
+                R.string.profileView.male(), for: .normal
+            )
             return
         }
-        PhoneAndGender.genderButton.setTitle(R.string.profileView.female(), for: .normal)
+        PhoneAndGender.genderButton.setTitle(
+            R.string.profileView.female(), for: .normal
+        )
     }
     
     private func addSubviews() {
         [exitButton, uploadButton, usernameTextField, usernameHelpText, PhoneAndGender, saveButton, iconView, phoneAndGenderHelpText].forEach({view.addSubview($0)})
     }
     
-    @objc func doneButtonTapped() {
-            view.endEditing(true)
-    }
-    
-    @objc func continueTapped() {
-        PhoneAndGender.phoneInput.becomeFirstResponder()
-    }
-    
-    @objc func handleTapOnIcon() {
-        // why do I need selfs here?
-        let newDiameter = CGFloat(300)
-        iconTopAnchor?.constant = CGFloat(self.view.center.y) - newDiameter / 2
-        iconWidthAnchor?.constant = newDiameter
-        iconHeigthAnchor?.constant = newDiameter
-        UIView.animate(withDuration: 0.5, animations: {
-            self.view.layoutIfNeeded()
-        })
-        self.view.addSubview(coverView)
-    }
-    
-    @objc func handleTapOnZoomedIcon() {
-        let oldDiameter = CGFloat(150)
-        iconTopAnchor?.constant = 50
-        iconWidthAnchor?.constant = oldDiameter
-        iconHeigthAnchor?.constant = oldDiameter
-        UIView.animate(withDuration: 0.5, animations: {
-            self.view.layoutIfNeeded()
-        })
-        
-        coverView.removeFromSuperview()
-    }
-    
-    @objc func keyboardWillShow(sender: NSNotification) {
-        if isPhoneInput { self.view.frame.origin.y = -150 }
-        
-    }
-    
-    @objc func keyboardWillHide(sender: NSNotification) {
-         self.view.frame.origin.y = 0
-    }
-    
+    // MARK: Layout
     private var iconTopAnchor: NSLayoutConstraint?
     private var iconCenterXAnchor: NSLayoutConstraint?
     private var iconWidthAnchor: NSLayoutConstraint?
@@ -320,12 +287,67 @@ final class ProfileViewController: UIViewController {
         usernameTextField.topPadding = usernameTextField.frame.height * 0.1
     }
     
+    // MARK: Logic
+    @objc func doneButtonTapped() {
+            view.endEditing(true)
+    }
+    
+    @objc func continueTapped() {
+        PhoneAndGender.phoneInput.becomeFirstResponder()
+    }
+    
+    @objc func handleTapOnIcon() {
+        let newDiameter = CGFloat(300)
+        iconTopAnchor?.constant = CGFloat(self.view.center.y) - newDiameter / 2
+        iconWidthAnchor?.constant = newDiameter
+        iconHeigthAnchor?.constant = newDiameter
+        UIView.animate(withDuration: 0.5, animations: {
+            self.view.layoutIfNeeded()
+        })
+        self.view.addSubview(coverView)
+    }
+    
+    @objc func handleTapOnZoomedIcon() {
+        let oldDiameter = CGFloat(150)
+        iconTopAnchor?.constant = 50
+        iconWidthAnchor?.constant = oldDiameter
+        iconHeigthAnchor?.constant = oldDiameter
+        UIView.animate(withDuration: 0.5, animations: {
+            self.view.layoutIfNeeded()
+        })
+        
+        coverView.removeFromSuperview()
+    }
+    
+    @objc func keyboardWillShow(sender: NSNotification) {
+        if isPhoneInput { self.view.frame.origin.y = -150 }
+        
+    }
+    
+    @objc func keyboardWillHide(sender: NSNotification) {
+         self.view.frame.origin.y = 0
+    }
+    
+    private func setWarnings(erros: [String: String]) {
+        if let usernameError = erros["username"] {
+            usernameHelpText.text = usernameError
+        } else {
+            usernameHelpText.text = R.string.profileView.helpText()
+        }
+        if let genderError = erros["gender"] {
+            phoneAndGenderHelpText.text = genderError
+        } else if let phoneError = erros["phone"] {
+            phoneAndGenderHelpText.text = phoneError
+        } else {
+            phoneAndGenderHelpText.text = ""
+        }
+    }
+    
     @objc func handleUploadButtonClicked(_ sender: UIButton) {
         self.imagePicker.present(from: sender)
     }
     
-    @objc func handleSaveButtonClicked(_ sender: UIButton) {
-        // verify
+    private func gatherAndValidateInputs() -> [String: String]? {
         let verifier = Verifier()
         let (isValid, validationResult) = Verifier().verifyUserUpdate(
             username: self.usernameTextField.text,
@@ -334,9 +356,13 @@ final class ProfileViewController: UIViewController {
         )
         if !isValid {
             setWarnings(erros: validationResult)
-            return
+            return nil
         }
-        // save to db
+        
+        return validationResult
+    }
+    
+    private func saveToDB(_ validationResult: [String: String]) {
         guard let appUser = appUser else { return }//warning?
         appUser.phone = validationResult["username"] ?? appUser.phone
         appUser.username = self.usernameTextField.text
@@ -350,18 +376,34 @@ final class ProfileViewController: UIViewController {
             newUsername: self.usernameTextField.text,
             isMale: validationResult["is_male"] == "True"
         )
-        // upload image
-        if isImageChanged {
-            uploadImage(fileName: "appUser.png", image: iconView.image!)
-            saveImage(fileName: "appUser.png", image: iconView.image!)
+    }
+    
+    private func uploadAndSaveImage() {
+        uploadImage(fileName: "appUser.png", image: iconView.image!)
+        saveImage(fileName: "appUser.png", image: iconView.image!)
+        if let appUserNewImage = loadImageFromDiskWith(fileName: "appUser") {
+            mainVC.profileIcon.image = appUserNewImage
         }
-        // upload profile updates
+    }
+    
+    private func makeRequest(_ validationResult: [String: String]) -> URLRequest? {
         let jsonData = try? JSONSerialization.data(withJSONObject: validationResult)
         var request = setupRequest(url: .updateUser, method: .put, body: jsonData)
         guard let accessToken = KeychainHelper.standard.readToken(
             service: "access-token", account: "backend-auth"
-        ) else { return }
+        ) else { return nil }
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        
+        return request
+    }
+    
+    @objc func handleSaveButtonClicked(_ sender: UIButton) {
+        guard let validationResult = gatherAndValidateInputs() else { return }
+        
+        saveToDB(validationResult)
+        
+        if isImageChanged { uploadAndSaveImage() }
+        guard let request = makeRequest(validationResult) else { return }
         let successHandler = { [unowned self] (data: Data) throws in
             DispatchQueue.main.async {
                 self.dismiss(animated: true)
@@ -374,7 +416,6 @@ final class ProfileViewController: UIViewController {
         dismiss(animated: true)
     }
 }
-
 
 extension ProfileViewController: ImagePickerDelegate, UITextFieldDelegate {
     

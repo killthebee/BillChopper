@@ -63,6 +63,7 @@
 		84B1751C2A42FFF600324600 /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B1751B2A42FFF600324600 /* ImageSaver.swift */; };
 		84C56F562A0AAA3C00EC0EBF /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C56F552A0AAA3C00EC0EBF /* KeychainHelper.swift */; };
 		84C56F582A13A79A00EC0EBF /* DataProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C56F572A13A79A00EC0EBF /* DataProtocols.swift */; };
+		84F843F82A712BE900B830D2 /* verifiers.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84F843F72A712BE900B830D2 /* verifiers.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -123,6 +124,7 @@
 		84B1751B2A42FFF600324600 /* ImageSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSaver.swift; sourceTree = "<group>"; };
 		84C56F552A0AAA3C00EC0EBF /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		84C56F572A13A79A00EC0EBF /* DataProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProtocols.swift; sourceTree = "<group>"; };
+		84F843F72A712BE900B830D2 /* verifiers.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = verifiers.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +150,7 @@
 				30363E71296886A000D48D5C /* saveButton.strings */,
 				30363E742969A70900D48D5C /* AddEvent.strings */,
 				30DF1A2829A4BEAD007B6476 /* launchView.strings */,
+				84F843F72A712BE900B830D2 /* verifiers.strings */,
 			);
 			path = Strings;
 			sourceTree = "<group>";
@@ -385,6 +388,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84F843F82A712BE900B830D2 /* verifiers.strings in Resources */,
 				30E22E932968677700B9A63F /* mainCell.strings in Resources */,
 				30DF1A2929A4BEAD007B6476 /* launchView.strings in Resources */,
 				302B817D2963395E008380A0 /* main.strings in Resources */,

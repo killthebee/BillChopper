@@ -49,7 +49,7 @@ class CustomSlider: UISlider {
     
     override var isTracking: Bool {
         selectSplitView?.percent.text = String(format: "%.0f", self.value)
-        selectSplitView?.vcDelegate?.recalculatePercents()
+        selectSplitView?.vcDelegate?.estimateSplitPercents()
         return true
     }
 }

@@ -1,11 +1,12 @@
 import UIKit
 
 protocol AddSpendDelegate: AnyObject {
-    func recalculatePercents()
+    func estimateSplitPercents()
 }
 
 final class AddSpendViewController: UIViewController {
     
+    // MARK: Data
     unowned var mainVC : MainViewController!
     
     var events: [Event] = []
@@ -15,6 +16,7 @@ final class AddSpendViewController: UIViewController {
     
     private var eventUsers: [EventUserProtocol] = []
     
+    // MARK: UI Elements
     private lazy var spendNameTextField: CustomTextField = {
         let spendNameTextField = CustomTextField()
         spendNameTextField.attributedPlaceholder = NSAttributedString(
@@ -100,66 +102,11 @@ final class AddSpendViewController: UIViewController {
     private lazy var chooseEventView: ChooseButtonView = {
         var eventsButtons = Array<UIAction>()
         for event in events {
-            eventsButtons.append(UIAction(
-                title: event.name ?? "",
-                image: UIImage(named: "\(reverseConvertEventTypes(type: event.eventType))Icon")
-            ){ [unowned self] (action) in
-                self.eventUsers = []
-                self.currentEvent = event
-                guard let participants = event.participants?.allObjects as? [Participant] else {
-                    return
-                }
-                self.participants = participants
-                let percent = 100 / participants.count
-                for participant in participants {
-                    let image = loadImageFromDiskWith(fileName: participant.imageName ?? "") ?? UIImage(named: "HombreDefault1")
-                    self.eventUsers.append(EventUser(
-                        username: participant.username ?? "unnamed",
-                        percent: percent,
-                        image: image,
-                        phone: participant.imageName ?? "unknown"
-                    ))
-                }
-                
-                self.splitSelectorsView.reloadData()
-                self.chooseEventView.chooseEventLable.text = event.name
-                
-                var userButtons = Array<UIAction>()
-                self.selectSplitText.text = R.string.addSpend.selectSplit()
-                self.selectSplitText.textColor = .black
-                for (index, user) in self.eventUsers.enumerated() {
-                    let userButton = UIAction(
-                        title: user.username,
-                        image: user.image
-                    ) { (action) in
-                        self.payeer = participants[index]
-                        self.chooseUserView.chooseEventLable.text = user.username
-                        self.chooseUserView.chooseEventImage.image = user.image
-                    }
-                    userButtons.append(userButton)
-                }
-                let menu = UIMenu(
-                    title: "choose user",
-                    options: .displayInline,
-                    children: userButtons
-                )
-                
-                self.payeerStackView.removeFromSuperview()
-                self.chooseUserView = ChooseButtonView(
-                    text: "choose user",
-                    image: UIImage(named: "HombreDefault1")!,
-                    menu: menu
-                )
-                payeerStackView = UIStackView(arrangedSubviews: [choosePayerText, chooseUserView])
-                payeerStackView.distribution = .fill
-                payeerStackView.spacing = 10
-                eventPayeerContainerView.addSubview(payeerStackView)
-//                self.view.addSubview(self.chooseUserView)
-            })
+            eventsButtons.append(makeEventButton(event))
         }
         let menu = UIMenu(title: "spendEvents", options: .displayInline, children: eventsButtons)
         let button =  ChooseButtonView(
-            text: "choose event",
+            text: R.string.addSpend.chooseEvent(),
             image: UIImage(named: "saveIcon")!,
             menu: menu
         )
@@ -168,7 +115,10 @@ final class AddSpendViewController: UIViewController {
     }()
 
     private var chooseUserView: ChooseButtonView = {
-        let button = ChooseButtonView(text: "choose user", image: UIImage(named: "HombreDefault1")!)
+        let button = ChooseButtonView(
+            text:R.string.addSpend.chooseUser(),
+            image: UIImage(named: "HombreDefault1")!
+        )
         button.chooseButton.addTarget(self, action: #selector(unselectedTap), for: .touchUpInside)
         
         return button
@@ -193,7 +143,6 @@ final class AddSpendViewController: UIViewController {
         return lable
     }()
     
-    // name lowkey suck...
     private let splitSelectorsView: UITableView  = {
         let tableView = UITableView()
         tableView.register(SplitSelectorViewCell.self, forCellReuseIdentifier: SplitSelectorViewCell.identifier)
@@ -255,13 +204,9 @@ final class AddSpendViewController: UIViewController {
         return amountHelpText
     }()
     
-    private let eventPayeerContainerView = UIView()
-    
-    
+    // MARK: VC setup
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("777")
-        print(CoreDataManager.shared.fetchSpends())
         addSubviews()
         setupViews()
         addToolbars()
@@ -279,6 +224,9 @@ final class AddSpendViewController: UIViewController {
         splitSelectorsView.dataSource = self
         splitSelectorsView.delegate = self
     }
+    
+    // MARK: layout
+    private let eventPayeerContainerView = UIView()
     
     private func addToolbars() {
         let spendNameKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
@@ -333,20 +281,6 @@ final class AddSpendViewController: UIViewController {
         dateTextField.widthAnchor.constraint(equalTo: stack.widthAnchor, multiplier: 0.7).isActive = true
         
         return stack
-//        let wrap = UIView()
-//        wrap.translatesAutoresizingMaskIntoConstraints = false
-//        wrap.addSubview(datePicker)
-//        wrap.layer.borderColor = UIColor.black.cgColor
-//        wrap.layer.cornerRadius = 15
-//        wrap.layer.borderWidth = 1
-//        datePicker.centerXAnchor.constraint(equalTo: wrap.centerXAnchor).isActive = true
-//        datePicker.centerYAnchor.constraint(equalTo: wrap.centerYAnchor).isActive = true
-//        let stack = UIStackView(
-//            arrangedSubviews: [spendDateText, wrap]
-//        )
-//        wrap.widthAnchor.constraint(equalTo: stack.widthAnchor, multiplier: 0.7).isActive = true
-//
-//        return stack
     }()
     
     override func viewDidLayoutSubviews() {
@@ -365,7 +299,6 @@ final class AddSpendViewController: UIViewController {
          spendNameTextField, spendAmountTextField, spendTotalStackView, nameHelpText, amountHelpText,
          datePicker, spendDateStackView, spendDateText,
         ].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
-        // TODO: make extra container for stacks so they'll be centered
         let constraints: [NSLayoutConstraint] = [
         
             chooseUserView.widthAnchor.constraint(equalTo: payeerStackView.widthAnchor, multiplier: 0.7),
@@ -432,7 +365,83 @@ final class AddSpendViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
     }
     
-    func recalculatePercents() {
+    private func layoutNewChooseUserButton() {
+        self.payeerStackView.removeFromSuperview()
+        payeerStackView = UIStackView(arrangedSubviews: [choosePayerText, chooseUserView])
+        payeerStackView.distribution = .fill
+        payeerStackView.spacing = 10
+        eventPayeerContainerView.addSubview(payeerStackView)
+    }
+    
+    // MARK: logic
+    private func makeEventUsers(_ participants: [Participant]) {
+        let percent = 100 / participants.count
+        for participant in participants {
+            let image = loadImageFromDiskWith(fileName: participant.imageName ?? "") ?? UIImage(named: "HombreDefault1")
+            self.eventUsers.append(EventUser(
+                username: participant.username ?? R.string.main.unnamed(),
+                percent: percent,
+                image: image,
+                phone: participant.imageName ?? R.string.addSpend.unknown()
+            ))
+        }
+    }
+    
+    private func setupUserButtons(_ participants: [Participant]) -> UIMenu {
+        var userButtons = Array<UIAction>()
+        for (index, user) in self.eventUsers.enumerated() {
+            let userButton = UIAction(
+                title: user.username,
+                image: user.image
+            ) { (action) in
+                self.payeer = participants[index]
+                self.chooseUserView.chooseEventLable.text = user.username
+                self.chooseUserView.chooseEventImage.image = user.image
+            }
+            userButtons.append(userButton)
+        }
+        let menu = UIMenu(
+            title: R.string.addSpend.chooseUser(),
+            options: .displayInline,
+            children: userButtons
+        )
+        
+        return menu
+    }
+    
+    private func makeEventButton(_ event: Event) -> UIAction {
+        var eventButton = UIAction(
+            title: event.name ?? "",
+            image: UIImage(
+                named: "\(reverseConvertEventTypes(type: event.eventType))Icon")
+        ) { [unowned self] (action) in
+            self.eventUsers = []
+            self.currentEvent = event
+            guard let participants = event.participants?.allObjects as? [Participant]
+            else { return }
+            self.participants = participants
+            
+            makeEventUsers(participants)
+            
+            self.splitSelectorsView.reloadData()
+            self.chooseEventView.chooseEventLable.text = event.name
+            self.selectSplitText.text = R.string.addSpend.selectSplit()
+            self.selectSplitText.textColor = .black
+            
+            let usersMenu = setupUserButtons(participants)
+            self.chooseUserView = ChooseButtonView(
+                text: R.string.addSpend.chooseUser(),
+                image: UIImage(named: "HombreDefault1")!,
+                menu: usersMenu
+            )
+            
+            layoutNewChooseUserButton()
+        }
+        
+        return eventButton
+    }
+    
+    private func calculatePercentsSum() -> Int {
         var currentSum = 0
         for i in 0 ..< eventUsers.count {
             let indexPath = IndexPath(row: i, section: 0)
@@ -441,7 +450,14 @@ final class AddSpendViewController: UIViewController {
             }
             currentSum += Int(cell.percent.text ?? "0") ?? 0
         }
-        var underlineAttriString: NSMutableAttributedString
+        
+        return currentSum
+    }
+    
+    private func makeEstimationMutatableString(
+        _ currentSum: Int
+    ) -> NSMutableAttributedString {
+        let underlineAttriString: NSMutableAttributedString!
         
         if currentSum > 100 {
             underlineAttriString = NSMutableAttributedString(
@@ -468,6 +484,13 @@ final class AddSpendViewController: UIViewController {
                 string: R.string.addSpend.ok()
             )
         }
+        
+        return underlineAttriString
+    }
+    
+    func estimateSplitPercents() {
+        let currentSum = calculatePercentsSum()
+        let underlineAttriString = makeEstimationMutatableString(currentSum)
         self.selectSplitText.text = nil
         self.selectSplitText.attributedText = underlineAttriString
         self.selectSplitText.addGestureRecognizer(
@@ -475,39 +498,40 @@ final class AddSpendViewController: UIViewController {
         )
     }
     
-    @objc func handleSaveEvent(_ sender: UIButton) {
-        // TODO: Erase warnings!@
-        // gathering data
-//         spend name
+    private func setWarnings(erros: [String: String]) {
+        if let nameError = erros["name"] {
+            nameHelpText.text = nameError
+        }
+        if let amountError = erros["amount"] {
+            amountHelpText.text = amountError
+        }
+        if let splitError = erros["split"] {
+            selectSplitText.textColor = .red
+        }
+    }
+    
+    private func clearWarnings() {
+        nameHelpText.text = ""
+        amountHelpText.text = ""
         selectSplitText.textColor = .black
+    }
+    
+    private func gatherAndValidateData() -> [String: String]? {
         let verifier = Verifier()
-        guard let spendName = spendNameTextField.text,
-              verifier.isValidEventName(eventName: spendName) else {
-            nameHelpText.text = R.string.addSpend.nameWorning()
-            return
+        let (isValid, data) = verifier.validateNewSpend(
+            spendNameTextField.text,
+            spendAmountTextField.text,
+            calculatePercentsSum()
+        )
+        if !isValid {
+            setWarnings(erros: data)
+            return nil
         }
-        print(spendName)
-////         spend amount
-        guard let spendAmount = spendAmountTextField.text,
-              verifier.isAmountValid(amount: spendAmount) else {
-            amountHelpText.text = R.string.addSpend.amountWorning()
-            return
-        }
-        print(spendAmount)
-        // TODO: After implementing COREDATA make request
-        // current event
-        print(currentEvent)
-        // current user
-        print(self.payeer)
-        // current date
-        let dateFormatter = DateFormatter()
-        let userLocale = Locale(identifier: Locale.current.languageCode ?? "ru_RU")
-        dateFormatter.locale = userLocale
-        dateFormatter.dateFormat = "YYYY-MM-dd"
-        let date = datePicker.date
-        let createdDate = dateFormatter.string(from: date)
-        print(createdDate)
-//        current split
+        
+        return data
+    }
+    
+    private func makeSplitDict() -> [String: Int8] {
         var split: [String: Int8] = [:]
         for i in 0 ..< eventUsers.count {
             let indexPath = IndexPath(row: i, section: 0)
@@ -516,16 +540,16 @@ final class AddSpendViewController: UIViewController {
             }
             split[cell.phone] = Int8(cell.percent.text ?? "0") ?? 0
         }
-        let splitIsntOk = (
-            selectSplitText.attributedText ==
-        NSMutableAttributedString(string: R.string.addSpend.percentLess())) || (selectSplitText.attributedText ==
-            NSMutableAttributedString(string:R.string.addSpend.percentMore()))
-        if splitIsntOk {
-            selectSplitText.textColor = .red
-            return
-        }
-        print(split)
-        // toss spend to the backend
+        
+        return split
+    }
+    
+    private func makeRequest(
+        _ spendName: String,
+        _ dateString: String,
+        _ amount: String,
+        _ split: [String: Int8]
+    ) -> URLRequest? {
         let splitJson = try! JSONSerialization.data(withJSONObject: split)
         let splitString = String(data: splitJson, encoding: .utf8)!
         let spendData: [String: Any] = [
@@ -533,26 +557,55 @@ final class AddSpendViewController: UIViewController {
             "name": spendName,
             "payeer": ["username": payeer?.imageName],
             "event": ["id": currentEvent?.eventId, "name": currentEvent?.name],
-            "date": createdDate,
-            "amount": spendAmount,
+            "date": dateString,
+            "amount": amount,
         ]
         let jsonData = try? JSONSerialization.data(withJSONObject: spendData)
         var request = setupRequest(url: .createSpend, method: .post, body: jsonData)
         guard let accessToken = KeychainHelper.standard.readToken(
             service: "access-token", account: "backend-auth"
-        ) else { return }
+        ) else { return nil }
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        
+        return request
+    }
+    
+    private func gatherDate() -> (createdDate: Date, dateString: String) {
+        let dateFormatter = DateFormatter()
+        let userLocale = Locale(identifier: Locale.current.languageCode ?? "ru_RU")
+        dateFormatter.locale = userLocale
+        dateFormatter.dateFormat = "YYYY-MM-dd"
+        let createdDate = datePicker.date
+        let dateString = dateFormatter.string(from: createdDate)
+        
+        return (createdDate, dateString)
+    }
+    
+    @objc func handleSaveEvent(_ sender: UIButton) {
+        clearWarnings()
+        guard let inputData = gatherAndValidateData() else { return }
+        
+        let (createdDate, dateString) = gatherDate()
+
+        let split = makeSplitDict()
+        
+        guard let request = makeRequest(
+            inputData["name"]!,
+            dateString,
+            inputData["amount"]!,
+            split
+        ) else { return }
         let successHanlder = { [unowned self] (data: Data) throws in
             let responseObject = try JSONDecoder().decode(SpendCreateSuccess.self, from: data)
             
             DispatchQueue.main.async {
                 let newSpend = CoreDataManager.shared.createSpend(
-                    name: spendName,
+                    name: inputData["name"]!,
                     eventId: self.currentEvent?.objectID,
                     payeerUsername: self.payeer?.username,
-                    date: date,
+                    date: createdDate,
                     spendId: responseObject.spendId,
-                    totalAmount: Int16(spendAmount) ?? 0,
+                    totalAmount: Int16(inputData["amount"]!) ?? 0,
                     split: split
                 )
                 if newSpend == nil { return }
@@ -582,7 +635,7 @@ final class AddSpendViewController: UIViewController {
     }
     
     @objc func unselectedTap() {
-        self.chooseUserView.chooseEventLable.text = "event is empty"
+        self.chooseUserView.chooseEventLable.text = R.string.addSpend.eventIsEmpty()
         self.chooseUserView.chooseEventLable.textColor = .red
     }
     
@@ -598,7 +651,6 @@ extension AddSpendViewController: UITableViewDelegate, UITableViewDataSource {
         var eventUser = eventUsers[indexPath.row]
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SplitSelectorViewCell.identifier) as? SplitSelectorViewCell else { return UITableViewCell() }
         cell.configure(eventUsers[indexPath.row], self)
-//        cell.becomeFirstResponder()
         
         return cell 
     }

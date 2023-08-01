@@ -2,9 +2,40 @@ import UIKit
 
 final class AddEventViewController: UIViewController {
     
+    // MARK: Data
     var currentUserPhone: String? = nil
     unowned var mainVC: MainViewController!
+    private var currentEventType = "other"
+    private var rawNumber = ""
     
+    private let phoneNumDelegate = PhoneInputDelegate()
+    private let userTableDelegateAndDataSource = UserTableDelegateAndDataSource()
+    
+    private var viewModels: [CollectionTableViewCellViewModel] = [
+        CollectionTableViewCellViewModel(viewModels: [
+            TileCollectionViewModel(
+                eventTypeName: R.string.addEvent.tripEventType(),
+                eventTypeIcon: R.image.tripIcon()!,
+                backgroundColor: .white
+            ),
+            TileCollectionViewModel(
+                eventTypeName: R.string.addEvent.purchaseEventType(),
+                eventTypeIcon: R.image.purchaseIcon()!,
+                backgroundColor: .white),
+            TileCollectionViewModel(
+                eventTypeName: R.string.addEvent.partyEventType(),
+                eventTypeIcon: R.image.partyIcon()!,
+                backgroundColor: .white
+            ),
+            TileCollectionViewModel(
+                eventTypeName: R.string.addEvent.otherEventType(),
+                eventTypeIcon: R.image.otherIcon()!,
+                backgroundColor: .white
+            )
+        ])
+    ]
+    
+    // MARK: UI elements
     private var iconView = ProfileIcon().setUpIconView(
         R.image.eventIcon()!
     )
@@ -37,7 +68,6 @@ final class AddEventViewController: UIViewController {
     
     private let invalidPhoneWarningLable: UILabel = {
         let invalidPhoneWarningLable = UILabel()
-        //invalidPhoneWarningLable.text = "Phone is not valid!"
         invalidPhoneWarningLable.font = invalidPhoneWarningLable.font.withSize(15)
         invalidPhoneWarningLable.lineBreakMode = .byWordWrapping
         invalidPhoneWarningLable.numberOfLines = 0
@@ -50,7 +80,10 @@ final class AddEventViewController: UIViewController {
     
     private let carouselTableView: UITableView = {
         let table = UITableView()
-        table.register(CollectionTableViewCell.self, forCellReuseIdentifier: CollectionTableViewCell.identifier)
+        table.register(
+            CollectionTableViewCell.self,
+            forCellReuseIdentifier: CollectionTableViewCell.identifier
+        )
         table.separatorStyle = .none
         
         return table
@@ -66,7 +99,6 @@ final class AddEventViewController: UIViewController {
         return table
     }()
     
-    // TODO: change the layout so it'll fit on mini
     private let phoneInput = PhoneInput(isCode: false)
     
     private let codeInput = PhoneInput(isCode: true)
@@ -93,38 +125,7 @@ final class AddEventViewController: UIViewController {
         return button
     }()
     
-    private var viewModels: [CollectionTableViewCellViewModel] = [
-        // TODO: Add ~2 more pls
-        CollectionTableViewCellViewModel(viewModels: [
-            TileCollectionViewModel(
-                eventTypeName: R.string.addEvent.tripEventType(),
-                eventTypeIcon: R.image.tripIcon()!,
-                backgroundColor: .white
-            ),
-            TileCollectionViewModel(
-                eventTypeName: R.string.addEvent.purchaseEventType(),
-                eventTypeIcon: R.image.purchaseIcon()!,
-                backgroundColor: .white),
-            TileCollectionViewModel(
-                eventTypeName: R.string.addEvent.partyEventType(),
-                eventTypeIcon: R.image.partyIcon()!,
-                backgroundColor: .white
-            ),
-            TileCollectionViewModel(
-                eventTypeName: R.string.addEvent.otherEventType(),
-                eventTypeIcon: R.image.otherIcon()!,
-                backgroundColor: .white
-            )
-        ])
-    ]
-    
-    private var currentEventType = "other"
-    
-    private var rawNumber = ""
-    
-    private let phoneNumDelegate = PhoneInputDelegate()
-    private let userTableDelegateAndDataSource = UserTableDelegateAndDataSource()
-    
+    // MARK: VC setup
     override func viewDidLoad() {
         super.viewDidLoad()
         (UIApplication.shared.delegate as! AppDelegate).restrictRotation = .portrait
@@ -135,10 +136,16 @@ final class AddEventViewController: UIViewController {
     
     private func addToolbar() {
         let continueButton = UIBarButtonItem(
-            title: "Continue", style: .plain,target: self, action: nil
+            title: R.string.profileView.continue(),
+            style: .plain,
+            target: self,
+            action: nil
         )
         let clearButton = UIBarButtonItem(
-            title: "Clear", style: .plain,target: self, action: nil
+            title: R.string.addEvent.clear(),
+            style: .plain,
+            target: self,
+            action: nil
         )
         
         let codeKeyboardDownButton: UIBarButtonItem = makeKeyboardDownButton()
@@ -188,9 +195,11 @@ final class AddEventViewController: UIViewController {
         [topContainerView, carouselTableView, eventTypeHelpLable, splitSelectorStack, addUserSplitStack,
          exitButton, userTableView, saveButton, invalidPhoneWarningLable
         ].forEach({view.addSubview($0)})
-        [iconView, eventNameTextField, eventNameHelpLable].forEach({topContainerView.addSubview($0)})
+        [iconView, eventNameTextField, eventNameHelpLable
+        ].forEach({topContainerView.addSubview($0)})
     }
     
+    // MARK: Layout
     private let topContainerView = UIView()
     private let splitSelectorStack = UIStackView()
     private lazy var addUserSplitStack: UIStackView = {
@@ -297,13 +306,40 @@ final class AddEventViewController: UIViewController {
         return path
     }
     
-    @objc func handleAddUser(_ sender: UIButton) {
+    // MARK: Logic
+    private func gatherDataNewUser() -> (phone: String, code: String)? {
         guard let phone = self.phoneInput.text,
               let code = self.codeInput.text
         else {
             self.invalidPhoneWarningLable.text = R.string.addEvent.notProvided()
-            return
+            return nil
         }
+        
+        return (phone: phone, code: code)
+    }
+    
+    private func makeRequestNewUser(_ cleanPhoneNumber: String) -> URLRequest? {
+        let json: [String: Any] = ["username": cleanPhoneNumber]
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        var request = setupRequest(url: .fetchUserData, method: .post, body: jsonData)
+        guard let accessToken = KeychainHelper.standard.readToken(
+            service: "access-token", account: "backend-auth"
+        ) else { return nil }
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        
+        return request
+    }
+    
+    private func validateNewUserInput(_ phone: String, _ code: String) -> String? {
+        let verifier = Verifier()
+        let cleanPhoneNumber = verifier.stripPhoneNumber(phone: code + phone)
+        if !verifier.isValidPhone(phone: cleanPhoneNumber) { return nil }
+        
+        return cleanPhoneNumber
+    }
+    
+    @objc func handleAddUser(_ sender: UIButton) {
+        guard let (phone, code) = gatherDataNewUser() else { return }
         
         let userFetchSuccessHandler = { [unowned self] (data: Data) throws in
             let responsObject = try JSONDecoder().decode(UserFetch.self, from: data)
@@ -339,51 +375,58 @@ final class AddEventViewController: UIViewController {
             }
         }
         
-        let verifier = Verifier()
-        let cleanPhoneNumber = verifier.stripPhoneNumber(phone: code + phone)
-        let isValidPhone = verifier.isValidPhone(phone: cleanPhoneNumber)
-        guard isValidPhone else {
+        guard let cleanPhoneNumber = validateNewUserInput(phone, code) else {
             self.invalidPhoneWarningLable.text = R.string.addEvent.phoneNotValid()
             return
         }
-        let json: [String: Any] = ["username": cleanPhoneNumber]
-        let jsonData = try? JSONSerialization.data(withJSONObject: json)
-        var request = setupRequest(url: .fetchUserData, method: .post, body: jsonData)
-        guard let accessToken = KeychainHelper.standard.readToken(
-            service: "access-token", account: "backend-auth"
-        ) else { return }
-        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        guard let request = makeRequestNewUser(cleanPhoneNumber) else { return }
         performRequest(
             request: request,
             successHandler: userFetchSuccessHandler,
             failureHandler: fetchFailureHandler
         )
-        
-        // TODO: Figure out what to do with img urls
-        
     }
     
-    @objc func handleSaveEvent(_ sender: UIButton) {
+    private func gatherDataSaveEvent() -> (
+        eventName: String,
+        delegate: UserTableDelegateAndDataSource
+    )? {
         guard let eventName = eventNameTextField.text,
               Verifier().isValidEventName(eventName: eventName) else {
             self.eventNameHelpLable.textColor = .red
-            self.eventNameHelpLable.text = "Event name isn't valid"
-            return
+            self.eventNameHelpLable.text = R.string.addEvent.eventNameNotValid()
+            return nil
         }
         
         guard let delegate = self.userTableView.delegate as? UserTableDelegateAndDataSource else {
-            return
+            return nil
         }
         
-        guard delegate.newEventUsers.count > 0 else {
-            self.invalidPhoneWarningLable.text = "no user were added!"
-            return
+        return (eventName: eventName, delegate: delegate)
+    }
+    
+    private func agregateUsername(_ delegate: UserTableDelegateAndDataSource) -> [[
+        String: String
+    ]]?  {
+        if !Verifier().UsersAreAdded(users: delegate.newEventUsers) {
+            self.invalidPhoneWarningLable.text = R.string.addEvent.noUserAdded()
+            return nil
         }
-        // TODO: add current user, make shure at least two users in event
-        delegate.newEventUsers.append(newEventUser(username: "You", phone: self.currentUserPhone!))
-        let usernames = delegate.newEventUsers.map {
+        delegate.newEventUsers.append(
+            newEventUser(
+                username: R.string.main.you(),
+                phone: self.currentUserPhone!
+            )
+        )
+        
+        return delegate.newEventUsers.map {
             ["username": Verifier().stripPhoneNumber(phone: $0.phone)]
         }
+    }
+    
+    private func makeRequestSaveEvent(
+        _ usernames: [[String: String]], _ eventName: String
+    ) -> URLRequest? {
         let json: [String: Any] = [
             "participants": usernames,
             "name": eventName,
@@ -394,23 +437,30 @@ final class AddEventViewController: UIViewController {
         guard let accessToken = KeychainHelper.standard.readToken(
             service: "access-token", account: "backend-auth"
         ) else {
-            return
+            return nil
         }
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
+        return request
+    }
+    
+    @objc func handleSaveEvent(_ sender: UIButton) {
+        guard let (eventName, delegate) = gatherDataSaveEvent(),
+              let usernames = agregateUsername(delegate),
+              let request = makeRequestSaveEvent(usernames, eventName) else { return }
+
         let successHanlder = { [unowned self] (data: Data) throws in
             // TODO: make a success notification bar
             let responseObject = try JSONDecoder().decode(EventCreated.self, from: data)
             
             DispatchQueue.main.async {
-                let newEvent = CoreDataManager.shared.createEvent(
+                guard let newEvent = CoreDataManager.shared.createEvent(
                     eventId: responseObject.id,
                     name: eventName,
-                    eventType: Int16(convertEventTypes(type:currentEventType)),
+                    eventType: Int16(convertEventTypes(type: currentEventType)),
                     users: delegate.newEventUsers
-                )
-                if newEvent == nil { return }
-                self.mainVC.eventButtonData.append(newEvent!)
+                ) else { return }
+                self.mainVC.eventButtonData.append(newEvent)
                 dismiss(animated: true)
             }
         }
@@ -479,7 +529,6 @@ extension AddEventViewController: CollectionTableViewCellDelegate {
 extension AddEventViewController: UITextFieldDelegate { }
 
 class UserTableDelegateAndDataSource: NSObject {
-    // TODO: fetch array with user models here
     var newEventUsers: [newEventUserProtocol] = []
 }
 

@@ -11,7 +11,7 @@ class FooterView: UIView {
     }()
     
     let eventName: UILabel = {
-        let lable = UILabel(text: "ALL")
+        let lable = UILabel(text: R.string.main.allBig())
         lable.font = UIFont.boldSystemFont(ofSize: 25)
         lable.textAlignment = .center
         lable.textColor = .red
