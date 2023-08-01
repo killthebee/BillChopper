@@ -1,0 +1,14 @@
+"noUpperCase" = "least one uppercase, ";
+"noDigits" = "least one digit, ";
+"noLowerCase" = "least one lowercase, ";
+"min8" = "min 8 characters total";
+"pwNotMatches" = "Passwords doesn't match";
+"phonesNotValid" = "phone isn't valid";
+"usernamesNotValid" = "username isn't valid";
+"pwOrUsernameNotValid" = "No password or phone provided!";
+"usernameIsEmpty" = "username field is empty";
+"genderNotSelected" = "gender hasn't been chosen";
+"spendNameEmpty" = "no spend name";
+"spendNameNotValid" = "spend name isn't valed";
+"amountEmpty" = "no spend amount";
+"amountNotValid" = "amount not valid";

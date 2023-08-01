@@ -1,0 +1,14 @@
+"newEventPlaceholder" = "new event name";
+"nameEventHelpText" = "Name the event";
+"eventTypeHelpText" = "Select event type";
+"addUser" = "add user:";
+"tripEventType" = "trip";
+"purchaseEventType" = "purchase";
+"partyEventType" = "party";
+"otherEventType" = "other";
+"notProvided" = "phone or code isn't provided";
+"phoneNotValid" = "phonenumber isn't valid";
+"newUserEx" = "new User!";
+"clear" = "Clear";
+"eventNameNotValid" = "Event name isn't valid";
+"noUserAdded" = "no user were added!";
