@@ -48,11 +48,10 @@
 - xCode 14
 - R.Swift
 - Docker
-- запущенный [Бэк](https://github.com/killthebee/bill_chopper_backend)
 ```
 
 ## Запуск
-Убедитесь, что контейнер с бэком работает корректно
+Запустите по инструкции контейнер с [Бэком](https://github.com/killthebee/bill_chopper_backend)
 
 Запустите симулятор в xCode
 
